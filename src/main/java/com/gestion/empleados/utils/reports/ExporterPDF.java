@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
 
+import com.gestion.empleados.JPA.Empleados;
 import com.gestion.empleados.entity.Empleado;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -20,9 +21,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class ExporterPDF {
 
-	private List<Empleado> listaEmpleados;
+	private List<Empleados> listaEmpleados;
 
-	public ExporterPDF(List<Empleado> listaEmpleados) {
+	public ExporterPDF(List<Empleados> listaEmpleados) {
 		super();
 		this.listaEmpleados = listaEmpleados;
 	}
@@ -54,11 +55,11 @@ public class ExporterPDF {
 		pdftable.addCell(celda);
 	}
 	private void writeDetalleTabla(PdfPTable pdftable) {
-		for(Empleado empleado: listaEmpleados) {
+		for(Empleados empleado: listaEmpleados) {
 			pdftable.addCell(String.valueOf(empleado.getId()));
 			pdftable.addCell(empleado.getNombre());
-			pdftable.addCell(empleado.getApellidoP());
-			pdftable.addCell(empleado.getApellidoM());
+			pdftable.addCell(empleado.getApellidop());
+			pdftable.addCell(empleado.getApellidom());
 			pdftable.addCell(String.valueOf(empleado.getEdad()));
 			pdftable.addCell(empleado.getSexo());
 			pdftable.addCell(String.valueOf(empleado.getSalario()));

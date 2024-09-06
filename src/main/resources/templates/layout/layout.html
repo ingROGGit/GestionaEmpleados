@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thimeleaf.org"
-xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head th:fragment="head">
 	<meta charset="utf-8">
@@ -10,29 +10,20 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 </head>
 
 <body>
+
+	<div id="main" th:insert="~{::frag}">
 	<header th:fragment="header">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-			<a class="navbar-brand" href="#">Gstion de Empleados</a>
+			<a class="navbar-brand" href="#">Gestion de Empleados</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link">Bienvenido </a>
+					<li class="nav-item"><a class="nav-link">Bienvenido <span sec:authentication="name">Bob</span></a>
 					
 					</li>
-					<sec:authorize  access= "hasRole('ROLE_ADMIN')" >   <!-- (1) --> 
-					      <p> Esta pantalla es para Admin </p> 
-					  </sec:authorize> 
-					  <sec:authorize  access= "hasRole('ROLE_CONSULTA')" >   <!-- (1) --> 
-					      <p> Esta pantalla es para CONSULTA </p> 
-					  </sec:authorize> 
-					<intercept-url pattern="/auth/admin/*" access="hasRole('ADMIN')"/>
-    				<intercept-url pattern="/auth/*" access="hasAnyRole('ADMIN','USER')"/>
-    				<intercept-url access="permitAll" pattern="/*" /> <!-- Choose only one -->
-    				<intercept-url access="denyAll" pattern="/*" /> <!-- Choose only one -->
-    				<intercept-url pattern="/*" access="isAuthenticated()"/>
 				</ul>
 				<form class="d-flex" th:action="@{/logout}" method="post">
 					<input class="btn btn-secondary" type="submit" value="Cerrar sesión" />
@@ -40,6 +31,29 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 			</div>
 		</nav>
 	</header>
+	<table class="app-info">
+  <tr>
+    <td class="label">Java Runtime Version</td>
+    <td class="value" th:text="${appInfo.javaRuntimeVersion}"></td>
+  </tr>
+  <tr>
+    <td class="label">Spring Version</td>
+    <td class="value" th:text="${appInfo.springVersion}"></td>
+  </tr>
+  <tr>
+    <td class="label">Spring Boot Version</td>
+    <td class="value" th:text="${appInfo.springBootVersion}"></td>
+  </tr>
+  <tr>
+    <td class="label">Thymeleaf Version</td>
+    <td class="value" th:text="${appInfo.thymeleafVersion}"></td>
+  </tr>
+  <tr>
+    <td class="label">Server Info</td>
+    <td class="value" th:text="${appInfo.serverInfo}"></td>
+  </tr>
+</table>
+	</div>
 	<div class="container">
 		<div th:if="${success!=null}" class="alert alert-primary alert-dismissible fade show">
 			[[${success}]]>

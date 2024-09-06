@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thimeleaf.org"
-xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
-
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+      
+<!--<html xmlns:th="http://www.thimeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">-->
 <head th:replace="layout/layout :: head">
 	<meta charset="utf-8">
 </head>
@@ -39,8 +40,8 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 						<tr th:each="empleado : ${empleados}">
 							<td th:text="${empleado.id}"></td>
 							<td th:text="${empleado.nombre}"></td>
-							<td th:text="${empleado.apellidoP}"></td>
-							<td th:text="${empleado.apellidoM}"></td>
+							<td th:text="${empleado.apellidop}"></td>
+							<td th:text="${empleado.apellidom}"></td>
 							<td th:text="${empleado.edad}"></td>
 							<td th:text="${empleado.correo}"></td>
 							<td th:text="${empleado.sexo}"></td>
@@ -48,8 +49,8 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 							<td th:text="${empleado.fecha}"></td>
 							<td th:text="${empleado.salario}"></td>
 							<td><a class="btn btn-info btn-sm" th:href="@{/ver/} + ${empleado.id}">Detalles</a></td>
-							<td sec:authorize="hasAuthority('ADMIN')"><a class="btn btn-warning btn-sm" th:href="@{/form/} + ${empleado.id}">Editar</a></td>
-							<td sec:authorize="hasAuthority('ADMIN')"><a class="btn btn-danger btn-sm" th:href="@{/eliminar/} + ${empleado.id}" onclick="return confirm('Esta seguro de Eliminar el Empleado');">Eliminar</a></td>
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-warning btn-sm" th:href="@{/form/} + ${empleado.id}">Editar</a></td>
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-danger btn-sm" th:href="@{/eliminar/} + ${empleado.id}" onclick="return confirm('Esta seguro de Eliminar el Empleado');">Eliminar</a></td>
 						</tr>
 					</tbody>
 				</table>

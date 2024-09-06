@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.gestion.empleados.JPA.Empleados;
 import com.gestion.empleados.entity.Empleado;
 import com.gestion.empleados.service.EmpleadoService;
 import com.gestion.empleados.utils.PageRender;
@@ -41,8 +42,8 @@ public class EmpleadoController {
 	@GetMapping({"/","/listar",""})
 	public String listarEmpleados(@RequestParam(name="page",defaultValue="0") int page,Model model) {
 		Pageable pageRequest= PageRequest.of(page, 3);
-		Page<Empleado> empleados= empleadoService.findAll(pageRequest);
-		PageRender<Empleado> pageRender= new PageRender<>("/listar",empleados);
+		Page<Empleados> empleados= empleadoService.findAll(pageRequest);
+		PageRender<Empleados> pageRender= new PageRender<>("/listar",empleados);
 		model.addAttribute("titulo","Listado Empleados");
 		model.addAttribute("empleados",empleados);
 		model.addAttribute("page",pageRender);
@@ -51,7 +52,7 @@ public class EmpleadoController {
 	
 	@GetMapping("/ver/{id}")
 	public String verDetallesEmpleado(@PathVariable(value="id") Long id, Map<String,Object> modelo, RedirectAttributes flash) {
-		Empleado empleado= empleadoService.findOne(id);
+		Empleados empleado= empleadoService.findOne(id);
 		if(empleado== null) {
 			flash.addFlashAttribute("error","El empleado no Existe");
 			return "redirect:/listar";
@@ -83,7 +84,7 @@ public class EmpleadoController {
 	}
 	@GetMapping("/form/{id}")
 	public String editarEmpleado(@PathVariable(value="id") Long id,Map<String,Object> modelo, RedirectAttributes flash) {
-		Empleado empleado= null;
+		Empleados empleado= null;
 		if(id>0) {
 			empleado=empleadoService.findOne(id);
 			if(empleado==null) {
@@ -114,7 +115,7 @@ public class EmpleadoController {
 		String cabecera= "Content-Disposition";
 		String valor="attachment; filename=Empleados_"+fa+".pdf";
 		respons.setHeader(cabecera, valor);
-		List<Empleado> lempeados=new ArrayList();
+		List<Empleados> lempeados=empleadoService.findAll();
 		ExporterPDF expdf= new ExporterPDF(lempeados);
 		expdf.exportarPDF(respons);
 	}
@@ -126,7 +127,7 @@ public class EmpleadoController {
 		String cabecera= "Content-Disposition";
 		String valor="attachment; filename=Empleados_"+fa+".xlsx";
 		respons.setHeader(cabecera, valor);
-		List<Empleado> lempeados=new ArrayList();
+		List<Empleados> lempeados=empleadoService.findAll();
 		ExportExcel expdf= new ExportExcel(lempeados);
 		expdf.exportarExcel(respons);
 	}

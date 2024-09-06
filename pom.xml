@@ -147,9 +147,11 @@
 		<!--		    <version>1.18.30</version>-->
 		<!--		    <scope>provided</scope>-->
 		<!--		</dependency>-->
-
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+        </dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
