@@ -3,9 +3,7 @@ package com.gestion.empleados.utils.reports;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
-
-import com.gestion.empleados.JPA.Empleados;
-import com.gestion.empleados.entity.Empleado;
+import com.gestion.empleados.entity.Empleados;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -16,7 +14,6 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-
 import jakarta.servlet.http.HttpServletResponse;
 
 public class ExporterPDF {

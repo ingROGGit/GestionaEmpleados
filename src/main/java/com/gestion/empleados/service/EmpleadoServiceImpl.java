@@ -8,16 +8,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gestion.empleados.JPA.Empleados;
-import com.gestion.empleados.entity.Empleado;
-import com.gestion.empleados.repository.EmpleadoRepositoryJPA;
+import com.gestion.empleados.entity.Empleados;
+import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
 
 
 @Service
 public class EmpleadoServiceImpl implements EmpleadoService{
 
 	@Autowired
-	private EmpleadoRepositoryJPA empleadoRepository;
+	private EmpleadosRepositoryJPA empleadoRepository;
 	@Override
 	@Transactional(readOnly=true)
 	public List<Empleados> findAll() {
@@ -50,9 +49,4 @@ public class EmpleadoServiceImpl implements EmpleadoService{
 		empleadoRepository.deleteById(id);
 	}
 
-	@Override
-	public void save(Empleado empleado) {
-		// TODO Auto-generated method stub
-		
-	}
 }

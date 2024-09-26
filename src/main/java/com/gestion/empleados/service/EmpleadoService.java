@@ -4,10 +4,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.annotation.Secured;
 
-import com.gestion.empleados.JPA.Empleados;
-import com.gestion.empleados.entity.Empleado;
+import com.gestion.empleados.entity.Empleados;
 
 public interface EmpleadoService {
 //	@Secured("ROLE_ADMIN")
@@ -15,7 +13,7 @@ public interface EmpleadoService {
 //	@Secured("ROLE_ADMIN")
 	public Page<Empleados> findAll(Pageable pageable);
 
-	public void save(Empleado empleado);
+	public void save(Empleados empleado);
 
 	public Empleados findOne(Long id);
 
