@@ -157,7 +157,7 @@
 							</a>
 							<ul class="nav nav-treeview" sec:authorize="hasRole('ROLE_USER')">
 								<li class="nav-item">
-									<a href="/empleados/formEmpleados" class="nav-link">
+									<a href="/empleados/formEmpleado" class="nav-link">
 										<i class="nav-icon far fa-id-card"></i>
 										<p>Registra Empleado</p>
 									</a>
@@ -171,10 +171,13 @@
 							</ul>
 						</li>
 						<li class="nav-header">SALIR</li>
-						<li class="nav-item">
-							<a href="#" class="nav-link"><i class="nav-icon far fa-circle text-danger"></i>
+						<li class="nav-item"><a href="#" class="nav-link">
+								<!--							<a href="#" class="nav-link"><i class="nav-icon far fa-circle text-danger"></i>-->
 								<form class="d-flex" th:action="@{/logout}" method="post">
-									<input type="submit" value="Cerrar sesión" />
+									<!--									<input type="submit" value="Cerrar sesión"/>-->
+									<button type="submit" class="btn btn-danger">
+										<i class="fas fa-users"></i> Cerrar sesion
+									</button>
 								</form>
 						</li>
 						<li class="nav-item">
@@ -212,11 +215,20 @@
 			</div>
 			<!-- /.content-header -->
 
-			<!-- Main content -->
 			<main class="app-main"> <!--begin::App Content Header-->
 				<section class="content">
 					<div class="container-fluid">
-
+						<div class="container py-4">
+							<div class="card bg-light">
+								<div class="card-header" th:text="${titulo}">
+								</div>
+								<div class="card-body">
+									Usuario: <li class="list-group-item active" th:text="${usuario.username}"></li>
+									Bloqueado:<li class="list-group-item" th:text="${usuario.bloqueado}"></li>
+									Desactivado:<li class="list-group-item" th:text="${usuario.disabled}"></li>
+								</div>
+							</div>
+						</div>
 					</div><!-- /.container-fluid -->
 				</section>
 				<!-- /.content -->

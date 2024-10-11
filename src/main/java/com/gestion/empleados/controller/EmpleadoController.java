@@ -41,7 +41,7 @@ public class EmpleadoController {
 	}
 	@GetMapping("empleados/listarEmpleados")
 	public String listarEmpleados(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
-		Pageable pageRequest = PageRequest.of(page, 3);
+		Pageable pageRequest = PageRequest.of(page, 5);
 		Page<Empleados> empleados = empleadoService.findAll(pageRequest);
 		PageRender<Empleados> pageRender = new PageRender<>("/empleados/listarEmpleados", empleados);
 		model.addAttribute("titulo", "Listado Empleados");

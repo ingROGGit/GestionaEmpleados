@@ -20,8 +20,6 @@ public class EmpleadoServiceImpl implements EmpleadoService{
 	@Override
 	@Transactional(readOnly=true)
 	public List<Empleados> findAll() {
-		// TODO Auto-generated method stub
-//		return (List<Empleado>)empleadoRepository.findAll();
 		return empleadoRepository.findAll();
 	}
 

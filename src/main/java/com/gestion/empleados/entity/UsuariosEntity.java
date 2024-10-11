@@ -30,7 +30,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UsuariosEntity extends AuditableDateEntity implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,79 +43,13 @@ public class UsuariosEntity extends AuditableDateEntity implements Serializable 
     @NotBlank
     private String pass;
     @Column(name = "bloqueado")
-    @NotBlank
     private Boolean bloqueado;
+    
     @Column(name = "disabled")
-    @NotBlank
     private Boolean disabled;
     
     @ManyToMany(fetch=FetchType.EAGER,targetEntity = RoleEntity.class, cascade = CascadeType.PERSIST)
     @JoinTable(name="usu_roles", joinColumns = @JoinColumn(name="usu_id"),inverseJoinColumns = @JoinColumn(name="role_id"))
     private Set<RoleEntity> roles;
-    
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarios")
-//    @OneToMany(mappedBy = "usuarios", fetch=FetchType.EAGER)
-//    private List<UserRole> userRoleList;
-    
-//    public Usuarios() {
-//    }
-
-//    public String getUsu() {
-//        return usu;
-//    }
-//
-//    public void setUsu(String usu) {
-//        this.usu = usu;
-//    }
-//
-//    public String getPass() {
-//        return pass;
-//    }
-//
-//    public void setPass(String pass) {
-//        this.pass = pass;
-//    }
-//
-//    public Boolean getBloqueado() {
-//        return bloqueado;
-//    }
-//
-//    public void setBloqueado(Boolean bloqueado) {
-//        this.bloqueado = bloqueado;
-//    }
-//
-//    public Boolean getDisabled() {
-//        return disabled;
-//    }
-//
-//    public void setDisabled(Boolean disabled) {
-//        this.disabled = disabled;
-//    }
-
-
-//    @Override
-//    public boolean equals(Object object) {
-//        // TODO: Warning - this method won't work in the case the id fields are not set
-//        if (!(object instanceof UsuariosEntity)) {
-//            return false;
-//        }
-//        UsuariosEntity other = (UsuariosEntity) object;
-//        if ((this.usu == null && other.usu != null) || (this.usu != null && !this.usu.equals(other.usu))) {
-//            return false;
-//        }
-//        return true;
-//    }
-//
-//    @Override
-//    public String toString() {
-//        return "com.gestion.empleados.JPA.Usuarios[ usu=" + usu + " ]";
-//    }
-//    public List<UserRole> getUserRoleList() {
-//        return userRoleList;
-//    }
-//
-//    public void setUserRoleList(List<UserRole> userRoleList) {
-//        this.userRoleList = userRoleList;
-//    }
     
 }

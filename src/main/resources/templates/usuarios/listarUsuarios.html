@@ -157,7 +157,7 @@
 							</a>
 							<ul class="nav nav-treeview" sec:authorize="hasRole('ROLE_USER')">
 								<li class="nav-item">
-									<a href="/empleados/formEmpleados" class="nav-link">
+									<a href="/empleados/formEmpleado" class="nav-link">
 										<i class="nav-icon far fa-id-card"></i>
 										<p>Registra Empleado</p>
 									</a>
@@ -171,10 +171,13 @@
 							</ul>
 						</li>
 						<li class="nav-header">SALIR</li>
-						<li class="nav-item">
-							<a href="#" class="nav-link"><i class="nav-icon far fa-circle text-danger"></i>
+						<li class="nav-item"><a href="#" class="nav-link">
+								<!--							<a href="#" class="nav-link"><i class="nav-icon far fa-circle text-danger"></i>-->
 								<form class="d-flex" th:action="@{/logout}" method="post">
-									<input type="submit" value="Cerrar sesión" />
+									<!--									<input type="submit" value="Cerrar sesión"/>-->
+									<button type="submit" class="btn btn-danger">
+										<i class="fas fa-users"></i> Cerrar sesion
+									</button>
 								</form>
 						</li>
 						<li class="nav-item">
@@ -216,7 +219,65 @@
 			<main class="app-main"> <!--begin::App Content Header-->
 				<section class="content">
 					<div class="container-fluid">
+						<div class="py-4 ml-5 mr-5">
+							<div class="carf bg-light">
+<!--								<div class="sidebar-brand"> -->
+<!--									<a href="menu" class="brand-link"> -->
+<!--										<span class="brand-text fw-light" th:text="${titulo}"></span>-->
+<!--								</div> -->
+								<div class="card-body">
+									<h4 class="card-title">
+										<a th:href="@{/usuarios/exportarPDF}" class="btn btn-secondary">Exportar a PDF</a>
+										<a th:href="@{/usuarios/exportarExcel}" class="btn btn-success">Exportar a Excel</a>
+									</h4>
+									<table class="table table-striped">
+										<thead>
+											<tr>
+												<th>ID</th>
+												<th>Usuario</th>
+												<th>Bloqueado</th>
+												<th>Desactivado</th>
+												<th>Detalles</th>
+												<th>Editar</th>
+												<th>Boquear</th>
+												<th>Desactivar</th>
+												<th>Eliminar</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="usu : ${usuarios}">
+												<td th:text="${usu.id}"></td>
+												<td th:text="${usu.username}"></td>
+												<td th:text="${usu.bloqueado}"></td>
+												<td th:text="${usu.disabled}"></td>
+												<td><a class="btn btn-info btn-sm"
+														th:href="@{/usuarios/ver/} + ${usu.id}">Detalles</a>
+												</td>
+												<td sec:authorize="hasRole('ROLE_USER')"><a
+														class="btn btn-warning btn-sm"
+														th:href="@{/usuarios/formUsu/} + ${usu.id}">Editar</a></td>
+												<td sec:authorize="hasRole('ROLE_ADMIN')"><a
+												class="btn btn-danger btn-sm"
+												th:href="@{/usuarios/bloquear/} + ${usu.id}"
+												onclick="return confirm('Esta seguro de Eliminar el Usuario');">Bloquear</a>
+												<td sec:authorize="hasRole('ROLE_ADMIN')"><a
+														class="btn btn-danger btn-sm"
+														th:href="@{/usuarios/desactivar/} + ${usu.id}"
+														onclick="return confirm('Esta seguro de Eliminar el Usuario');">Desactivar</a>
+												<td sec:authorize="hasRole('ROLE_ADMIN')"><a
+														class="btn btn-danger btn-sm"
+														th:href="@{/usuarios/eliminar/} + ${usu.id}"
+														onclick="return confirm('Esta seguro de Eliminar el Usuario');">Eliminar</a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<nav th:replace="paginator-nav :: paginator"></nav>
+								</div>
 
+							</div>
+						</div>
+						<footer th:replace="layout/layout :: footer"></footer>
 					</div><!-- /.container-fluid -->
 				</section>
 				<!-- /.content -->

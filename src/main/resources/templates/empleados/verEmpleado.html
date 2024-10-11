@@ -171,10 +171,13 @@
 							</ul>
 						</li>
 						<li class="nav-header">SALIR</li>
-						<li class="nav-item">
-							<a href="#" class="nav-link"><i class="nav-icon far fa-circle text-danger"></i>
+						<li class="nav-item"><a href="#" class="nav-link">
+								<!--							<a href="#" class="nav-link"><i class="nav-icon far fa-circle text-danger"></i>-->
 								<form class="d-flex" th:action="@{/logout}" method="post">
-									<input type="submit" value="Cerrar sesión" />
+									<!--									<input type="submit" value="Cerrar sesión"/>-->
+									<button type="submit" class="btn btn-danger">
+										<i class="fas fa-users"></i> Cerrar sesion
+									</button>
 								</form>
 						</li>
 						<li class="nav-item">
@@ -216,23 +219,23 @@
 			<main class="app-main"> <!--begin::App Content Header-->
 				<section class="content">
 					<div class="container-fluid">
-							<div class="container py-4">
-		<div class="card bg-light">
-			<div class="card-header" th:text="${titulo}">
-			</div>
-			<div class="card-body">
-				Nombre: <li class="list-group-item active" th:text="${empleado.nombre}"></li>
-				Apellido Paterno:<li class="list-group-item" th:text="${empleado.apellidop}"></li>
-				Apellido Materno:<li class="list-group-item" th:text="${empleado.apellidom}"></li>
-				Edad:<li class="list-group-item" th:text="${empleado.edad}"></li>
-				Correo:<li class="list-group-item" th:text="${empleado.correo}"></li>
-				Sexo:<li class="list-group-item" th:text="${empleado.sexo}"></li>
-				Telefono:<li class="list-group-item" th:text="${empleado.telefono}"></li>
-				Salario:<li class="list-group-item" th:text="${empleado.salario}"></li>
-				Fecha Inicio laboral:<li class="list-group-item" th:text="${empleado.fecha}"></li>
-			</div>
-		</div>
-	</div>
+						<div class="container py-4">
+							<div class="card bg-light">
+								<div class="card-header" th:text="${titulo}">
+								</div>
+								<div class="card-body">
+									Nombre: <li class="list-group-item active" th:text="${empleado.nombre}"></li>
+									Apellido Paterno:<li class="list-group-item" th:text="${empleado.apellidop}"></li>
+									Apellido Materno:<li class="list-group-item" th:text="${empleado.apellidom}"></li>
+									Edad:<li class="list-group-item" th:text="${empleado.edad}"></li>
+									Correo:<li class="list-group-item" th:text="${empleado.correo}"></li>
+									Sexo:<li class="list-group-item" th:text="${empleado.sexo}"></li>
+									Telefono:<li class="list-group-item" th:text="${empleado.telefono}"></li>
+									Salario:<li class="list-group-item" th:text="${empleado.salario}"></li>
+									Fecha Inicio laboral:<li class="list-group-item" th:text="${empleado.fecha}"></li>
+								</div>
+							</div>
+						</div>
 					</div><!-- /.container-fluid -->
 				</section>
 				<!-- /.content -->

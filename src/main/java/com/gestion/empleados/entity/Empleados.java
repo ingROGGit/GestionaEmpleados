@@ -86,42 +86,6 @@ public class Empleados extends AuditableDateEntity implements Serializable {
 	@Size(max = 255)
 	@Column(name = "sexo")
 	private String sexo;
-
-//	public Empleados() {
-//	}
-//
-//	public Empleados(Long id) {
-//		this.id = id;
-//	}
-//
-//	public Empleados(Long id, int edad, Date fecha, BigDecimal salario, String telefono) {
-//		this.id = id;
-//		this.edad = edad;
-//		this.fecha = fecha;
-//		this.salario = salario;
-//		this.telefono = telefono;
-//	}
-//
-//	@Override
-//	public int hashCode() {
-//		int hash = 0;
-//		hash += (id != null ? id.hashCode() : 0);
-//		return hash;
-//	}
-//
-//	@Override
-//	public boolean equals(Object object) {
-//		// TODO: Warning - this method won't work in the case the id fields are not set
-//		if (!(object instanceof Empleados)) {
-//			return false;
-//		}
-//		Empleados other = (Empleados) object;
-//		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-//			return false;
-//		}
-//		return true;
-//	}
-
 	@Override
 	public String toString() {
 		return "ID=" + this.id + " APM=" + this.apellidom + " APP=" + this.apellidop + " NOMBRE=" + this.nombre

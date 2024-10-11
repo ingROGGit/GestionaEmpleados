@@ -171,10 +171,13 @@
 							</ul>
 						</li>
 						<li class="nav-header">SALIR</li>
-						<li class="nav-item">
-							<a href="#" class="nav-link"><i class="nav-icon far fa-circle text-danger"></i>
+						<li class="nav-item"><a href="#" class="nav-link">
+								<!--							<a href="#" class="nav-link"><i class="nav-icon far fa-circle text-danger"></i>-->
 								<form class="d-flex" th:action="@{/logout}" method="post">
-									<input type="submit" value="Cerrar sesión" />
+									<!--									<input type="submit" value="Cerrar sesión"/>-->
+									<button type="submit" class="btn btn-danger">
+										<i class="fas fa-users"></i> Cerrar sesion
+									</button>
 								</form>
 						</li>
 						<li class="nav-item">
@@ -222,7 +225,6 @@
 <!--									<a href="menu" class="brand-link"> -->
 <!--										<span class="brand-text fw-light" th:text="${titulo}"></span>-->
 <!--								</div> -->
-								<div cass="card-heder"></div>
 								<div class="card-body">
 									<h4 class="card-title">
 										<a th:href="@{/empleados/exportarPDF}" class="btn btn-secondary">Exportar a PDF</a>
