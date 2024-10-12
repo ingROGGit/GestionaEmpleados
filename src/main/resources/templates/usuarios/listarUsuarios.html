@@ -259,11 +259,11 @@
 												<td sec:authorize="hasRole('ROLE_ADMIN')"><a
 												class="btn btn-danger btn-sm"
 												th:href="@{/usuarios/bloquear/} + ${usu.id}"
-												onclick="return confirm('Esta seguro de Eliminar el Usuario');">Bloquear</a>
+												onclick="return confirm('Esta seguro de Bloquear el Usuario');">Bloquear</a>
 												<td sec:authorize="hasRole('ROLE_ADMIN')"><a
 														class="btn btn-danger btn-sm"
 														th:href="@{/usuarios/desactivar/} + ${usu.id}"
-														onclick="return confirm('Esta seguro de Eliminar el Usuario');">Desactivar</a>
+														onclick="return confirm('Esta seguro de Desactivar el Usuario');">Desactivar</a>
 												<td sec:authorize="hasRole('ROLE_ADMIN')"><a
 														class="btn btn-danger btn-sm"
 														th:href="@{/usuarios/eliminar/} + ${usu.id}"

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateUserDTO {
 	@NotBlank
-	private Integer id;
+	private Long id;
 	@NotBlank
     private String usu;
     @NotBlank

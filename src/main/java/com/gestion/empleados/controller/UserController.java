@@ -86,6 +86,7 @@ public class UserController {
 	@PostMapping("/usuarios/formUsuN")
 	public String guardaUsuario(CreateUserDTO createUserDTO, BindingResult result, Model modelo,
 			RedirectAttributes flash, SessionStatus status) {
+		String mensaje = null;
 		createUserDTO.setBloqueado(false);
 		createUserDTO.setDisabled(false);
 		PasswordGenerator psg= new PasswordGenerator();
@@ -106,47 +107,72 @@ public class UserController {
 				.bloqueado(createUserDTO.getBloqueado())
 				.disabled(createUserDTO.getDisabled())
 				.roles(roles).build();
-		if (result.hasErrors()) {
-			modelo.addAttribute("titulo", "Registro de Usuario");
-//			return "formUsu";
-		}
-		String mensaje = "Usuario Registrado con Exito";
+		if(createUserDTO.getId()>0) {
+			usuariosEntity.setId(createUserDTO.getId());
+			mensaje="Usuario Actualizado con Exito";
+		}else modelo.addAttribute("titulo", "Registro de Usuario");
 		userRepository.save(usuariosEntity);
 		status.setComplete();
 		CreateUserDTO usu = new CreateUserDTO();
 		modelo.addAttribute("roles", Iroles);
 		modelo.addAttribute("usu", usu);
 		modelo.addAttribute("success", mensaje);
-		modelo.addAttribute("titulo", "Registro de Empleado");
+		modelo.addAttribute("titulo", "Registro de Usuario");
 		return "usuarios/formUsu";
 	}
 
-//	@GetMapping("/form/{id}")
-//	public String editarEmpleado(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
-//			RedirectAttributes flash) {
-//		Empleados empleado = null;
-//		if (id > 0) {
-//			empleado = empleadoService.findOne(id);
-//			if (empleado == null) {
-//				flash.addFlashAttribute("error", "El Empleado no Existe");
-//				return "redirect:/listar";
-//			}
-//		} else {
-//			flash.addFlashAttribute("error", "El Empleado no Existe");
-//			return "redirect:/listar";
-//		}
-//		modelo.put("empleado", empleado);
-//		modelo.put("titulo", "Edicion de Empleado");
-//		return "form";
-//	}
-//
-//	@GetMapping("/eliminar/{id}")
-//	public String eliminarEmpleado(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
-//		if (id > 0) {
-//			empleadoService.delete(id);
-//			flash.addFlashAttribute("success", "Empleado Eliminado con Exito");
-//		}
-//		return "redirect:/listar";
-//	}
+	@GetMapping("/usuarios/formUsu/{id}")
+	public String editarUsuario(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
+			RedirectAttributes flash) {
+		UsuariosEntity usuariosEntity = null;
+		CreateUserDTO createUserDTO= null;
+		if (id > 0) {
+			usuariosEntity = usuariosEntityService.findOne(id);
+			createUserDTO= new CreateUserDTO();
+			createUserDTO.setId(usuariosEntity.getId());
+			createUserDTO.setUsu(usuariosEntity.getUsername());
+			createUserDTO.setBloqueado(usuariosEntity.getBloqueado());
+			createUserDTO.setDisabled(usuariosEntity.getDisabled());
+			Set<String> addRoles= new HashSet<>();
+			for(RoleEntity rol:usuariosEntity.getRoles()) {
+				addRoles.add(rol.getName().toString()+",");
+			}
+			createUserDTO.setRoles(addRoles);
+			Iterable<RoleEntity> roles= roleRepository.findAll();
+			modelo.put("roles", roles);
+			modelo.put("usu", createUserDTO);
+			modelo.put("titulo", "Edicion de Usuario");
+		}
+		return "usuarios/formUsu";
+	}
+
+	@GetMapping("/usuarios/eliminar/{id}")
+	public String eliminarUsuario(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+		if (id > 0) {
+			usuariosEntityService.delete(id);
+			flash.addFlashAttribute("success", "Empleado Eliminado con Exito");
+		}
+		return "redirect:/usuarios/listarUsuarios";
+	}
+	@GetMapping("/usuarios/bloquear/{id}")
+	public String bloquearUsuario(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+		if (id > 0) {
+			UsuariosEntity usuariosEntity = usuariosEntityService.findOne(id);
+			usuariosEntity.setBloqueado(true);
+			userRepository.save(usuariosEntity);
+			flash.addFlashAttribute("success", "Empleado Bloqueado con Exito");
+		}
+		return "redirect:/usuarios/listarUsuarios";
+	}
+	@GetMapping("/usuarios/desactivar/{id}")
+	public String desactivarUsuario(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+		if (id > 0) {
+			UsuariosEntity usuariosEntity = usuariosEntityService.findOne(id);
+			usuariosEntity.setDisabled(true);
+			userRepository.save(usuariosEntity);
+			flash.addFlashAttribute("success", "Empleado Desactivado con Exito");
+		}
+		return "redirect:/usuarios/listarUsuarios";
+	}
 
 }
