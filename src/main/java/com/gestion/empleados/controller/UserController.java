@@ -1,15 +1,16 @@
 package com.gestion.empleados.controller;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,23 +18,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gestion.empleados.DTO.CreateUserDTO;
 import com.gestion.empleados.entity.ERole;
-import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.RoleEntity;
 import com.gestion.empleados.entity.UsuariosEntity;
 import com.gestion.empleados.repository.RoleRepository;
 import com.gestion.empleados.repository.UserRepository;
+import com.gestion.empleados.repository.UsuariosEntityRepositoryJPA;
 import com.gestion.empleados.service.UsuariosEntityService;
 import com.gestion.empleados.utils.PageRender;
 import com.gestion.empleados.utils.PasswordGenerator;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 
 @Controller
 public class UserController {
@@ -44,11 +42,18 @@ public class UserController {
 	private UsuariosEntityService usuariosEntityService;
 	@Autowired
 	private RoleRepository roleRepository;
+	@Autowired
+	private UsuariosEntityRepositoryJPA usuJPA;
 	
 	@GetMapping("/usuarios/listarUsuarios")
 	public String listarEmpleados(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
+		String  ususRestrict= "usuAdmin";
+//		String  ususRestrict2= "usuConsulta";
 		Pageable pageRequest = PageRequest.of(page, 5);
-		Page<UsuariosEntity> usuarios = usuariosEntityService.findAll(pageRequest);
+		Page<UsuariosEntity> usuarios;
+		if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains("ROLE_ADMIN"))
+			usuarios = usuariosEntityService.findAll(pageRequest);
+		else usuarios = usuJPA.findByUsernameNotLike(pageRequest,ususRestrict);
 		PageRender<UsuariosEntity> pageRender = new PageRender<>("/usuarios/listarUsuarios", usuarios);
 		model.addAttribute("usuarios", usuarios);
 		model.addAttribute("page", pageRender);
@@ -107,17 +112,16 @@ public class UserController {
 				.bloqueado(createUserDTO.getBloqueado())
 				.disabled(createUserDTO.getDisabled())
 				.roles(roles).build();
-		if(createUserDTO.getId()>0) {
+		if(createUserDTO.getId()!=null) {
 			usuariosEntity.setId(createUserDTO.getId());
 			mensaje="Usuario Actualizado con Exito";
-		}else modelo.addAttribute("titulo", "Registro de Usuario");
+		}else mensaje="Usuario Registrado con Exito";
 		userRepository.save(usuariosEntity);
 		status.setComplete();
 		CreateUserDTO usu = new CreateUserDTO();
 		modelo.addAttribute("roles", Iroles);
 		modelo.addAttribute("usu", usu);
 		modelo.addAttribute("success", mensaje);
-		modelo.addAttribute("titulo", "Registro de Usuario");
 		return "usuarios/formUsu";
 	}
 

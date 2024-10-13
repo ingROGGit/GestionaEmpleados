@@ -39,6 +39,16 @@ public class EmpleadoController {
 		
 		return "menu";
 	}
+	@GetMapping({ "/contacto"})
+	public String contacto(Model model) {
+		
+		return "contacto";
+	}
+	@GetMapping({"/quien"})
+	public String quien(Model model) {
+		
+		return "quien";
+	}
 	@GetMapping("empleados/listarEmpleados")
 	public String listarEmpleados(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
 		Pageable pageRequest = PageRequest.of(page, 5);

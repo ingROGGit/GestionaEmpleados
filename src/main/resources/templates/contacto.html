@@ -30,7 +30,7 @@
 	<link rel="stylesheet" href="../../distV32/plugins/summernote/summernote-bs4.min.css">
 </head>
 
-<body class="sidebar-mini sidebar-collapse">
+<body class="hold-transition sidebar-mini layout-fixed">
 	<div class="wrapper">
 
 		<!-- Preloader -->
@@ -48,8 +48,8 @@
 					<a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
 				</li>
 				<li class="nav-item d-none d-md-block"> <a href="../menu" class="nav-link">Inicio</a> </li>
-				<li class="nav-item d-none d-md-block"> <a href="../contacto" class="nav-link">Contacto</a> </li>
-				<li class="nav-item d-none d-md-block"> <a href="../quien" class="nav-link">Quienes Somos</a> </li>
+				<li class="nav-item d-none d-md-block"> <a href="contacto" class="nav-link">Contacto</a> </li>
+				<li class="nav-item d-none d-md-block"> <a href="quien" class="nav-link">Quienes Somos</a> </li>
 			</ul> <!--end::Start Navbar Links--> <!--begin::End Navbar Links-->
 
 			<!-- Right navbar links -->
@@ -94,7 +94,7 @@
 
 		<!-- Main Sidebar Container -->
 		<aside class="main-sidebar sidebar-dark-primary elevation-4">
-			<a href="../menu" class="brand-link"> <!--begin::Brand Image-->
+			<a href="menu" class="brand-link"> <!--begin::Brand Image-->
 				<img src="../../distV32/img/GestinoLogo.png" alt="Gestion" class="brand-image opacity-75 shadow">
 				<!--end::Brand Image--> <!--begin::Brand Text-->
 				<span class="brand-text fw-light">Bienvenido</span>
@@ -120,6 +120,7 @@
 						<li class="nav-item menu-open">
 						</li>
 
+<!--						<li class="nav-header" sec:authorize="hasRole('ROLE_ADMIN','ROLE_OPERADOR')">USUARIOS</li>-->
 						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">USUARIOS</li>
 
 						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
@@ -207,7 +208,7 @@
 						<div class="col-sm-6">
 							<ol class="breadcrumb float-sm-right">
 								<li class="breadcrumb-item"><a href="#">Home</a></li>
-								<li class="breadcrumb-item active" th:text="${titulo}"></li>
+								<li class="breadcrumb-item active">Home</li>
 							</ol>
 						</div><!-- /.col -->
 					</div><!-- /.row -->
@@ -215,20 +216,11 @@
 			</div>
 			<!-- /.content-header -->
 
+			<!-- Main content -->
 			<main class="app-main"> <!--begin::App Content Header-->
 				<section class="content">
 					<div class="container-fluid">
-						<div class="container py-4">
-							<div class="card bg-light">
-								<div class="card-header" th:text="${titulo}">
-								</div>
-								<div class="card-body">
-									Usuario: <li class="list-group-item active" th:text="${usuario.username}"></li>
-									Bloqueado:<li class="list-group-item" th:text="${usuario.bloqueado}"></li>
-									Desactivado:<li class="list-group-item" th:text="${usuario.disabled}"></li>
-								</div>
-							</div>
-						</div>
+
 					</div><!-- /.container-fluid -->
 				</section>
 				<!-- /.content -->

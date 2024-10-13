@@ -46,5 +46,11 @@ public class UsuariosEntityServiceImpl implements UsuariosEntityService{
 	public void delete(Long id) {
 		usuariosEntityRepositoryJPA.deleteById(id);
 	}
+//
+//	@Override
+//	public Page<UsuariosEntity> findDistinctByUsername(Pageable pageable, List<String> usus) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 }

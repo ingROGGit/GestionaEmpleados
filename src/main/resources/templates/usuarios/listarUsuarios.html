@@ -120,9 +120,9 @@
 						<li class="nav-item menu-open">
 						</li>
 
-						<li class="nav-header" sec:authorize="hasRole('ROLE_ADMIN')">USUARIOS</li>
+						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">USUARIOS</li>
 
-						<li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
 							<a href="#" class="nav-link">
 								<i class="nav-icon fas fa-book"></i>
 								<p>
@@ -253,14 +253,14 @@
 												<td><a class="btn btn-info btn-sm"
 														th:href="@{/usuarios/ver/} + ${usu.id}">Detalles</a>
 												</td>
-												<td sec:authorize="hasRole('ROLE_USER')"><a
+												<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')"><a
 														class="btn btn-warning btn-sm"
 														th:href="@{/usuarios/formUsu/} + ${usu.id}">Editar</a></td>
-												<td sec:authorize="hasRole('ROLE_ADMIN')"><a
+												<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')"><a
 												class="btn btn-danger btn-sm"
 												th:href="@{/usuarios/bloquear/} + ${usu.id}"
 												onclick="return confirm('Esta seguro de Bloquear el Usuario');">Bloquear</a>
-												<td sec:authorize="hasRole('ROLE_ADMIN')"><a
+												<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')"><a
 														class="btn btn-danger btn-sm"
 														th:href="@{/usuarios/desactivar/} + ${usu.id}"
 														onclick="return confirm('Esta seguro de Desactivar el Usuario');">Desactivar</a>

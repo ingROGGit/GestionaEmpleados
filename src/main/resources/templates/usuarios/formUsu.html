@@ -120,9 +120,9 @@
 						<li class="nav-item menu-open">
 						</li>
 
-						<li class="nav-header" sec:authorize="hasRole('ROLE_ADMIN')">USUARIOS</li>
+						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">USUARIOS</li>
 
-						<li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
 							<a href="#" class="nav-link">
 								<i class="nav-icon fas fa-book"></i>
 								<p>
