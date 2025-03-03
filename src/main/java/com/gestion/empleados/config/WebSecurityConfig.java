@@ -46,7 +46,7 @@ public class WebSecurityConfig {
 
 	public AuthenticationSuccessHandler successHandler() {
 		return ((request, response, authentication) -> {
-			response.sendRedirect("/menu");
+			response.sendRedirect("/start");
 		});
 	}
 

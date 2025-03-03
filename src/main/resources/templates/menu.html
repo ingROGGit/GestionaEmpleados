@@ -1,36 +1,9 @@
-<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
 	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en"> <!--begin::Head-->
+<head th:replace="headAll :: html_head"/>
 
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Gestion</title>
-
-	<!-- Google Font: Source Sans Pro -->
-	<link rel="stylesheet"
-		href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-	<!-- Font Awesome -->
-	<link rel="stylesheet" href="../../distV32/plugins/fontawesome-free/css/all.min.css">
-	<!-- Ionicons -->
-	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-	<!-- Tempusdominus Bootstrap 4 -->
-	<link rel="stylesheet" href="../../distV32/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-	<!-- iCheck -->
-	<link rel="stylesheet" href="../../distV32/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-	<!-- JQVMap -->
-	<link rel="stylesheet" href="../../distV32/plugins/jqvmap/jqvmap.min.css">
-	<!-- Theme style -->
-	<link rel="stylesheet" href="../../distV32/css/adminlte.min.css">
-	<!-- overlayScrollbars -->
-	<link rel="stylesheet" href="../../distV32/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-	<!-- Daterange picker -->
-	<link rel="stylesheet" href="../../distV32/plugins/daterangepicker/daterangepicker.css">
-	<!-- summernote -->
-	<link rel="stylesheet" href="../../distV32/plugins/summernote/summernote-bs4.min.css">
-</head>
-
-<body class="hold-transition sidebar-mini layout-fixed">
+<!--<body th:fragment="menuAll" class="hold-transition sidebar-mini layout-fixed"> MENU DESPLEGADO COMPLETAMENTE-->
+	<body th:fragment="menuAll" class="sidebar-mini sidebar-collapse"> <!-- MENU OCULTO SE MUETRAN LOS ICONOS-->
 	<div class="wrapper">
 
 		<!-- Preloader -->
@@ -47,9 +20,9 @@
 				<li class="nav-item">
 					<a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
 				</li>
-				<li class="nav-item d-none d-md-block"> <a href="menu" class="nav-link">Inicio</a> </li>
-				<li class="nav-item d-none d-md-block"> <a href="contacto" class="nav-link">Contacto</a> </li>
-				<li class="nav-item d-none d-md-block"> <a href="quien" class="nav-link">Quienes Somos</a> </li>
+				<li class="nav-item d-none d-md-block"> <a href="../../start" class="nav-link">Inicio</a> </li>
+				<li class="nav-item d-none d-md-block"> <a href="../../contacto" class="nav-link">Contacto</a> </li>
+				<li class="nav-item d-none d-md-block"> <a href="../../quien" class="nav-link">Quienes Somos</a> </li>
 			</ul> <!--end::Start Navbar Links--> <!--begin::End Navbar Links-->
 
 			<!-- Right navbar links -->
@@ -195,51 +168,7 @@
 			<!-- /.sidebar -->
 		</aside>
 
-		<!-- Content Wrapper. Contains page content -->
-		<div class="content-wrapper">
-			<!-- Content Header (Page header) -->
-			<div class="content-header">
-				<div class="container-fluid">
-					<div class="row mb-2">
-						<div class="col-sm-6">
-							<span class="brand-text fw-light" th:text="${titulo}"></span>
-							<h1 class="m-0"></h1>
-						</div><!-- /.col -->
-						<div class="col-sm-6">
-							<ol class="breadcrumb float-sm-right">
-								<li class="breadcrumb-item"><a href="#">Home</a></li>
-								<li class="breadcrumb-item active">Home</li>
-							</ol>
-						</div><!-- /.col -->
-					</div><!-- /.row -->
-				</div><!-- /.container-fluid -->
-			</div>
-			<!-- /.content-header -->
 
-			<!-- Main content -->
-			<main class="app-main"> <!--begin::App Content Header-->
-				<section class="content">
-					<div class="container-fluid">
-
-					</div><!-- /.container-fluid -->
-				</section>
-				<!-- /.content -->
-			</main> <!--end::App Main--> <!--begin::Footer-->
-
-		</div>
-		<!-- /.content-wrapper -->
-		<footer class="app-footer"> <!--begin::To the end-->
-			<div class="row mb-2">
-				<div class="col-sm-1"></div>
-				<div class="float-end d-none d-sm-inline">Gestion de Empleados&nbsp;&nbsp;</div> <!--end::To the end-->
-				<!--begin::Copyright--> <strong>
-					Copyright &copy; 2024&nbsp;
-					<a href="#" class="text-decoration-none">Gestion</a>.
-				</strong>
-				Todos los derechos reservados.
-				<!--end::Copyright-->
-			</div>
-		</footer> <!--end::Footer-->
 
 		<!-- Control Sidebar -->
 		<aside class="control-sidebar control-sidebar-dark">

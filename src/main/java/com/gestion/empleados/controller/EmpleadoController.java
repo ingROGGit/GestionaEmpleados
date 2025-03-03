@@ -34,19 +34,19 @@ public class EmpleadoController {
 	@Autowired
 	private EmpleadoService empleadoService;
 
-	@GetMapping({ "/", "/menu", "" })
+	@GetMapping({ "/", "/start", "" })
 	public String menu(Model model) {
-		
-		return "menu";
+		model.addAttribute("titulo", "Inicio");
+		return "start";
 	}
 	@GetMapping({ "/contacto"})
 	public String contacto(Model model) {
-		
+		model.addAttribute("titulo", "Contacto");
 		return "contacto";
 	}
 	@GetMapping({"/quien"})
 	public String quien(Model model) {
-		
+		model.addAttribute("titulo", "Quienes Somos");
 		return "quien";
 	}
 	@GetMapping("empleados/listarEmpleados")
