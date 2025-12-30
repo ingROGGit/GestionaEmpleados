@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en"> <!--begin::Head-->
+
+<head th:replace="headAll :: html_head" />
+
+<body th:replace="menu :: menuAll" onload="validaModal()" />
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->
+	<div th:replace="div-header :: divHeader" />
+	<!-- /.content-header -->
+
+	<!-- Main content -->
+	<main class="app-main"> <!--begin::App Content Header-->
+		<section class="content">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+						<div th:if="${success !=null}">
+							<div class="alert alert-primary alert-dismissible fade show" role="alert">
+								<span aria-hidden="true">&times;</span>
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true" th:text="${success}">&times;</span>
+								</button>
+							</div>
+						</div>
+						<div th:if="${error !=null}">
+							<div class="alert alert-warning alert-dismissible fade show" role="alert">
+								<span aria-hidden="true">&times;</span>
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true" th:text="${error}">&times;</span>
+								</button>
+							</div>
+						</div>
+						<form th:action="@{/usuarios/formUsuUpPassUP}" th:object="${usu}" method="post">
+							<input type="hidden" th:field="*{id}" th:value="${usu.id}" />
+							<div class="form-group">
+								<label
+									title="Atributo Requerido debe cumlir el patron minimo 5 caracteres minimo una Mayuscula una minuscula un numero un caracter espesial ($#.">Contraseña:
+								</label>
+								<input type="password" th:field="${usu.pass}" class="form-control" autocomplete="off"
+									th:errorClass="'form-control alert-danger'" minlength="5" th:required="${condicion}"
+									pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}" />
+								<small class="form-text text-danger" th:if="${#fields.hasErrors('pass')}"
+									th:errors="${usu.pass}"></small>
+							</div>
+							<div class="form-group">
+								<label
+									title="Atributo Requerido debe cumlir el patron minimo 5 caracteres minimo una Mayuscula una minuscula un numero un caracter espesial ($#.">Confirmar
+									Contraseña: </label>
+								<input type="password" th:field="${usu.rePass}" class="form-control" autocomplete="off"
+									th:errorClass="'form-control alert-danger'" minlength="5" th:required="${condicion}"
+									pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}" />
+								<small class="form-text text-danger" th:if="${#fields.hasErrors('pass')}"
+									th:errors="${usu.rePass}"></small>
+							</div>
+							<div class="box-footer">
+								<input type="submit" value="Guardar" class="btn btn-primary" on>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div><!-- /.container-fluid -->
+		</section>
+		<script type="text/javascript">
+			$('#addUsu')
+				.formValidation({
+					// Don't use the `err.container` option
+					// so the error messages are shown below the field as usual
+				})
+				.on('err.form.fv', function (e) {
+					// Reset the errors inside the modal first
+					$('#errors').html('');
+
+					$('#signupForm')
+						// Find all the error messages
+						.find('[data-fv-validator][data-fv-result="INVALID"]')
+						// And update the error inside the modal body
+						.clone().appendTo('#errors');
+
+					// Show the message modal
+					$('#messageModal').modal('show');
+				});
+		</script>
+		<!-- /.content -->
+	</main> <!--end::App Main--> <!--begin::Footer-->
+
+</div>
+
+</html>

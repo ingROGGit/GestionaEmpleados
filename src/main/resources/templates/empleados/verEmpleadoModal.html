@@ -1,0 +1,61 @@
+<div class="card bg-light">
+	<div class="card-header" th:text="${titulo}">
+	</div>
+	<div class="card-body">
+		<div class="row">
+			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+				Numero Empleado: <li class="list-group-item" th:text="${empleado.NEmpleado}"></li>
+				Edad:<li class="list-group-item" th:text="${empleado.edad}"></li>
+				Fecha Inicio laboral:<li class="list-group-item" th:text="${empleado.fechaIngreso}">
+				</li>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+				Nombre: <li class="list-group-item" th:text="${empleado.nombre}"></li>
+				Sexo:<li class="list-group-item" th:text="${empleado.sexo}"></li>
+				Salario:<li class="list-group-item" th:text="${empleado.salario}"></li>
+
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+				Apellido Paterno:<li class="list-group-item" th:text="${empleado.apellidop}"></li>
+				Correo:<li class="list-group-item" th:text="${empleado.correo}"></li>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+				Apellido Materno:<li class="list-group-item" th:text="${empleado.apellidom}"></li>
+				Telefono:<li class="list-group-item" th:text="${empleado.telefono}"></li>
+			</div>
+		</div>
+		<div class="row">
+			<div class="card-header" th:text="Antigüedad">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+				Años: <li class="list-group-item" th:text="${periodo.Years}"></li>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+				Meses: <li class="list-group-item" th:text="${periodo.Months}"></li>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+				Dias: <li class="list-group-item" th:text="${periodo.Days}"></li>
+			</div>
+		</div>
+		<div class="row">
+			<div class="card-header" th:text="Vacaciones">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+				Dias Correspondientes: <li class="list-group-item" th:text="${empleado.EmpleadoV.diasVacaciones}"></li>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+				Dias Disfrutados: <li class="list-group-item" th:text="${empleado.EmpleadoV.diasDisfrutados}"></li>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+				Dias Restantes: <li class="list-group-item" th:text="${empleado.EmpleadoV.diasRestantes}"></li>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>

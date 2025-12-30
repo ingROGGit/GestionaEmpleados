@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en"> <!--begin::Head-->
+
+<head th:replace="headAll :: html_head" />
+
+<body th:replace="menu :: menuAll" />
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->
+	<div th:replace="div-header :: divHeader" />
+	<!-- /.content-header -->
+
+	<!-- Main content -->
+	<main class="app-main"> <!--begin::App Content Header-->
+		<section class="content">
+			<div class="container-fluid">
+				<div class="py-4 ml-5 mr-5">
+					<div class="carf bg-light">
+						<!--								<div class="sidebar-brand"> -->
+						<!--									<a href="menu" class="brand-link"> -->
+						<!--										<span class="brand-text fw-light" th:text="${titulo}"></span>-->
+						<!--								</div> -->
+						<div class="card-body col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+							<link rel="stylesheet"
+								href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+								integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+								crossorigin="anonymous">
+							<div class="card-title col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<h4 >
+								<a th:href="@{/reglas/exportarPDF}" class="btn btn-secondary">Exportar a PDF</a>
+								<a th:href="@{/reglas/exportarExcel}" class="btn btn-success">Exportar a Excel</a>
+<!--								<h2>-->
+<!--									<input class="form-control" id="search" type="text" placeholder="Buscar.." >-->
+
+<!--								</h2>-->
+
+							</h4>
+							</div>
+						<div class="row"></div>
+							<div class="contenedor-tabla">
+								<table id="EmTable" class="table table-striped">
+									<!--							<table id="EmTable"	class="table table-striped table-bordered" style="width:100%">-->
+									<thead>
+										<tr>
+											<th class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Desde</th>
+											<th class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Asta</th>
+											<th class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Dias</th>
+											<th class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Acciones</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="regla : ${reglas}">
+											<td th:text="${regla.desde}"></td>
+											<td th:text="${regla.asta}"></td>
+											<td th:text="${regla.dias}"></td>
+											<td class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<a class="btn btn-warning btn-sm link-Edit"
+													sec:authorize="hasRole('ROLE_USER')"
+													th:href="@{/reglas/formRegla/} + ${regla.id}">Editar</a>
+												<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger btn-sm"
+													th:href="@{/reglas/eliminar/} + ${regla.id}"
+													onclick="return confirm('Esta seguro de Eliminar el Empleado');">Eliminar</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<nav th:replace="paginator-nav :: paginator"></nav>
+						</div>
+
+					</div>
+					<div id="modalDetaills" class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog"
+						aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-xl" role="document">
+							<div class="modal-content">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<script>
+					$(document).ready(function () {
+						$(".link-Edit").on("click", function (e) {
+							e.preventDefault();
+							$("#modalDetaills").modal("show").find(".modal-content").load($(this).attr("href"));
+						});
+					});
+				</script>
+				<style>
+					.contenedor-tabla {
+						height: 400px;
+						/* Altura fija para el contenedor */
+						overflow-y: auto;
+						/* Barra de desplazamiento vertical si el contenido excede la altura */
+						overflow-x: auto;
+						/* Barra de desplazamiento horizontal si el contenido excede el ancho */
+						border: 1px solid #ccc;
+						/* Opcional: para visualizar el contenedor */
+					}
+
+					/* Para mantener el encabezado fijo */
+					.contenedor-tabla table {
+						width: 100%;
+						/* O un ancho fijo para la tabla */
+						border-collapse: collapse;
+					}
+
+					.contenedor-tabla thead {
+						position: sticky;
+						top: 0;
+						background-color: #f2f2f2;
+						/* Para que no se transparente */
+						z-index: 1;
+					}
+
+					/* Estilos básicos para celdas (opcional) */
+					.contenedor-tabla th,
+					.contenedor-tabla td {
+						border: 1px solid #ddd;
+						padding: 8px;
+						text-align: left;
+					}
+				</style>
+				<footer th:replace="layout/layout :: footer"></footer>
+			</div><!-- /.container-fluid -->
+		</section>
+		<!-- /.content -->
+	</main> <!--end::App Main--> <!--begin::Footer-->
+
+</div>
+<!-- /.content-wrapper -->
+<footer th:replace="footerAll :: html_footer" />
+
+</html>

@@ -1,0 +1,145 @@
+<style>
+	/* Opcional: Elimina los márgenes predeterminados del body para un verdadero ancho completo */
+	body {
+		margin: 0;
+		padding: 0;
+		font-family: sans-serif;
+	}
+
+	form {
+		width: 100%;
+		box-sizing: border-box;
+		/* Asegura que el padding y el border se incluyan en el 100% */
+		padding: 20px;
+		/* Ejemplo de padding */
+		border: 1px solid #ccc;
+		/* Ejemplo de borde */
+		background-color: #f9f9f9;
+		/* Puedes añadir un max-width si no quieres que sea demasiado ancho en pantallas muy grandes */
+		/* max-width: 1200px; */
+		margin: 0 auto;
+		/* Centra el formulario si usas max-width */
+	}
+
+	input[type="text"],
+	input[type="submit"] {
+		width: 100%;
+		box-sizing: border-box;
+		padding: 10px;
+		margin-bottom: 10px;
+	}
+</style>
+<div class="card bg-light">
+	<div class="card-header" th:text="${titulo}">
+	</div>
+	<div class="card-body">
+		<div class="row">
+			<!--								<h1 class="text-center" th:text="${titulo}"></h1>-->
+			<form th:action="@{/empleados/formEmpleado}" th:object="${empleado}" method="post">
+				<input type="hidden" th:field="*{id}" th:value="${empleado.id}" />
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+						<label>Numero Empleado: </label>
+						<input type="number" th:field="*{NEmpleado}" class="form-control"
+							th:errorClass="'form-control alert-danger'" />
+						<label>Edad: </label>
+						<input type="number" th:field="*{edad}" class="form-control"
+							th:errorClass="'form-control alert-danger'" />
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('edad')}"
+							th:errors="*{edad}"></small>
+						<label>Fecha Nacimiento: </label>
+						<input type="date" th:field="*{fechaNacimiento}" class="form-control"
+							th:errorClass="'form-control alert-danger'" />
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('fechaNacimiento')}"
+							th:errors="*{fechaNacimiento}"></small>
+
+
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+						<label>Nombre: </label>
+						<input type="text" th:field="*{nombre}" class="form-control"
+							th:errorClass="'form-control alert-danger'" />
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('nombre')}"
+							th:errors="*{nombre}"></small>
+						<label>Sexo: </label>
+						<select class="form-control" th:field="*{sexo}">
+							<option th:value='M'>Masculino</option>
+							<option th:value='F'>Femenino</option>
+							<option th:value='Otro'>Otro</option>
+						</select>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+						<label>Apellido Paterno: </label>
+						<input type="text" th:field="*{apellidop}" class="form-control"
+							th:errorClass="'form-control alert-danger'" />
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('apellidop')}"
+							th:errors="*{apellidop}"></small>
+						<label>Correo: </label>
+						<input type="text" th:field="*{correo}" class="form-control"
+							th:errorClass="'form-control alert-danger'" />
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('correo')}"
+							th:errors="*{correo}"></small>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+						<label>Apellido Materno: </label>
+						<input type="text" th:field="*{apellidom}" class="form-control"
+							th:errorClass="'form-control alert-danger'" />
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('apellidom')}"
+							th:errors="*{apellidom}"></small>
+						<label>Telefono: </label>
+						<input type="number" th:field="*{telefono}" class="form-control"
+							th:errorClass="'form-control alert-danger'" />
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('telefono')}"
+							th:errors="*{telefono}"></small>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+						<h4></h4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+						<label>Fecha Ingreso: </label>
+						<input type="date" th:field="*{fechaIngreso}" class="form-control"
+							th:errorClass="'form-control alert-danger'" />
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('fechaIngreso')}"
+							th:errors="*{fechaIngreso}"></small>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+						<label>Salario: </label>
+						<input type="number" th:field="*{salario}" class="form-control"
+							th:errorClass="'form-control alert-danger'" />
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('salario')}"
+							th:errors="*{salario}"></small>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<h4>
+							<p></p>
+						</h4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="box-footer">
+							<input type="submit" value="Guardar" class="btn btn-primary">
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div><!-- /.container-fluid -->
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
