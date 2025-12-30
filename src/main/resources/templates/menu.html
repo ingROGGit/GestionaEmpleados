@@ -1,9 +1,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
 	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en"> <!--begin::Head-->
-<head th:replace="headAll :: html_head"/>
+
+<head th:replace="headAll :: html_head" />
 
 <!--<body th:fragment="menuAll" class="hold-transition sidebar-mini layout-fixed"> MENU DESPLEGADO COMPLETAMENTE-->
-	<body th:fragment="menuAll" class="sidebar-mini sidebar-collapse"> <!-- MENU OCULTO SE MUETRAN LOS ICONOS-->
+
+<body th:fragment="menuAll" class="sidebar-mini sidebar-collapse"> <!-- MENU OCULTO SE MUETRAN LOS ICONOS-->
 	<div class="wrapper">
 
 		<!-- Preloader -->
@@ -93,10 +95,10 @@
 						<li class="nav-item menu-open">
 						</li>
 
-<!--						<li class="nav-header" sec:authorize="hasRole('ROLE_ADMIN','ROLE_OPERADOR')">USUARIOS</li>-->
-						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">USUARIOS</li>
+						<!--						<li class="nav-header" sec:authorize="hasRole('ROLE_ADMIN','ROLE_OPERADOR')">USUARIOS</li>-->
+						<li class="nav-header" >USUARIOS</li>
 
-						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+						<li class="nav-item">
 							<a href="#" class="nav-link">
 								<i class="nav-icon fas fa-book"></i>
 								<p>
@@ -104,7 +106,7 @@
 									<i class="fas fa-angle-left right"></i>
 								</p>
 							</a>
-							<ul class="nav nav-treeview">
+							<ul class="nav nav-treeview" sec:authorize="hasAnyRole('ROLE_ADMIN')">
 								<li class="nav-item">
 									<a href="/usuarios/formUsu" class="nav-link">
 										<i class="nav-icon far fa-id-card"></i>
@@ -115,6 +117,41 @@
 									<a href="/usuarios/listarUsuarios" class="nav-link">
 										<i class="nav-icon fa fa-list-ul"></i>
 										<p>Lista de Usuarios</p>
+									</a>
+								</li>
+							</ul>
+							<ul class="nav nav-treeview"
+								sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_CONSULTA','ROLE_OPERADOR')">
+								<li class="nav-item">
+									<a href="/usuarios/formUsuUpPass" class="nav-link">
+										<i class="nav-icon fa fa-key"></i>
+										<p>Cambiar Contraseña</p>
+									</a>
+								</li>
+							</ul>
+						</li>
+						<!--						REGLAS-->
+						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN')">REGLAS</li>
+
+						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-book"></i>
+								<p>
+									Gestion de Reglas
+									<i class="fas fa-angle-left right"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="/reglas/formReglas" class="nav-link">
+										<i class="nav-icon far fa-id-card"></i>
+										<p>Registra Regla</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/reglas/listarReglas" class="nav-link">
+										<i class="nav-icon fa fa-list-ul"></i>
+										<p>Lista de Reglas</p>
 									</a>
 								</li>
 							</ul>
@@ -129,11 +166,17 @@
 									<i class="fas fa-angle-left right"></i>
 								</p>
 							</a>
-							<ul class="nav nav-treeview" sec:authorize="hasRole('ROLE_USER')">
-								<li class="nav-item">
+							<ul class="nav nav-treeview">
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
 									<a href="/empleados/formEmpleado" class="nav-link">
 										<i class="nav-icon far fa-id-card"></i>
 										<p>Registra Empleado</p>
+									</a>
+								</li>
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX" class="nav-link">
+										<i class="nav-icon far fa-id-card"></i>
+										<p>Carga Layout</p>
 									</a>
 								</li>
 								<li class="nav-item">
@@ -144,15 +187,22 @@
 								</li>
 							</ul>
 						</li>
-						<li class="nav-header">SALIR</li>
-						<li class="nav-item"><a href="#" class="nav-link">
-								<!--							<a href="#" class="nav-link"><i class="nav-icon far fa-circle text-danger"></i>-->
-								<form class="d-flex" th:action="@{/logout}" method="post">
-									<!--									<input type="submit" value="Cerrar sesión"/>-->
-									<button type="submit" class="btn btn-danger">
-										<i class="fas fa-users"></i> Cerrar sesion
-									</button>
-								</form>
+						<li class="nav-item"><a style="padding-left: 25px" class="nav-link">
+								<i class="fa fa-power-off" aria-hidden="true"></i>
+								<p>SALIR</p>
+								<i class="fas fa-angle-left right"></i>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item"><a href="#" class="nav-link">
+										<!--							<a href="#" class="nav-link"><i class="nav-icon far fa-circle text-danger"></i>-->
+										<form class="d-flex" th:action="@{/logout}" method="post">
+											<!--									<input type="submit" value="Cerrar sesión"/>-->
+											<button type="submit" class="btn btn-danger">
+												<i class="fas fa-users"></i> Cerrar sesion
+											</button>
+										</form>
+								</li>
+							</ul>
 						</li>
 						<li class="nav-item">
 							<a href="#" class="nav-link">

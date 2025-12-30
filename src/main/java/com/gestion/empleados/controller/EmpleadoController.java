@@ -1,8 +1,14 @@
 package com.gestion.empleados.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,13 +25,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.gestion.empleados.entity.Empleados;
+import com.gestion.empleados.entity.VacacionesEntity;
+import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
+import com.gestion.empleados.repository.ReglasDiasRepository;
+import com.gestion.empleados.repository.TurnosRepositoryJPA;
+import com.gestion.empleados.repository.VacacionesRepository;
 import com.gestion.empleados.service.EmpleadoService;
 import com.gestion.empleados.utils.PageRender;
+import com.gestion.empleados.utils.ProcesaFileXLSXThread;
 import com.gestion.empleados.utils.reports.ExportExcel;
 import com.gestion.empleados.utils.reports.ExporterPDF;
 import com.lowagie.text.DocumentException;
+
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
@@ -33,7 +48,15 @@ public class EmpleadoController {
 
 	@Autowired
 	private EmpleadoService empleadoService;
-
+	@Autowired
+	private TurnosRepositoryJPA trunosRJPA;
+	@Autowired
+	private VacacionesRepository vacacionesRJPA;
+	@Autowired
+	private ReglasDiasRepository reglasDiasRJPA;
+	
+	@Autowired
+	private EmpleadosRepositoryJPA  empleadoRJPA;
 	@GetMapping({ "/", "/start", "" })
 	public String menu(Model model) {
 		model.addAttribute("titulo", "Inicio");
@@ -51,7 +74,7 @@ public class EmpleadoController {
 	}
 	@GetMapping("empleados/listarEmpleados")
 	public String listarEmpleados(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
-		Pageable pageRequest = PageRequest.of(page, 5);
+		Pageable pageRequest = PageRequest.of(page, 5000);
 		Page<Empleados> empleados = empleadoService.findAll(pageRequest);
 		PageRender<Empleados> pageRender = new PageRender<>("/empleados/listarEmpleados", empleados);
 		model.addAttribute("titulo", "Listado Empleados");
@@ -63,14 +86,19 @@ public class EmpleadoController {
 	@GetMapping("empleados/verEmpleado/{id}")
 	public String verDetallesEmpleado(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
 			RedirectAttributes flash) {
-		Empleados empleado = empleadoService.findOne(id);
+//		Empleados empleado = empleadoService.findOne(id);
+		Empleados empleado = empleadoRJPA.findById(id);
+		LocalDate hoy = LocalDate.now();
+		LocalDate fechaIngreso = new java.sql.Date(empleado.getFechaIngreso().getTime()).toLocalDate();
+		Period periodo = Period.between(fechaIngreso, hoy);
 		if (empleado == null) {
 			flash.addFlashAttribute("error", "El empleado no Existe");
 			return "redirect:/empleados/listarEmpleados";
 		}
+		modelo.put("periodo", periodo);
 		modelo.put("empleado", empleado);
 		modelo.put("titulo", "Detalles del Empleado " + empleado.getNombre());
-		return "empleados/verEmpleado";
+		return "empleados/verEmpleadoModal";
 	}
 
 	@GetMapping("empleados/formEmpleado")
@@ -112,7 +140,7 @@ public class EmpleadoController {
 		}
 		modelo.put("empleado", empleado);
 		modelo.put("titulo", "Edicion de Empleado");
-		return "empleados/formEmpleado";
+		return "empleados/formEmpleadoModal";
 	}
 
 	@GetMapping("/empleados/eliminar/{id}")
@@ -148,5 +176,32 @@ public class EmpleadoController {
 		List<Empleados> lempeados = empleadoService.findAll();
 		ExportExcel expdf = new ExportExcel(lempeados);
 		expdf.exportarExcel(respons);
+	}
+	@GetMapping("empleados/AddEXLSX")
+	public String addXLSX(Model model) {
+		model.addAttribute("titulo", "Registrar Empleados Excel");
+		return "empleados/AddEmpleados";
+	}
+	@PostMapping("empleados/addXLSX")
+	public String addEmpleadosXLSX(Model modelo, RedirectAttributes flash, SessionStatus status,
+			@RequestParam("fileXLS") MultipartFile fileXLS) {
+		try {
+			File filewrite = new File(fileXLS.getOriginalFilename());
+			try (FileOutputStream fos = new FileOutputStream(filewrite)) {
+				fos.write(fileXLS.getBytes());
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new Exception(e);
+			}
+			ProcesaFileXLSXThread thread = new ProcesaFileXLSXThread(filewrite,empleadoService,trunosRJPA,vacacionesRJPA,reglasDiasRJPA);
+			thread.setName("UPEmpleados");
+			thread.start();
+			modelo.addAttribute("success", "Archivo cargado Satisfactoriamente se prosesaran en segundo plano");
+		} catch (Exception err) {
+			err.printStackTrace();
+			modelo.addAttribute("error",
+					err.getMessage().length() > 50 ? err.getMessage().substring(0, 50) : err.getMessage());
+		}
+		return "empleados/AddEmpleados";
 	}
 }

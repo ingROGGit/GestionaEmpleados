@@ -8,76 +8,97 @@
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
-			<div th:replace="div-header :: divHeader" />
-			<!-- /.content-header -->
-			<!-- Main content -->
-			<main class="app-main"> <!--begin::App Content Header-->
-				<section class="content">
-					<div class="container-fluid">
-						<div class="py-4 ml-5 mr-5">
-							<div class="carf bg-light">
-<!--								<div class="sidebar-brand"> -->
-<!--									<a href="menu" class="brand-link"> -->
-<!--										<span class="brand-text fw-light" th:text="${titulo}"></span>-->
-<!--								</div> -->
-								<div class="card-body">
-									<h4 class="card-title">
-										<a th:href="@{/usuarios/exportarPDF}" class="btn btn-secondary">Exportar a PDF</a>
-										<a th:href="@{/usuarios/exportarExcel}" class="btn btn-success">Exportar a Excel</a>
-									</h4>
-									<table class="table table-striped">
-										<thead>
-											<tr>
-												<th>ID</th>
-												<th>Usuario</th>
-												<th>Bloqueado</th>
-												<th>Desactivado</th>
-												<th>Detalles</th>
-												<th>Editar</th>
-												<th>Boquear</th>
-												<th>Desactivar</th>
-												<th>Eliminar</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr th:each="usu : ${usuarios}">
-												<td th:text="${usu.id}"></td>
-												<td th:text="${usu.username}"></td>
-												<td th:text="${usu.bloqueado}"></td>
-												<td th:text="${usu.disabled}"></td>
-												<td><a class="btn btn-info btn-sm"
-														th:href="@{/usuarios/ver/} + ${usu.id}">Detalles</a>
-												</td>
-												<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')"><a
-														class="btn btn-warning btn-sm"
-														th:href="@{/usuarios/formUsu/} + ${usu.id}">Editar</a></td>
-												<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')"><a
+	<div th:replace="div-header :: divHeader" />
+	<!-- /.content-header -->
+	<!-- Main content -->
+	<main class="app-main"> <!--begin::App Content Header-->
+		<section class="content">
+			<div class="container-fluid">
+				<div class="py-4 ml-5 mr-5">
+					<div class="carf bg-light">
+						<div class="card-body">
+							<h4 class="card-title">
+								<a th:href="@{/usuarios/exportarPDF}" class="btn btn-secondary">Exportar a PDF</a>
+								<a th:href="@{/usuarios/exportarExcel}" class="btn btn-success">Exportar a Excel</a>
+							</h4>
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Usuario</th>
+										<th>Bloqueado</th>
+										<th>Desactivado</th>
+										<th>Detalles</th>
+										<th>Editar</th>
+										<th>Boquear</th>
+										<th>Desactivar</th>
+										<th>Eliminar</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="usu : ${usuarios}">
+										<td th:text="${usu.id}"></td>
+										<td th:text="${usu.username}"></td>
+										<td th:text="${usu.bloqueado}"></td>
+										<td th:text="${usu.disabled}"></td>
+										<td><a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')" class="btn btn-info btn-sm link-detail"
+												th:href="@{/usuarios/ver/} + ${usu.id}">Detalles</a>
+										</td>
+										<td sec:authorize="hasAnyRole('ROLE_ADMIN')"><a
+												class="btn btn-warning btn-sm link-Editar"
+												th:href="@{/usuarios/formUsu/} + ${usu.id}">Editar</a></td>
+										<td sec:authorize="hasAnyRole('ROLE_ADMIN')"><a
 												class="btn btn-danger btn-sm"
 												th:href="@{/usuarios/bloquear/} + ${usu.id}"
-												onclick="return confirm('Esta seguro de Bloquear el Usuario');">Bloquear</a></td>
-												<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')"><a
-														class="btn btn-danger btn-sm"
-														th:href="@{/usuarios/desactivar/} + ${usu.id}"
-														onclick="return confirm('Esta seguro de Desactivar el Usuario');">Desactivar</a></td>
-												<td sec:authorize="hasRole('ROLE_ADMIN')"><a
-														class="btn btn-danger btn-sm"
-														th:href="@{/usuarios/eliminar/} + ${usu.id}"
-														onclick="return confirm('Esta seguro de Eliminar el Usuario');">Eliminar</a></td>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-									<nav th:replace="paginator-nav :: paginator"></nav>
-								</div>
+												onclick="return confirm('Esta seguro de Bloquear el Usuario');">Bloquear</a>
+										</td>
+										<td sec:authorize="hasAnyRole('ROLE_ADMIN')"><a
+												class="btn btn-danger btn-sm"
+												th:href="@{/usuarios/desactivar/} + ${usu.id}"
+												onclick="return confirm('Esta seguro de Desactivar el Usuario');">Desactivar</a>
+										</td>
+										<td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-danger btn-sm"
+												th:href="@{/usuarios/eliminar/} + ${usu.id}"
+												onclick="return confirm('Esta seguro de Eliminar el Usuario');">Eliminar</a>
+										</td>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<nav th:replace="paginator-nav :: paginator"></nav>
+						</div>
 
+					</div>
+					<div id="modalDetaills" class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog"
+						aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-xl" role="document">
+							<div class="modal-content">
 							</div>
 						</div>
-						<footer th:replace="layout/layout :: footer"></footer>
-					</div><!-- /.container-fluid -->
-				</section>
-				<!-- /.content -->
-			</main> <!--end::App Main--> <!--begin::Footer-->
+					</div>
+				</div>
+				<footer th:replace="layout/layout :: footer"></footer>
+			</div><!-- /.container-fluid -->
+		</section>
+		<!-- /.content -->
+	</main> <!--end::App Main--> <!--begin::Footer-->
 
-		</div>
-		<!-- /.content-wrapper -->
+</div>
+<script type="text/javascript">
+	$(document).ready(function () {
+		$(".link-detail").on("click", function (e) {
+			e.preventDefault();
+			$("#modalDetaills").modal("show").find(".modal-content").load($(this).attr("href"));
+		});
+	});
+	$(document).ready(function () {
+		$(".link-Editar").on("click", function (e) {
+			e.preventDefault();
+			$("#modalDetaills").modal("show").find(".modal-content").load($(this).attr("href"));
+		});
+	});
+	
+</script>
+<!-- /.content-wrapper -->
+
 </html>

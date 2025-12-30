@@ -16,5 +16,5 @@ import com.gestion.empleados.entity.Empleados;
  */
 @Repository
 public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Serializable>{
-    
+    public Empleados findById(Long id);
 }

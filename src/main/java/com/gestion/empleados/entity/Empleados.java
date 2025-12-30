@@ -6,29 +6,34 @@ package com.gestion.empleados.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.gestion.empleados.listener.AuditoryEmpleadosListener;
-
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -38,9 +43,11 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "empleados", catalog = "db_gestion_empleados", schema = "public")
+@Table(name = "empleados", catalog = "db_gestion_empleados", schema = "public",uniqueConstraints= {@UniqueConstraint(name="UC_Empleado",columnNames={"NEmpleado","nombre","apellidop","apellidom"})},indexes = {@Index(name="index_NEmpleado",columnList = "NEmpleado"),
+	    @Index(name="index_nombre",columnList = "nombre"),@Index(name="index_apellidop",columnList = "apellidop"),@Index(name="index_apellidom",columnList = "apellidom")})
 @EntityListeners({ AuditingEntityListener.class, AuditoryEmpleadosListener.class })
 @NamedQueries({ @NamedQuery(name = "Empleados.findAll", query = "SELECT e FROM Empleados e") })
 public class Empleados extends AuditableDateEntity implements Serializable {
@@ -52,16 +59,22 @@ public class Empleados extends AuditableDateEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "id")
 	private Long id;
+	@Column(name = "NEmpleado")
+	private Long NEmpleado;
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "edad")
 	private int edad;
-	@Basic(optional = false)
 	@NotNull
-	@Column(name = "fecha")
+	@Column(name = "fechaIngreso")
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date fecha;
+	private Date fechaIngreso;
+	@NotNull
+	@Column(name = "fechaNacimiento")
+	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fechaNacimiento;
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "salario")
@@ -86,10 +99,15 @@ public class Empleados extends AuditableDateEntity implements Serializable {
 	@Size(max = 255)
 	@Column(name = "sexo")
 	private String sexo;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_turno")
+	private  TurnosEntity turnosEntity;
+	@OneToOne(mappedBy = "empleadoV", fetch = FetchType.LAZY)
+	private VacacionesEntity empleadoV;
 	@Override
 	public String toString() {
 		return "ID=" + this.id + " APM=" + this.apellidom + " APP=" + this.apellidop + " NOMBRE=" + this.nombre
-				+ " SEXO=" + this.sexo + " CORREO=" + this.correo + " EDAD=" + this.edad + " FECHA=" + this.fecha
+				+ " SEXO=" + this.sexo + " CORREO=" + this.correo + " EDAD=" + this.edad + " FECHA=" + this.fechaIngreso
 				+ " SALARIO=" + this.salario + " TELEFONO=" + this.telefono;
 	}
 

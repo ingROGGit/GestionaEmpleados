@@ -1,9 +1,10 @@
 package com.gestion.empleados.listener;
 
 import java.time.LocalDateTime;
-
+import org.springframework.security.core.Authentication;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.gestion.empleados.entity.AuditoryEntity;
@@ -18,30 +19,40 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Lazy))
 public class AuditoryEmpleadosListener {
-	
+
 	private final AuditoryRepository auditoryRepository;
+
 	@PrePersist
 	private void prePersist(Empleados empleados) {
-		AuditoryEntity auditoryEntity= this.getAuditory("INSERT",empleados);
+		AuditoryEntity auditoryEntity = this.getAuditory("INSERT", empleados);
 		this.auditoryRepository.save(auditoryEntity);
 	}
+
 	@PreUpdate
 	private void preUpdate(Empleados empleados) {
-		AuditoryEntity auditoryEntity= this.getAuditory("UPDATE",empleados);
+		AuditoryEntity auditoryEntity = this.getAuditory("UPDATE", empleados);
 		this.auditoryRepository.save(auditoryEntity);
 	}
+
 	@PreRemove
 	private void preRemove(Empleados empleados) {
-		AuditoryEntity auditoryEntity= this.getAuditory("DELETE",empleados);
+		AuditoryEntity auditoryEntity = this.getAuditory("DELETE", empleados);
 		this.auditoryRepository.save(auditoryEntity);
 	}
-	private AuditoryEntity getAuditory(String operacion,Empleados empleados) {
-		AuditoryEntity auditoryEntity= new AuditoryEntity();
+
+	private AuditoryEntity getAuditory(String operacion, Empleados empleados) {
+		AuditoryEntity auditoryEntity = new AuditoryEntity();
+		String usuLoguin;
+		try {
+			usuLoguin=SecurityContextHolder.getContext().getAuthentication().getName();
+		}catch(Exception err) {
+			usuLoguin="";
+		}
 		auditoryEntity.setOperation(operacion);
 		auditoryEntity.setFecha(LocalDateTime.now());
 		auditoryEntity.setName(empleados.getNombre());
-		auditoryEntity.setUsu(SecurityContextHolder.getContext().getAuthentication().getName());
+		auditoryEntity.setUsu(usuLoguin);
 		auditoryEntity.setDetalle(empleados.toString());
-		return 	auditoryEntity;	
+		return auditoryEntity;
 	}
 }

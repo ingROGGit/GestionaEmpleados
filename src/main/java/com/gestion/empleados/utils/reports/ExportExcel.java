@@ -124,7 +124,7 @@ public class ExportExcel {
 			celda.setCellStyle(estilo);
 
 			celda = row.createCell(8);
-			celda.setCellValue(empleado.getFecha());
+			celda.setCellValue(empleado.getFechaIngreso());
 			sheet.autoSizeColumn(8);
 			celda.setCellStyle(estilo);
 

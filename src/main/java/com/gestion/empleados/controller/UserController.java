@@ -2,6 +2,7 @@ package com.gestion.empleados.controller;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,23 +60,29 @@ public class UserController {
 		return "/usuarios/listarUsuarios";
 	}
 
+//	@GetMapping("/usuarios/ver/{id}")
+//	public String verDetallesUsuario(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
+//			RedirectAttributes flash) {
+//		UsuariosEntity usuario = usuariosEntityService.findOne(id);
+//		if (usuario == null) {
+//			flash.addFlashAttribute("error", "El empleado no Existe");
+//			return "redirect:/listar";
+//		}
+//		modelo.put("usuario", usuario);
+//		modelo.put("titulo", "Detalles del Usuario: " + usuario.getUsername());
+//		return "usuarios/verUsuModal";
+//	}
 	@GetMapping("/usuarios/ver/{id}")
-	public String verDetallesUsuario(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
-			RedirectAttributes flash) {
-		UsuariosEntity usuario = usuariosEntityService.findOne(id);
+	public String verDetallesUsuario(@PathVariable Long id, Model modelo, RedirectAttributes flash) {
+		UsuariosEntity usuario = usuJPA.findById(id).get();
 		if (usuario == null) {
 			flash.addFlashAttribute("error", "El empleado no Existe");
 			return "redirect:/listar";
 		}
-		modelo.put("usuario", usuario);
-		modelo.put("titulo", "Detalles del Usuario: " + usuario.getUsername());
-		return "usuarios/verUsu";
+		modelo.addAttribute("usuario", usuario);
+		modelo.addAttribute("titulo", "Detalles del Usuario: " + usuario.getUsername());
+		return "usuarios/verUsuModal";
 	}
-//	@GetMapping({ "/", "/menu", "" })
-//	public String menuUsu(Model model) {
-//		
-//		return "menu";
-//	}
 	@GetMapping("/usuarios/formUsu")
 	public String formularioRegistroEmpleado(Model model) {
 		CreateUserDTO usu = new CreateUserDTO();
@@ -144,8 +151,9 @@ public class UserController {
 			modelo.put("roles", roles);
 			modelo.put("usu", createUserDTO);
 			modelo.put("titulo", "Edicion de Usuario");
+			modelo.put("success", "");
 		}
-		return "usuarios/formUsu";
+		return "usuarios/formUsuModal";
 	}
 
 	@GetMapping("/usuarios/eliminar/{id}")
@@ -176,5 +184,40 @@ public class UserController {
 		}
 		return "redirect:/usuarios/listarUsuarios";
 	}
+	@GetMapping("/usuarios/formUsuUpPass")
+	public String formularioUpPass(Model model) {
+		Optional<UsuariosEntity> usuariosEntity = usuJPA
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		CreateUserDTO createUserDTO = new CreateUserDTO();
+		createUserDTO.setId(usuariosEntity.get().getId());
+		model.addAttribute("usu", createUserDTO);
+		model.addAttribute("titulo", "Actualizacion de Contraseña");
+		return "/usuarios/formUsuUpPass";
+	}
 
+	@PostMapping("/usuarios/formUsuUpPassUP")
+	public String upPassUsu(CreateUserDTO createUserDTO, BindingResult result, Model modelo, RedirectAttributes flash,
+			SessionStatus status) {
+		UsuariosEntity usuario = usuJPA.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+				.get();
+		String mensaje = null;
+		try {
+			PasswordGenerator psg = new PasswordGenerator();
+			if (!createUserDTO.getPass().equals(createUserDTO.getRePass())) {
+				throw new Exception("Contraseña no Coincide");
+			} else
+				mensaje = "Contraseña Actualizada con Exito";
+			usuario.setPass(psg.getPassword(createUserDTO.getPass()));
+			usuJPA.save(usuario);
+			modelo.addAttribute("success", mensaje);
+			status.setComplete();
+		} catch (Exception err) {
+			modelo.addAttribute("error",
+					err.getMessage().length() > 50 ? err.getMessage().substring(0, 50) : err.getMessage());
+		} finally {
+			modelo.addAttribute("titulo", "Actualizacion de Contraseña");
+			modelo.addAttribute("usu", createUserDTO);
+		}
+		return "usuarios/formUsuUpPass";
+	}
 }

@@ -62,7 +62,7 @@ public class ExporterPDF {
 			pdftable.addCell(String.valueOf(empleado.getSalario()));
 			pdftable.addCell(empleado.getCorreo());
 			pdftable.addCell(String.valueOf(empleado.getTelefono()));
-			pdftable.addCell(empleado.getFecha().toString());
+			pdftable.addCell(empleado.getFechaIngreso().toString());
 		}
 	}
 	public void exportarPDF(HttpServletResponse response) throws DocumentException, IOException {

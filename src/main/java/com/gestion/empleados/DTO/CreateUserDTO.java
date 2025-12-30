@@ -18,6 +18,8 @@ public class CreateUserDTO {
     @NotBlank
     private String pass;
     @NotBlank
+    private String rePass;
+    @NotBlank
     private Boolean bloqueado;
     @NotBlank
     private Boolean disabled;

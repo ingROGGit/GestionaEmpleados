@@ -47,4 +47,11 @@ public class EmpleadoServiceImpl implements EmpleadoService{
 		empleadoRepository.deleteById(id);
 	}
 
+	@SuppressWarnings("deprecation")
+	@Override
+	public Empleados findById(Long id) {
+		// TODO Auto-generated method stub
+		return empleadoRepository.getById(id);
+	}
+
 }
