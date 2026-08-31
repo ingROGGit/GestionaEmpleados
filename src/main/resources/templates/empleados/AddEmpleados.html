@@ -39,18 +39,33 @@
 								</div>
 								<!--								<h1 class="text-center" th:text="${titulo}"></h1>-->
 								<form id="addCatalogo" enctype="multipart/form-data" th:action="@{/empleados/addXLSX}" method="post">
+									<input type="hidden" id="TIPOCARGA" name="TIPOCARGA" th:value="${TIPOCARGA}">
+									<input type="hidden" id="CatalogoCarga" name="CatalogoCarga" th:value="*{CatalogoCarga}">
 									<div class="row">
-										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 										</div>
-									<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label title="Atributo Requerido">Empleados XLS: </label>
-										<input class="form-control-file" type="file" name="fileXLS" required autocomplete="off" accept=".xlsx"/>
+<!--									<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">-->
+<!--										<label title="Atributo Requerido" th:text="${titulo}"> </label>-->
+<!--										<input class="form-control-file" type="file" name="fileXLS" required autocomplete="off" accept=".xlsx"/>-->
+<!--									</div>-->
+									<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">
+									  <label for="formFileLg" class="form-label" th:text="${titulo}"></label>
+									  <input class="form-control form-control-lg" id="fileXLS" type="file" name="fileXLS" required autocomplete="off" accept=".xlsx,.xls">
 									</div>
 									</div>
 									<div class="row">
-									<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div th:if="${#lists.contains({'CPRE', 'CNOM'}, TIPOCARGA)}" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" align="center">
+										<label>QUINCENA: </label>
+											<select class="form-control" id="quin" name="quin">
+												<option value="">select</option>
+												<option th:each="quin : ${lquincenas}" th:value="${quin}"
+													th:text="${quin}"></option>
+											</select>
+										</div>	
 										</div>
-									<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<div class="row"></div>
+										<div class="row">									
+									<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">
 										<input type="submit" value="Guardar" class="btn btn-primary" on>
 									</div>
 									</div>

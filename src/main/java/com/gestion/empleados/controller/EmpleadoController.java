@@ -1,8 +1,10 @@
 package com.gestion.empleados.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -10,8 +12,11 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,22 +29,35 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.VacacionesEntity;
+import com.gestion.empleados.repository.BancosRepositoryJPA;
+import com.gestion.empleados.repository.CatCPJALRepositoryJPA;
+import com.gestion.empleados.repository.DeduccionesRepositoryJPA;
+import com.gestion.empleados.repository.DetalleDeduccionesRepositoryJPA;
+import com.gestion.empleados.repository.DetallePersepcionesRepositoryJPA;
 import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
+import com.gestion.empleados.repository.PersepcionesRepositoryJPA;
+import com.gestion.empleados.repository.PuestosRepositoryJPA;
+import com.gestion.empleados.repository.QuincenaRepositoryJPA;
+import com.gestion.empleados.repository.QuincenasCatRepositoryJPA;
 import com.gestion.empleados.repository.ReglasDiasRepository;
+import com.gestion.empleados.repository.ServiciosRepositoryJPA;
 import com.gestion.empleados.repository.TurnosRepositoryJPA;
 import com.gestion.empleados.repository.VacacionesRepository;
 import com.gestion.empleados.service.EmpleadoService;
 import com.gestion.empleados.utils.PageRender;
 import com.gestion.empleados.utils.ProcesaFileXLSXThread;
 import com.gestion.empleados.utils.reports.ExportExcel;
+import com.gestion.empleados.utils.reports.ExportExcelThread;
 import com.gestion.empleados.utils.reports.ExporterPDF;
 import com.lowagie.text.DocumentException;
-
+import org.springframework.http.HttpStatus;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
@@ -49,6 +67,8 @@ public class EmpleadoController {
 	@Autowired
 	private EmpleadoService empleadoService;
 	@Autowired
+	private EmpleadosRepositoryJPA empleadosJPA;
+	@Autowired
 	private TurnosRepositoryJPA trunosRJPA;
 	@Autowired
 	private VacacionesRepository vacacionesRJPA;
@@ -57,6 +77,27 @@ public class EmpleadoController {
 	
 	@Autowired
 	private EmpleadosRepositoryJPA  empleadoRJPA;
+	
+	@Autowired
+	private PuestosRepositoryJPA puestosJPA;
+	@Autowired
+	private ServiciosRepositoryJPA serviciosJPA;
+	@Autowired
+	private QuincenasCatRepositoryJPA quincenasCatJPA;
+	@Autowired
+	private PersepcionesRepositoryJPA persepcionesJPA;
+	@Autowired
+	private DeduccionesRepositoryJPA deduccionesJPA;
+	@Autowired
+	private BancosRepositoryJPA bancosJPA;
+	@Autowired
+	private CatCPJALRepositoryJPA catCPJALRepositoryJPA;
+	@Autowired
+	private DetallePersepcionesRepositoryJPA detallePerJPA;
+	@Autowired
+	private DetalleDeduccionesRepositoryJPA detalleDedJPA;
+	@Autowired
+	QuincenaRepositoryJPA quincenaJPA;
 	@GetMapping({ "/", "/start", "" })
 	public String menu(Model model) {
 		model.addAttribute("titulo", "Inicio");
@@ -77,6 +118,15 @@ public class EmpleadoController {
 		Pageable pageRequest = PageRequest.of(page, 5000);
 		Page<Empleados> empleados = empleadoService.findAll(pageRequest);
 		PageRender<Empleados> pageRender = new PageRender<>("/empleados/listarEmpleados", empleados);
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String fa = df.format(new Date());
+		File file=new File("Empleados_" + fa + ".xlsx");
+		boolean fileExDownload=false;
+		if(file.exists() &&file.canWrite())
+		{
+			fileExDownload=true;
+		}
+		model.addAttribute("fileExDownload",fileExDownload);
 		model.addAttribute("titulo", "Listado Empleados");
 		model.addAttribute("empleados", empleados);
 		model.addAttribute("page", pageRender);
@@ -174,17 +224,74 @@ public class EmpleadoController {
 		String valor = "attachment; filename=Empleados_" + fa + ".xlsx";
 		respons.setHeader(cabecera, valor);
 		List<Empleados> lempeados = empleadoService.findAll();
-		ExportExcel expdf = new ExportExcel(lempeados);
-		expdf.exportarExcel(respons);
+		ExportExcel exexcel = new ExportExcel();
+		exexcel.ExportExcel(lempeados);
+		exexcel.exportarExcel(respons,"Empleados");
+	}
+	@GetMapping("/empleados/exportarExcelThread")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void exportEmpleadosExcelThread() throws DocumentException, IOException {
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String fa = df.format(new Date());
+		File file=new File("Empleados_" + fa + ".xlsx");
+		List<Empleados> lempeados = empleadoService.findAll();
+		ExportExcelThread exexcel = new ExportExcelThread(file.getName(), "Empleados", null, null, lempeados);
+		exexcel.setName("Export-Empleados");
+		exexcel.setPriority(Thread.MAX_PRIORITY);
+		exexcel.start();
+	}
+	@GetMapping("/empleados/FileExcel")
+	public String FileExcel(HttpServletResponse respons) throws DocumentException, IOException {
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String fa = df.format(new Date());
+		File file=new File("Empleados_" + fa + ".xlsx");
+		if(file.exists() &&file.canWrite())
+		{
+		respons.setContentType("application/octet-stream");
+		String cabecera = "Content-Disposition";
+		String valor = "attachment; filename=Empleados_" + fa + ".xlsx";
+		respons.setHeader(cabecera, valor);
+		try (InputStream inputStream = new FileInputStream(file);
+	             ServletOutputStream outputStream = respons.getOutputStream()) {
+	            IOUtils.copy(inputStream, outputStream);
+	            respons.flushBuffer();
+	            inputStream.close();
+	            file.delete();
+	            return "redirect:/empleados/listarEmpleados";
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            throw new RuntimeException("Error writing file to response", e);
+	        }
+		}
+		else {
+			return "redirect:/empleados/listarEmpleados";
+		}
 	}
 	@GetMapping("empleados/AddEXLSX")
-	public String addXLSX(Model model) {
-		model.addAttribute("titulo", "Registrar Empleados Excel");
+	public String addXLSX(@RequestParam("TIPOCARGA") String TIPOCARGA,Model model) {
+		Map<String, String> CatalogoCarga = new HashMap();
+		List<String> lquincenas = quincenasCatJPA.findByAllIdQNA();
+		CatalogoCarga.put("CEM", "Carga de Empleados");
+		CatalogoCarga.put("CBA", "Carga de Bancos");
+		CatalogoCarga.put("CCU", "Carga de Cuentas");
+		CatalogoCarga.put("CPU", "Carga de Puestos");
+		CatalogoCarga.put("CSE", "Carga de Servicios");
+		CatalogoCarga.put("CPER", "Carga de Persepciones");
+		CatalogoCarga.put("CDED", "Carga de Deducciones");
+		CatalogoCarga.put("CQNA", "Carga de Quincena");
+		CatalogoCarga.put("CPRE", "Carga de Prenomina");
+		CatalogoCarga.put("CNOM", "Carga de Nomina");
+		CatalogoCarga.put("CCP", "Carga Codigos Postales");
+		model.addAttribute("titulo", "EXCEL "+CatalogoCarga.get(TIPOCARGA));
+		model.addAttribute("TIPOCARGA", TIPOCARGA);
+		model.addAttribute("quin", "");
+		model.addAttribute("lquincenas", lquincenas);
+		model.addAttribute("CatalogoCarga", CatalogoCarga);
 		return "empleados/AddEmpleados";
 	}
 	@PostMapping("empleados/addXLSX")
 	public String addEmpleadosXLSX(Model modelo, RedirectAttributes flash, SessionStatus status,
-			@RequestParam("fileXLS") MultipartFile fileXLS) {
+			@RequestParam("fileXLS") MultipartFile fileXLS,@RequestParam("TIPOCARGA") String TIPOCARGA,@RequestParam("CatalogoCarga") String CatalogoCarga,@RequestParam("quin") String quin) {
 		try {
 			File filewrite = new File(fileXLS.getOriginalFilename());
 			try (FileOutputStream fos = new FileOutputStream(filewrite)) {
@@ -193,9 +300,9 @@ public class EmpleadoController {
 				e.printStackTrace();
 				throw new Exception(e);
 			}
-			ProcesaFileXLSXThread thread = new ProcesaFileXLSXThread(filewrite,empleadoService,trunosRJPA,vacacionesRJPA,reglasDiasRJPA);
-			thread.setName("UPEmpleados");
-			thread.start();
+			ProcesaFileXLSXThread thread = new ProcesaFileXLSXThread(empleadosJPA,trunosRJPA,vacacionesRJPA,reglasDiasRJPA,puestosJPA,
+					serviciosJPA,quincenasCatJPA,persepcionesJPA,deduccionesJPA,bancosJPA,catCPJALRepositoryJPA,detallePerJPA,detalleDedJPA);
+			thread.run(filewrite,TIPOCARGA,quin);
 			modelo.addAttribute("success", "Archivo cargado Satisfactoriamente se prosesaran en segundo plano");
 		} catch (Exception err) {
 			err.printStackTrace();

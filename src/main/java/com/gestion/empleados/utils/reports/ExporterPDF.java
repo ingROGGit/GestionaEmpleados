@@ -57,9 +57,9 @@ public class ExporterPDF {
 			pdftable.addCell(empleado.getNombre());
 			pdftable.addCell(empleado.getApellidop());
 			pdftable.addCell(empleado.getApellidom());
-			pdftable.addCell(String.valueOf(empleado.getEdad()));
+			pdftable.addCell("");//Edad
 			pdftable.addCell(empleado.getSexo());
-			pdftable.addCell(String.valueOf(empleado.getSalario()));
+//			pdftable.addCell(String.valueOf(empleado.getSueldoNeto()));
 			pdftable.addCell(empleado.getCorreo());
 			pdftable.addCell(String.valueOf(empleado.getTelefono()));
 			pdftable.addCell(empleado.getFechaIngreso().toString());

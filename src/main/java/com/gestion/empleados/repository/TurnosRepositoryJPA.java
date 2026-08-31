@@ -9,5 +9,5 @@ import com.gestion.empleados.entity.TurnosEntity;
 
 @Repository
 public interface TurnosRepositoryJPA extends JpaRepository<TurnosEntity, Serializable>{
-	public TurnosEntity findByDescripcion(String descripcion);
+	public TurnosEntity findByTurno(String turno);
 }

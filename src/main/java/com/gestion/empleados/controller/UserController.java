@@ -1,6 +1,13 @@
 package com.gestion.empleados.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -18,10 +25,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gestion.empleados.DTO.CreateUserDTO;
 import com.gestion.empleados.entity.ERole;
+import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.RoleEntity;
 import com.gestion.empleados.entity.UsuariosEntity;
 import com.gestion.empleados.repository.RoleRepository;
@@ -30,6 +39,13 @@ import com.gestion.empleados.repository.UsuariosEntityRepositoryJPA;
 import com.gestion.empleados.service.UsuariosEntityService;
 import com.gestion.empleados.utils.PageRender;
 import com.gestion.empleados.utils.PasswordGenerator;
+import com.gestion.empleados.utils.ProcesaFileXLSXThread;
+import com.gestion.empleados.utils.reports.ExportExcel;
+import com.gestion.empleados.utils.reports.ExportExcelThread;
+import com.gestion.empleados.utils.reports.ExporterPDF;
+import com.lowagie.text.DocumentException;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 
 @Controller
@@ -43,10 +59,10 @@ public class UserController {
 	private RoleRepository roleRepository;
 	@Autowired
 	private UsuariosEntityRepositoryJPA usuJPA;
-	
+	String  ususRestrict= "usuAdmin";
 	@GetMapping("/usuarios/listarUsuarios")
 	public String listarEmpleados(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
-		String  ususRestrict= "usuAdmin";
+		
 //		String  ususRestrict2= "usuConsulta";
 		Pageable pageRequest = PageRequest.of(page, 5);
 		Page<UsuariosEntity> usuarios;
@@ -129,7 +145,39 @@ public class UserController {
 		modelo.addAttribute("success", mensaje);
 		return "usuarios/formUsu";
 	}
-
+	@PostMapping("/usuarios/formUsuUP")
+	public String UPDateUsuario(CreateUserDTO createUserDTO, BindingResult result, Model modelo,
+			RedirectAttributes flash, SessionStatus status) {
+		String mensaje = null;
+		createUserDTO.setBloqueado(false);
+		createUserDTO.setDisabled(false);
+		PasswordGenerator psg= new PasswordGenerator();
+		createUserDTO.getRoles().remove("");
+		Set<RoleEntity> roles= new HashSet<>();
+		Iterable<RoleEntity> Iroles= roleRepository.findAll();
+		for(RoleEntity rol:Iroles) {
+			for(String r:createUserDTO.getRoles()) {
+				if(rol.getName().compareTo(ERole.valueOf(r))==0) {
+					roles.add(rol);
+				}
+			}
+		}
+		UsuariosEntity usuariosEntity = UsuariosEntity.builder()
+				.username(createUserDTO.getUsu())
+				.pass(psg.getPassword(createUserDTO.getPass()) )
+				.bloqueado(createUserDTO.getBloqueado())
+				.disabled(createUserDTO.getDisabled())
+				.roles(roles).build();
+			usuariosEntity.setId(createUserDTO.getId());
+			mensaje="Usuario Actualizado con Exito";
+		userRepository.save(usuariosEntity);
+		status.setComplete();
+		CreateUserDTO usu = new CreateUserDTO();
+		modelo.addAttribute("roles", Iroles);
+		modelo.addAttribute("usu", usu);
+		modelo.addAttribute("success", mensaje);
+		return "redirect:/usuarios/listarUsuarios";
+	}
 	@GetMapping("/usuarios/formUsu/{id}")
 	public String editarUsuario(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
 			RedirectAttributes flash) {
@@ -219,5 +267,34 @@ public class UserController {
 			modelo.addAttribute("usu", createUserDTO);
 		}
 		return "usuarios/formUsuUpPass";
+	}
+	@GetMapping("/usuarios/exportarPDF")
+	public void exportEmpleadosPDF(HttpServletResponse respons) throws DocumentException, IOException {
+		respons.setContentType("application/pdf");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+		String fa = df.format(new Date());
+		String cabecera = "Content-Disposition";
+		String valor = "attachment; filename=Empleados_" + fa + ".pdf";
+		respons.setHeader(cabecera, valor);
+		List<UsuariosEntity> lusuarios = usuJPA.findByUsernameNotLike(ususRestrict);
+//		ExporterPDF expdf = new ExporterPDF(lusuarios);
+//		expdf.exportarPDF(respons);
+	}
+
+	@GetMapping("/usuarios/exportarExcel")
+	public void exportEmpleadosExcel(HttpServletResponse respons) throws DocumentException, IOException {
+		respons.setContentType("application/octet-stream");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+		String fa = df.format(new Date());
+		String cabecera = "Content-Disposition";
+		String valor = "attachment; filename=Usuarios_" + fa + ".xlsx";
+		respons.setHeader(cabecera, valor);
+		List<UsuariosEntity> lusuarios = usuJPA.findByUsernameNotLike(ususRestrict);
+		ExportExcel expexcel = new ExportExcel();
+		expexcel.ExportExcelUsuarios(lusuarios);
+		expexcel.exportarExcel(respons,"Usuarios");
+//		ExportExcelThread exportThread = new ExportExcelThread(respons, "Usuarios", lusuarios, null, null);
+//		exportThread.setName("Excel_Usuarios");
+//		exportThread.start();
 	}
 }

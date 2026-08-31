@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "ReglasDias", catalog = "db_gestion_empleados", schema = "public")
+@Table(name = "ReglasDias", catalog = "db_gestion_empleados2", schema = "public")
 @EntityListeners({ AuditingEntityListener.class})
 public class ReglasDiasEntity extends AuditableDateEntity implements Serializable {
 	@Id
@@ -41,4 +41,8 @@ public class ReglasDiasEntity extends AuditableDateEntity implements Serializabl
 	@NotNull
 	@Column(name = "dias")
 	private int dias;
+	@Override
+	public String toString() {
+		return "ReglasDiasEntity [id=" + id + ", desde=" + desde + ", asta=" + asta + ", dias=" + dias + "]";
+	}
 }

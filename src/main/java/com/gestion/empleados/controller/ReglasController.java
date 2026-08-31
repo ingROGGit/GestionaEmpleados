@@ -109,29 +109,29 @@ public class ReglasController {
 		return "redirect:/reglas/listarReglas";
 	}
 
-//	@GetMapping("/reglas/exportarPDF")
-//	public void exportreglasPDF(HttpServletResponse respons) throws DocumentException, IOException {
-//		respons.setContentType("application/pdf");
-//		DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-//		String fa = df.format(new Date());
-//		String cabecera = "Content-Disposition";
-//		String valor = "attachment; filename=reglas_" + fa + ".pdf";
-//		respons.setHeader(cabecera, valor);
-//		List<ReglasDiasEntity> lReglas = reglasRJPA.findAll();
-//		ExporterPDF expdf = new ExporterPDF(lReglas);
+	@GetMapping("/reglas/exportarPDF")
+	public void exportreglasPDF(HttpServletResponse respons) throws DocumentException, IOException {
+		respons.setContentType("application/pdf");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+		String fa = df.format(new Date());
+		String cabecera = "Content-Disposition";
+		String valor = "attachment; filename=reglas_" + fa + ".pdf";
+		respons.setHeader(cabecera, valor);
+		List<ReglasDiasEntity> lReglas = reglasRJPA.findAll();
+//		ExporterPDF expdf = new ExporterPDF();
 //		expdf.exportarPDF(respons);
-//	}
+	}
 //
-//	@GetMapping("/reglas/exportarExcel")
-//	public void exportreglasExcel(HttpServletResponse respons) throws DocumentException, IOException {
-//		respons.setContentType("application/octet-stream");
-//		DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-//		String fa = df.format(new Date());
-//		String cabecera = "Content-Disposition";
-//		String valor = "attachment; filename=reglas_" + fa + ".xlsx";
-//		respons.setHeader(cabecera, valor);
-//		List<ReglasDiasEntity> lReglas = reglasRJPA.findAll();
-//		ExportExcel expdf = new ExportExcel(lReglas);
-//		expdf.exportarExcel(respons);
-//	}
+	@GetMapping("/reglas/exportarExcel")
+	public void exportreglasExcel(HttpServletResponse respons) throws DocumentException, IOException {
+		respons.setContentType("application/octet-stream");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+		String fa = df.format(new Date());
+		String cabecera = "Content-Disposition";
+		String valor = "attachment; filename=reglas_" + fa + ".xlsx";
+		respons.setHeader(cabecera, valor);
+		List<ReglasDiasEntity> lReglas = reglasRJPA.findAll();
+		ExportExcel excel = new ExportExcel();
+		excel.ExportExcelReglas(lReglas);
+	}
 }

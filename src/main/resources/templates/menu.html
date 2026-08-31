@@ -2,7 +2,6 @@
 	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en"> <!--begin::Head-->
 
 <head th:replace="headAll :: html_head" />
-
 <!--<body th:fragment="menuAll" class="hold-transition sidebar-mini layout-fixed"> MENU DESPLEGADO COMPLETAMENTE-->
 
 <body th:fragment="menuAll" class="sidebar-mini sidebar-collapse"> <!-- MENU OCULTO SE MUETRAN LOS ICONOS-->
@@ -20,9 +19,10 @@
 
 			<ul class="navbar-nav">
 				<li class="nav-item">
-					<a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+					<a class="nav-link" data-widget="pushmenu" href="../start" role="button"><i
+							class="fas fa-bars"></i></a>
 				</li>
-				<li class="nav-item d-none d-md-block"> <a href="../../start" class="nav-link">Inicio</a> </li>
+				<li class="nav-item d-none d-md-block"> <a href="../start" class="nav-link">Inicio</a> </li>
 				<li class="nav-item d-none d-md-block"> <a href="../../contacto" class="nav-link">Contacto</a> </li>
 				<li class="nav-item d-none d-md-block"> <a href="../../quien" class="nav-link">Quienes Somos</a> </li>
 			</ul> <!--end::Start Navbar Links--> <!--begin::End Navbar Links-->
@@ -31,7 +31,7 @@
 			<ul class="navbar-nav ml-auto">
 				<!-- Navbar Search -->
 				<li class="nav-item">
-					<a class="nav-link" data-widget="navbar-search" href="#" role="button">
+					<a class="nav-link" data-widget="navbar-search" href="../start" role="button">
 						<i class="fas fa-search"></i>
 					</a>
 					<div class="navbar-search-block">
@@ -53,7 +53,7 @@
 				</li>
 
 				<li class="nav-item">
-					<a class="nav-link" data-widget="fullscreen" href="#" role="button">
+					<a class="nav-link" data-widget="fullscreen" href="../start" role="button">
 						<i class="fas fa-expand-arrows-alt"></i>
 					</a>
 				</li>
@@ -69,7 +69,7 @@
 
 		<!-- Main Sidebar Container -->
 		<aside class="main-sidebar sidebar-dark-primary elevation-4">
-			<a href="menu" class="brand-link"> <!--begin::Brand Image-->
+			<a href="../start" class="brand-link"> <!--begin::Brand Image-->
 				<img src="../../distV32/img/GestinoLogo.png" alt="Gestion" class="brand-image opacity-75 shadow">
 				<!--end::Brand Image--> <!--begin::Brand Text-->
 				<span class="brand-text fw-light">Bienvenido</span>
@@ -77,7 +77,7 @@
 			<!-- Sidebar -->
 			<div class="sidebar">
 				<div class="sidebar-brand"> <!--begin::Brand Link-->
-					<a href="menu" class="brand-link"> <!--begin::Brand Image-->
+					<a href="../start" class="brand-link"> <!--begin::Brand Image-->
 						<img src="../../distV32/img/user-circle-regular.svg" alt="Gestion"
 							class="brand-image opacity-75 shadow">
 						<!--end::Brand Image--> <!--begin::Brand Text-->
@@ -94,12 +94,17 @@
                with font-awesome or any other icon font library -->
 						<li class="nav-item menu-open">
 						</li>
-
+						<li href="#" class="nav-header">
+							<a href="/quincenas/listarQuincena" class="nav-link">
+								<i class="nav-icon fa fa-list-ul"></i>
+								<p>QUINCENA</p>
+							</a>
+						</li>
 						<!--						<li class="nav-header" sec:authorize="hasRole('ROLE_ADMIN','ROLE_OPERADOR')">USUARIOS</li>-->
-						<li class="nav-header" >USUARIOS</li>
+						<li class="nav-header">USUARIOS</li>
 
 						<li class="nav-item">
-							<a href="#" class="nav-link">
+							<a href="../start" class="nav-link">
 								<i class="nav-icon fas fa-book"></i>
 								<p>
 									Gestion de Usuarios
@@ -130,8 +135,357 @@
 								</li>
 							</ul>
 						</li>
+
+						<li class="nav-header">EMPLEADOS</li>
+						<li class="nav-item">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-book"></i>
+								<p>
+									Gestion de Empleados
+									<i class="fas fa-angle-left right"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/formEmpleado" class="nav-link">
+										<i class="nav-icon far fa-id-card"></i>
+										<p>Registra Empleado</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/empleados/listarEmpleados" class="nav-link">
+										<i class="nav-icon fa fa-list-ul"></i>
+										<p>Lista de Empleados</p>
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">CARGA</li>
+						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-book"></i>
+								<p>
+									Catalogos
+									<i class="fas fa-angle-left right"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CEM" class="nav-link">
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Carga Empleados</p>
+										</div>
+
+									</a>
+								</li>
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CBA" class="nav-link">
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Carga Bancos</p>
+										</div>
+
+									</a>
+								</li>
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CCU" class="nav-link">
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Carga Cuentas</p>
+										</div>
+
+									</a>
+								</li>
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CPU" class="nav-link">
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Carga Puestos</p>
+										</div>
+									</a>
+								</li>
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CSE" class="nav-link">
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Carga Servicios</p>
+										</div>
+									</a>
+								</li>
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CDED" class="nav-link">
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Carga Deducciones</p>
+										</div>
+									</a>
+								</li>
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CPER" class="nav-link">
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Carga Persepciones</p>
+										</div>
+									</a>
+								</li>
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CQNA" class="nav-link">
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Carga Quincenas</p>
+										</div>
+									</a>
+								</li>
+
+							</ul>
+						</li>
+						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-book"></i>
+								<p>
+									NOMINA
+									<i class="fas fa-angle-left right"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CPRE" class="nav-link">
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Carga Prenomina</p>
+										</div>
+									</a>
+								</li>
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CNOM" class="nav-link">
+
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="#ffffff"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Carga Nomina</p>
+										</div>
+									</a>
+								</li>
+							</ul>
+						</li>
+
+						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">CUENTAS
+							BANCARIAS</li>
+						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-book"></i>
+								<p>
+									CUENTAS
+									<i class="fas fa-angle-left right"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CEM" class="nav-link">
+										<i class="nav-icon fa fa-list-ul"></i>
+										<p>Lista Empleados sin Cuenta</p>
+									</a>
+								</li>
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CEM" class="nav-link">
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Generar Lista de Carga</p>
+										</div>
+									</a>
+								</li>
+							</ul>
+						</li>
+
+
+						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">SINAVID</li>
+						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-book"></i>
+								<p>
+									Gestion SINAVID
+									<i class="fas fa-angle-left right"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CCP" class="nav-link">
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Carga C.P. JALISCO</p>
+										</div>
+									</a>
+								</li>
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/catalogos/listarCCPJAL" class="nav-link">
+										<i class="nav-icon fa fa-list-ul"></i>
+										<p>Lista C.P. JALISCO</p>
+									</a>
+								</li>
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CEM" class="nav-link">
+										<i class="nav-icon fa fa-list-ul"></i>
+										<p>Lista Empleados sin SINAVID</p>
+									</a>
+								</li>
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CEM" class="nav-link">
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Generar Alta SINAVID</p>
+										</div>
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-header">LISTADOS</li>
+						<li class="nav-item">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-book"></i>
+								<p>
+									Listados
+									<i class="fas fa-angle-left right"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="/catalogos/listarPuestos" class="nav-link">
+										<i class="nav-icon fa fa-list-ul"></i>
+										<p>Puestos</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/catalogos/listarServicios" class="nav-link">
+										<i class="nav-icon fa fa-list-ul"></i>
+										<p>Servicios</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/catalogos/listarDeducciones" class="nav-link">
+										<i class="nav-icon fa fa-list-ul"></i>
+										<p>Deducciones</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/catalogos/listarPersepciones" class="nav-link">
+										<i class="nav-icon fa fa-list-ul"></i>
+										<p>Persepciones</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/catalogos/listarQNACAT" class="nav-link">
+										<i class="nav-icon fa fa-list-ul"></i>
+										<p>Quincenas</p>
+									</a>
+								</li>
+							</ul>
+						</li>
 						<!--						REGLAS-->
-						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN')">REGLAS</li>
+						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN')">VACACIONES</li>
 
 						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">
 							<a href="#" class="nav-link">
@@ -157,36 +511,6 @@
 							</ul>
 						</li>
 
-						<li class="nav-header">EMPLEADOS</li>
-						<li class="nav-item">
-							<a href="#" class="nav-link">
-								<i class="nav-icon fas fa-book"></i>
-								<p>
-									Gestion de Empleados
-									<i class="fas fa-angle-left right"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
-									<a href="/empleados/formEmpleado" class="nav-link">
-										<i class="nav-icon far fa-id-card"></i>
-										<p>Registra Empleado</p>
-									</a>
-								</li>
-								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
-									<a href="/empleados/AddEXLSX" class="nav-link">
-										<i class="nav-icon far fa-id-card"></i>
-										<p>Carga Layout</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/empleados/listarEmpleados" class="nav-link">
-										<i class="nav-icon fa fa-list-ul"></i>
-										<p>Lista de Empleados</p>
-									</a>
-								</li>
-							</ul>
-						</li>
 						<li class="nav-item"><a style="padding-left: 25px" class="nav-link">
 								<i class="fa fa-power-off" aria-hidden="true"></i>
 								<p>SALIR</p>
@@ -229,6 +553,7 @@
 	<!-- ./wrapper -->
 
 	<!-- jQuery -->
+
 	<script src="../../distV32/plugins/jquery/jquery.min.js"></script>
 	<!-- jQuery UI 1.11.4 -->
 	<script src="../../distV32/plugins/jquery-ui/jquery-ui.min.js"></script>

@@ -5,32 +5,36 @@
 package com.gestion.empleados.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.math3.ml.neuralnet.UpdateAction;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.gestion.empleados.listener.AuditoryEmpleadosListener;
-import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PostPersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,69 +50,120 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "empleados", catalog = "db_gestion_empleados", schema = "public",uniqueConstraints= {@UniqueConstraint(name="UC_Empleado",columnNames={"NEmpleado","nombre","apellidop","apellidom"})},indexes = {@Index(name="index_NEmpleado",columnList = "NEmpleado"),
-	    @Index(name="index_nombre",columnList = "nombre"),@Index(name="index_apellidop",columnList = "apellidop"),@Index(name="index_apellidom",columnList = "apellidom")})
+@Table(name = "empleados", catalog = "db_gestion_empleados2", schema = "public", uniqueConstraints = {
+		@UniqueConstraint(name = "UC_Empleado", columnNames = { "id", "nombre", "apellidop",
+				"apellidom" }) }, indexes = { @Index(name = "index_nombre", columnList = "nombre"),
+						@Index(name = "index_apellidop", columnList = "apellidop"),
+						@Index(name = "index_apellidom", columnList = "apellidom") })
 @EntityListeners({ AuditingEntityListener.class, AuditoryEmpleadosListener.class })
 @NamedQueries({ @NamedQuery(name = "Empleados.findAll", query = "SELECT e FROM Empleados e") })
-public class Empleados extends AuditableDateEntity implements Serializable {
+public class Empleados extends AuditableDateEntity implements Serializable,Persistable<Long> {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Basic(optional = false)
 	@Column(name = "id")
 	private Long id;
-	@Column(name = "NEmpleado")
-	private Long NEmpleado;
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "edad")
-	private int edad;
-	@NotNull
+	@Transient
+	private boolean isNew=true; 
+	@Transient
+	private boolean updateAction = false; 
 	@Column(name = "fechaIngreso")
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fechaIngreso;
-	@NotNull
+	@Column(name = "fechaIngresoH")
+	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fechaIngresoH;
 	@Column(name = "fechaNacimiento")
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fechaNacimiento;
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "salario")
-	private BigDecimal salario;
-	@Basic(optional = false)
-	@NotNull
-	@Size(max = 255)
+	@Size(max = 10)
+	@Column(name = "telefonoEmer")
+	private String telefonoEmer;
+	@Size(max = 10)
 	@Column(name = "telefono")
 	private String telefono;
-	@Size(max = 255)
+	@Size(max = 550)
+	@Column(name = "nombreCompleto")
+	private String nombreCompleto;
+	@Size(max = 100)
 	@Column(name = "apellidom")
 	private String apellidom;
-	@Size(max = 255)
+	@Size(max = 100)
 	@Column(name = "apellidop")
 	private String apellidop;
-	@Size(max = 255)
+	@Size(max = 100)
 	@Column(name = "correo")
 	private String correo;
 	@Size(max = 255)
 	@Column(name = "nombre")
 	private String nombre;
-	@Size(max = 255)
+	@Size(max = 15)
 	@Column(name = "sexo")
 	private String sexo;
+	@Size(max = 15)
+	@Column(name = "plaza")
+	private String plaza;
+	@Size(max = 12)
+	@Column(name = "claveP")
+	private String claveP;
+	@Size(max = 10)
+	@Column(name = "tipoContrato")
+	private String tipoContrato;
+	@Column(name = "activo")
+	private boolean activo;
+	@Size(max = 18)
+	@Column(name = "curp")
+	private String curp;
+	@Size(max = 14)
+	@Column(name = "rfc")
+	private String rfc;
+	@ManyToMany(mappedBy = "LTEmpledos", fetch = FetchType.LAZY)
+	private List<TurnosEntity> turnosEm = new ArrayList<>();
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_turno")
-	private  TurnosEntity turnosEntity;
+	@JoinColumn(name = "id_puesto")
+	private PuestosEntity puestosEntity;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_servicio")
+	private ServiciosEntity servicioEntity;
 	@OneToOne(mappedBy = "empleadoV", fetch = FetchType.LAZY)
 	private VacacionesEntity empleadoV;
+	@OneToOne(mappedBy = "sinavidEm", fetch = FetchType.LAZY)
+	private SINAVIDEntity sinavidEm;
+	@OneToOne(mappedBy = "domiEm", fetch = FetchType.LAZY, orphanRemoval = true)
+	private DomiciliosEntity domicilios;
+	@ManyToMany(mappedBy = "empleadoQN")
+	private List<QuincenasEntity> quincenas;
+	@OneToMany(mappedBy = "empleadoC")
+	private List<CuentasEntity> LCuentas = new ArrayList<>();
+	@OneToMany(mappedBy = "empleadoDD", fetch = FetchType.LAZY)
+	private List<DetalleDeduccionesEntiy> detalleDeducciones;
+	@OneToMany(mappedBy = "empleadoPer", fetch = FetchType.LAZY)
+	private List<DetallePersepcionesEntity> detallePercepcione;
+
+	
+	@Override
+	public boolean isNew() {
+		return !this.updateAction; 
+	}
+
+	@PostLoad
+	public void markNotNew() {
+		this.updateAction = true; 
+		this.isNew=false;
+	}
+
 	@Override
 	public String toString() {
-		return "ID=" + this.id + " APM=" + this.apellidom + " APP=" + this.apellidop + " NOMBRE=" + this.nombre
-				+ " SEXO=" + this.sexo + " CORREO=" + this.correo + " EDAD=" + this.edad + " FECHA=" + this.fechaIngreso
-				+ " SALARIO=" + this.salario + " TELEFONO=" + this.telefono;
+		return "Empleados [id=" + id + ", isNew=" + isNew + ", updateAction=" + updateAction + ", fechaIngreso="
+				+ fechaIngreso + ", fechaIngresoH=" + fechaIngresoH + ", fechaNacimiento=" + fechaNacimiento
+				+ ", telefonoEmer=" + telefonoEmer + ", telefono=" + telefono + ", nombreCompleto=" + nombreCompleto
+				+ ", apellidom=" + apellidom + ", apellidop=" + apellidop + ", correo=" + correo + ", nombre=" + nombre
+				+ ", sexo=" + sexo + ", plaza=" + plaza + ", claveP=" + claveP + ", tipoContrato=" + tipoContrato
+				+ ", activo=" + activo + ", curp=" + curp + ", rfc=" + rfc + ", empleadoV=" + empleadoV + "]";
 	}
 
 }

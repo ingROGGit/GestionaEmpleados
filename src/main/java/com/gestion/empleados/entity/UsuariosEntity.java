@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @Entity
-@Table(name = "usuarios", catalog = "db_gestion_empleados", schema = "public")
+@Table(name = "usuarios", catalog = "db_gestion_empleados2", schema = "public")
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners({ AuditingEntityListener.class,AuditoryUsuariosListener.class})
@@ -58,5 +58,10 @@ public class UsuariosEntity extends AuditableDateEntity implements Serializable 
     @ManyToMany(fetch=FetchType.EAGER,targetEntity = RoleEntity.class, cascade = CascadeType.PERSIST)
     @JoinTable(name="usu_roles", joinColumns = @JoinColumn(name="usu_id"),inverseJoinColumns = @JoinColumn(name="role_id"))
     private Set<RoleEntity> roles;
-    
+
+	@Override
+	public String toString() {
+		return "UsuariosEntity [id=" + id + ", username=" + username + ", bloqueado=" + bloqueado + ", disabled="
+				+ disabled + "]";
+	}    
 }

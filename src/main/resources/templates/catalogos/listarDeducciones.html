@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en"> <!--begin::Head-->
+
+<head th:replace="headAll :: html_head" />
+
+<body th:replace="menu :: menuAll" />
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->
+	<div th:replace="div-header :: divHeader" />
+	<!-- /.content-header -->
+
+	<!-- Main content -->
+	<main class="app-main"> <!--begin::App Content Header-->
+		<section class="content">
+			<div class="container-fluid">
+				<div class="py-4 ml-5 mr-5">
+					<div class="carf bg-light">
+						<!--								<div class="sidebar-brand"> -->
+						<!--									<a href="menu" class="brand-link"> -->
+						<!--										<span class="brand-text fw-light" th:text="${titulo}"></span>-->
+						<!--								</div> -->
+						<div class="card-body col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+							<link rel="stylesheet"
+								href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+								integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+								crossorigin="anonymous">
+							<div th:if="${fileExDownload}" class="alert alert-primary alert-dismissible fade show"
+								role="alert">
+								<span aria-hidden="true">&times;</span>
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true"
+										th:text="${'El reporte se encuentra en proceso de Generacion o ya fue descargado'}">&times;</span>
+								</button>
+							</div>
+							<h4 class="card-title" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+								<a th:href="@{/catalogos/exportarPDF?TIPOEXPOR=CDED}" class="btn btn-secondary">Exportar a PDF</a>
+<!--								<a th:href="@{/catalogos/exportarExcelThread?TIPOEXPOR=CDED}"-->
+<!--									class="btn btn-success link-Download">Exportar a-->
+<!--									Excel</a>-->
+								<a th:if="${fileExDownload}" th:href="@{/empleados/FileExcel}"
+									class="btn btn-success">Descargar Reporte</a>
+								<h2>
+									<input class="form-control" id="search" type="text" placeholder="Buscar..">
+
+								</h2>
+
+							</h4>
+							<div class="contenedor-tabla">
+								<table id="EmTable" class="table table-striped">
+									<!--							<table id="EmTable"	class="table table-striped table-bordered" style="width:100%">-->
+									<thead>
+										<tr>
+											<th>CLAVE</th>
+											<th>DESCRIPCION</th>
+											<th class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Acciones</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="dedu : ${deducciones}">
+											<td th:text="${dedu.clave}"></td>
+											<td th:text="${dedu.descripcion}"></td>
+											<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')"
+												class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+<!--												<a class="btn btn-info btn-sm link-detail"-->
+<!--													th:href="@{/catalogos/verDeduccion/} + ${dedu.id}">Detalles</a>-->
+<!--												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')"-->
+<!--													class="btn btn-warning btn-sm link-EmpleadoEdit"-->
+<!--													th:href="@{/catalogos/formDeduccion/} + ${dedu.id}">Editar</a>-->
+												<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger btn-sm"
+													th:href="@{/catalogos/eliminarDeduccion/} + ${dedu.id}"
+													onclick="return confirm('Esta seguro de Eliminar el Empleado');">Eliminar</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<nav th:replace="paginator-nav :: paginator"></nav>
+						</div>
+					</div>
+					<div id="modalDetaills" class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog"
+						aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-xl" role="document">
+							<div class="modal-content">
+							</div>
+						</div>
+					</div>
+					<div id="modalDownload" class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog"
+						aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-xl" role="document">
+							<div class="modal-content">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalLabel">Descarga de Reportes</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal"
+											aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<span aria-hidden="true">&times;</span>
+										<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+											<span aria-hidden="true" th:text="${'El Reporte se esta ejecutando en segundo plano Favor de esperar unos minutos y
+										dar clic en  Descargar Reporte'}">&times;</span>
+										</button>
+
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary"
+											data-dismiss="modal">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<script>
+					$(document).ready(function () {
+
+						$("#search").keyup(function () {
+
+							_this = this;
+							$.each($("#EmTable tbody tr"), function () {
+
+								if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+
+									$(this).hide();
+
+								else
+
+									$(this).show();
+
+							});
+
+						});
+
+					});
+					$(document).ready(function () {
+						$(".link-detail").on("click", function (e) {
+							e.preventDefault();
+							$("#modalDetaills").modal("show").find(".modal-content").load($(this).attr("href"));
+						});
+					});
+					$(document).ready(function () {
+						$(".link-EmpleadoEdit").on("click", function (e) {
+							e.preventDefault();
+							$("#modalDetaills").modal("show").find(".modal-content").load($(this).attr("href"));
+						});
+					});
+					$(document).ready(function () {
+						$(".link-Download").on("click", function (e) {
+							e.preventDefault();
+							$("#modalDownload").modal("show").load($(this).attr("href"));
+						});
+					});
+				</script>
+				<style>
+					.contenedor-tabla {
+						height: 400px;
+						/* Altura fija para el contenedor */
+						overflow-y: auto;
+						/* Barra de desplazamiento vertical si el contenido excede la altura */
+						overflow-x: auto;
+						/* Barra de desplazamiento horizontal si el contenido excede el ancho */
+						border: 1px solid #ccc;
+						/* Opcional: para visualizar el contenedor */
+					}
+
+					/* Para mantener el encabezado fijo */
+					.contenedor-tabla table {
+						width: 100%;
+						/* O un ancho fijo para la tabla */
+						border-collapse: collapse;
+					}
+
+					.contenedor-tabla thead {
+						position: sticky;
+						top: 0;
+						background-color: #f2f2f2;
+						/* Para que no se transparente */
+						z-index: 1;
+					}
+
+					/* Estilos básicos para celdas (opcional) */
+					.contenedor-tabla th,
+					.contenedor-tabla td {
+						border: 1px solid #ddd;
+						padding: 8px;
+						text-align: left;
+					}
+				</style>
+				<footer th:replace="layout/layout :: footer"></footer>
+			</div><!-- /.container-fluid -->
+		</section>
+		<!-- /.content -->
+	</main> <!--end::App Main--> <!--begin::Footer-->
+
+</div>
+<!-- /.content-wrapper -->
+<footer th:replace="footerAll :: html_footer" />
+
+</html>

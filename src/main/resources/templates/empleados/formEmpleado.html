@@ -52,7 +52,7 @@
 						<div class="row">
 							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 								<label>Numero Empleado: </label>
-								<input type="number" th:field="*{NEmpleado}" class="form-control"
+								<input type="number" th:field="*{id}" class="form-control"
 									th:errorClass="'form-control alert-danger'" />
 								<label>Edad: </label>
 								<input type="number" th:field="*{edad}" class="form-control"
@@ -79,6 +79,13 @@
 									<option th:value='F'>Femenino</option>
 									<option th:value='Otro'>Otro</option>
 								</select>
+<!--								<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">-->
+								<label>Fecha Ingreso: </label>
+								<input type="date" th:field="*{fechaIngreso}" class="form-control"
+									th:errorClass="'form-control alert-danger'" />
+								<small class="form-text text-danger" th:if="${#fields.hasErrors('fechaIngreso')}"
+									th:errors="*{fechaIngreso}"></small>
+<!--							</div>-->
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 								<label>Apellido Paterno: </label>
@@ -111,19 +118,33 @@
 							</div>
 						</div>
 						<div class="row">
+							
 							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-								<label>Fecha Ingreso: </label>
-								<input type="date" th:field="*{fechaIngreso}" class="form-control"
-									th:errorClass="'form-control alert-danger'" />
-								<small class="form-text text-danger" th:if="${#fields.hasErrors('fechaIngreso')}"
-									th:errors="*{fechaIngreso}"></small>
+								<label>RFC: </label>
+								<input type="text" th:field="*{rfc}" class="form-control"
+									th:errorClass="'form-control alert-danger'" maxlength="13"/>
+								<small class="form-text text-danger" th:if="${#fields.hasErrors('rfc')}"
+									th:errors="*{rfc}"></small>
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-								<label>Salario: </label>
-								<input type="number" th:field="*{salario}" class="form-control"
-									th:errorClass="'form-control alert-danger'" />
-								<small class="form-text text-danger" th:if="${#fields.hasErrors('salario')}"
-									th:errors="*{salario}"></small>
+								<label>CURP: </label>
+								<input type="text" th:field="*{curp}" class="form-control"
+									th:errorClass="'form-control alert-danger'" maxlength="18"/>
+								<small class="form-text text-danger" th:if="${#fields.hasErrors('curp')}"
+									th:errors="*{curp}"></small>
+							</div>							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+								<label>Clave Puesto: </label>
+								<input type="text" th:field="*{claveP}" class="form-control"
+									th:errorClass="'form-control alert-danger'" maxlength="18"/>
+								<small class="form-text text-danger" th:if="${#fields.hasErrors('claveP')}"
+									th:errors="*{claveP}"></small>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+								<label>Plaza: </label>
+								<input type="text" th:field="*{plaza}" class="form-control"
+									th:errorClass="'form-control alert-danger'" maxlength="18"/>
+								<small class="form-text text-danger" th:if="${#fields.hasErrors('plaza')}"
+									th:errors="*{plaza}"></small>
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 							</div>

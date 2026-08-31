@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en"> <!--begin::Head-->
+
+<head th:replace="headAll :: html_head" />
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+<!--<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+	integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<!-- daterange picker -->
+<link rel="stylesheet" href="../../distV32/plugins/daterangepicker/daterangepicker.css">
+<!-- iCheck for checkboxes and radio inputs -->
+<link rel="stylesheet" href="../../distV32/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+<!-- Bootstrap Color Picker -->
+<link rel="stylesheet" href="../../distV32/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+<!-- Tempusdominus Bootstrap 4 -->
+<link rel="stylesheet" href="../../distV32/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+<!-- Select2 -->
+<link rel="stylesheet" href="../../distV32/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="../../distV32/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="../../distV32/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+<!-- BS Stepper -->
+<link rel="stylesheet" href="../../distV32/plugins/bs-stepper/css/bs-stepper.min.css">
+<!-- dropzonejs -->
+<link rel="stylesheet" href="../../distV32/plugins/dropzone/min/dropzone.min.css">
+
+<body th:replace="menu :: menuAll" />
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->
+	<div th:replace="div-header :: divHeader" />
+	<!-- /.content-header -->
+	<!-- Main content -->
+	<main class="app-main"> <!--begin::App Content Header-->
+		<section class="content">
+			<div class="container-fluid">
+				<div class="py-4 ml-5 mr-5">
+					<div class="card card-default collapsed-card">
+						<div class="card-header">
+							<h3 class="card-title">Filtros de Busqueda</h3>
+							<div class="card-tools">
+								<button type="button" class="btn btn-tool" data-card-widget="collapse">
+									<i class="fas fa-minus"></i>
+								</button>
+							</div>
+						</div>
+						<div class="card-body" style="display: none;">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<form th:action="@{'/cfdi/'+${funLista}}" th:object="${filtros}" id="searchForm2"
+									method="post">
+									<div class="row">
+										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<label>Quincena: </label>
+											<select class="form-control" id="dropDownList" th:field="${filtros.qna}">
+												<option value="">select QNA</option>
+												<option th:each="qna : ${LquincenasCat}" th:value="${qna}"
+													th:text="${qna}"></option>
+											</select>
+										</div>
+										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<label class="mr-sm-2" for="estatus">Tipo Contrato</label>
+											<select class="form-control form-control-sm"
+												th:field="${filtros.tipoContrato}">
+												<option value="">-- Seleccione --</option>
+												<option value="BASE">BASE</option>
+												<option value="EVENTUAL">EVENTUAL</option>
+												<option value="RESIDENTES">RESIDENTES</option>
+											</select>
+										</div>
+										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<label class="mr-sm-2" for="estatus">Estatus</label>
+											<select class="form-control form-control-sm" th:field="${filtros.status}">
+												<option value="">-- Seleccione --</option>
+												<option value="Activo">Activo</option>
+												<option value="Baja">Baja</option>
+											</select>
+										</div>
+										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<label>Fecha Ingreso Instituto: </label>
+											<div class="input-group">
+												<div class="input-group-prepend">
+													<span class="input-group-text"><i class="far fa-clock"></i></span>
+												</div>
+												<input type="text" th:field="${filtros.rangeFecha}"
+													class="form-control float-right" id="rangeFecha">
+
+											</div>
+										</div>
+
+										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<label>Puesto: </label>
+											<select class="form-control" id="dropDownList" th:field="${filtros.puesto}">
+												<option value="">select</option>
+												<option th:each="puesto : ${lpuesto}" th:value="${puesto}"
+													th:text="${puesto}"></option>
+											</select>
+										</div>
+										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<label>Servicio: </label>
+											<select class="form-control" id="dropDownList"
+												th:field="${filtros.servicio}">
+												<option value="">select</option>
+												<option th:each="servicio : ${lservicio}" th:value="${servicio}"
+													th:text="${servicio}"></option>
+											</select>
+										</div>
+
+										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<label>Tipo Pago: </label>
+											<select class="form-control form-control-sm" th:field="${filtros.tipoPago}">
+												<option value="">-- Seleccione --</option>
+												<option value="Recibo">Recibo</option>
+												<option value="Cheque">Cheque</option>
+												<option value="TEMPORAL">TEMPORAL</option>
+											</select>
+										</div>
+									</div>
+									<div class="row" style="float: right;">
+										<br>
+										<button type="submit" class="btn btn-primary pull-right">Buscar</button>
+									</div>
+								</form>
+							</div>
+
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-header">
+							<div th:if="${message != null}"
+								class="alert alert-success alert-dismissible fade show text-center message"
+								role="alert">
+								[[${message}]]
+								<button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<form th:action="@{'/'+${funLista}}" id="searchForm">
+									<div class="row">
+										<div class="col-lg-4 col-md-4 col-sm-8 col-xs-12">
+											<div class="input-group">
+												<div class="input-group-prepend">
+													<span class="input-group-text"><i class="fa fa-search"></i></span>
+												</div>
+												<input id="keyword" type="search" name="keyword" th:value="${keyword}"
+													required class="form-control" placeholder="Ingrese testo"
+													title="Busca el texto ingresado en UUID serie o Folio">
+												<button type="submit" class="btn btn-secondary">Buscar</button>
+											</div>
+										</div>
+										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<div class="input-group-prepend">
+												<label class="input-group-text" for="pageSize">Items por pagina:</label>
+												<select form="searchForm" name="size" th:value="${pageSize}"
+													onchange="changePageSize()" class="size-select" id="pageSize">
+													<option th:each="s : ${ {500,1000,5000,6000} }" th:value="${s}"
+														th:text="${s}" th:selected="${s == pageSize}"></option>
+												</select>
+												<button id="btnClear" class="btn btn-info">Clear</button>
+											</div>
+										</div>
+										<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" style="float: right;">
+											<h4 class="card-title">
+											</h4>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+											<div class="input-group-prepend">
+												<label class="input-group-text" for="pageSize">Exportar:</label>
+												<a th:href="@{/quincena/exportarPDF}" class="btn btn-info">PDF</a>
+												<a th:href="@{/quincena/exportarExcel}" class="btn btn-info">Excel</a>
+											</div>
+										</div>
+										<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" style="float: right;">
+											<h4 class="card-title">
+											</h4>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="card-body" style="overflow-x: auto;">
+							<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+							<link rel="stylesheet" href="https://unpkg.com">
+<!--							<table class="table table-hover table-responsive-xl" data-toggle="table" data-filter-control="true">-->
+								<table class="table table-hover w-auto text-nowrap" data-toggle="table" data-filter-control="true">
+								<thead class="thead-light">
+									<tr>
+<!--										<th th:replace="fragments/sorting :: sorting('empleadoQN.id','ID')"></th>-->
+<!--										<th-->
+<!--											th:replace="fragments/sorting :: sorting('empleadoQN.nombreCompleto','Nombre')">-->
+<!--										</th>-->
+<!--										<th th:replace="fragments/sorting :: sorting('empleadoQN.rfc','RFC')"></th>-->
+<!--										<th th:replace="fragments/sorting :: sorting('empleadoQN.curp','CURP')"> </th>-->
+<!--										<th-->
+<!--											th:replace="fragments/sorting :: sorting('empleadoQN.tipoContrato','Contrato')">-->
+<!--										</th>-->
+<!--										<th th:replace="fragments/sorting :: sorting('tipoPago','Tipo Pago')"></th>-->
+<!--										<th th:replace="fragments/sorting :: sorting('sueldoPre','Sueldo Pre')"></th>-->
+<!--										<th th:replace="fragments/sorting :: sorting('sueldoNeto','Sueldo Neto')"></th>-->
+<!--										<th th:replace="fragments/sorting :: sorting('folio','Folio')"></th>-->
+<!--										<th-->
+<!--											th:replace="fragments/sorting :: sorting('empleadoQN.fechaIngreso','Fecha Instituto')">-->
+<!--										</th>-->
+<!--										<th-->
+<!--											th:replace="fragments/sorting :: sorting('empleadoQN.puestosEntity.puesto','Puesto')">-->
+<!--										</th>-->
+											<tr>
+										      <th data-field="id" data-filter-control="input">ID</th>
+										      <th data-field="nombre" data-filter-control="select">NOMBRE</th>
+										      <th data-field="rfc" data-filter-control="select">RFC</th>
+										      <th data-field="curp" data-filter-control="select">CURP</th>
+										      <th data-field="tipoContrato" data-filter-control="select">TIPO CONTRATO</th>
+										      <th data-field="tipoPago" data-filter-control="select">TIPO PAGO</th>
+										      <th data-filter-control="select">SUELDO PRE</th>
+										      <th data-filter-control="select">SUELDO NETO</th>
+										      <th data-filter-control="select">FOLIO</th>
+										      <th data-field="fecha" data-filter-control="select">FECHA INSTITUTO</th>
+										      <th data-field="puesto" data-filter-control="select">PUESTO</th>
+										    	<th>Acciones</th>
+										    </tr>
+										
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="quin : ${quincena}" th:if="${quin != null}">
+        
+        							<tr th:each="emp : ${quin.empleadoQN}" th:if="${emp != null}">
+										<td scope="row">[[${emp.id}]]</td>
+										<td>[[${emp.nombreCompleto}]]</td>
+										<td>[[${emp.rfc}]]</td>
+										<td>[[${emp.curp}]]</td>
+										<td>[[${emp.tipoContrato}]]</td>
+										<td>[[${quin.tipoPago}]]</td>
+										<td>[[${quin.sueldoPre}]]</td>
+										<td>[[${quin.sueldoNeto}]]</td>
+										<td th:if="${quin.folioPre !=null and quin.folioQuin==null}" >[[${quin.folioPre}]]</td>
+										<td th:if="${quin.folioQuin!=null}" >[[${quin.folioQuin}]]</td>
+										<td >[[${emp.fechaIngreso}]]</td>
+            							<td>[[${emp?.puestosEntity?.puesto}]]</td>
+										<td>
+											<a class="btn btn-info btn-sm link-detail" title="Muestra informacion del CFDI"
+												th:href="@{'/cfdi/'+${funVer}+'/' + ${emp.id}}"><span><i
+														class="fa-regular fa-pen-to-square icon-dark"></i></span>Detalles</a>
+											<a class="btn btn-warning btn-sm"
+												sec:authorize="hasAnyRole('ROLE_SUPERAD','ROLE_ADMIN')"
+												title="Consulta Estatus del CFDI directo en el SAT"
+												th:href="@{'/cfdi/'+${funStatus}+'/' + ${emp.id}}"
+												onclick="return confirm('Esta seguro de Bloquear el Usuario');"><span><i
+														class="fas fa-1x fa-sync-alt"></i></span> Valida Estatus</a>
+										</td>
+									</tr>
+									</th:block>
+								</tbody>
+							</table>
+							<script src="https://unpkg.com"></script>
+							<script src="https://unpkg.com"></script>
+							<nav aria-label="Pagination" th:if="${totalPages > 0}">
+								<ul class="pagination justify-content-center">
+									<li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+										<a th:replace="fragments/paging :: paging(1, '<<', 'First Page')"></a>
+									</li>
+									<li class="page-item font-weight-bold"
+										th:classappend="${currentPage == 1} ? 'disabled'">
+										<a
+											th:replace="fragments/paging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
+									</li>
+									<li class="page-item disabled" th:if="${currentPage - 2 > 1}">
+										<a class="page-link" href="#">...</a>
+									</li>
+									<li class="page-item" th:classappend="${page == currentPage} ? 'active'"
+										th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
+										<a
+											th:replace="fragments/paging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
+									</li>
+									<li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
+										<a class="page-link" href="#">...</a>
+									</li>
+									<li class="page-item font-weight-bold"
+										th:classappend="${currentPage == totalPages} ? 'disabled'">
+										<a
+											th:replace="fragments/paging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
+									</li>
+									<li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+										<a
+											th:replace="fragments/paging :: paging(${totalPages}, '>>', 'Last Page')"></a>
+									</li>
+								</ul>
+							</nav>
+							<div id="modalDetaills" class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog"
+								aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+								<div class="modal-dialog modal-xl" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">Detalles</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true"></span>
+											</button>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary"
+												data-dismiss="modal">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script>
+								$(document).ready(function () {
+									$("#btnClear").on("click", function (e) {
+										e.preventDefault();
+										$("#keyword").text("");
+										window.location = "[[@{'/cfdi/'+${funLista}}]]";
+									});
+								});
+								function cleanFE() {
+									$('#rangeFecha').datepicker('clear');
+								};
+								function changePageSize() {
+									$("#searchForm").submit();
+								}
+								$(document).ready(function () {
+									$(".link-detail").on("click", function (e) {
+										e.preventDefault();
+										$("#modalDetaills").modal("show").find(".modal-content").load($(this).attr("href"));
+									});
+								});
+							</script>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div th:replace="/footerAll :: html_footer"></div>
+			<footer th:replace="layout/layout :: footer"></footer>
+</div><!-- /.container-fluid -->
+<script src="../../ajax/autocomplete/jquery-ui.js"></script>
+<script src="../../distV32/plugins/inputmask/jquery.inputmask.js"></script>
+<script src="../../distV32/plugins/select2/js/select2.full.min.js"></script>
+<!--		<script src="../../distV32/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>-->
+<script src="../../distV32/plugins/inputmask/jquery.inputmask.min.js"></script>
+<script src="../../distV32/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+<script src="../../distV32/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+<script src="../../distV32/plugins/bs-stepper/js/bs-stepper.min.js"></script>
+<script src="../../distV32/plugins/dropzone/min/dropzone.min.js"></script>
+<script src="../../distV32/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script>
+	$(function () {
+
+		//Initialize Select2 Elements
+		$('.select2').select2()
+
+		//Initialize Select2 Elements
+		$('.select2bs4').select2({
+			theme: 'bootstrap4'
+		})
+
+		//Datemask dd/mm/yyyy
+		$('#datemask').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
+		//Datemask2 mm/dd/yyyy
+		$('#datemask2').inputmask('mm/dd/yyyy', {'placeholder': 'mm/dd/yyyy'})
+		//Money Euro
+		$('[data-mask]').inputmask()
+
+		//Date picker
+		$('#reservationdate').datetimepicker({
+			format: 'L'
+		});
+
+		//Date and time picker
+		$('#reservationdatetime').datetimepicker({icons: {time: 'far fa-clock'}});
+
+		//Date range picker
+		$('#reservation').daterangepicker()
+
+		$('#rangeFecha').daterangepicker({
+			autoUpdateInput: true,
+			locale: {
+				format: 'YYYY-MM-DD',
+			}
+		});
+		$('#rangeFecha').on('cancel.daterangepicker', function (ev, picker) {
+			$(this).val('');
+		});
+		//Date range as a button
+		$('#daterange-btn').daterangepicker(
+			{
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+				},
+				startDate: moment().subtract(29, 'days'),
+				endDate: moment()
+			},
+			function (start, end) {
+				$('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+			}
+		)
+
+		//Timepicker
+		$('#timepicker').datetimepicker({
+			format: 'LT'
+		})
+
+		//Colorpicker
+		$('.my-colorpicker1').colorpicker()
+		//color picker with addon
+		$('.my-colorpicker2').colorpicker()
+
+		$('.my-colorpicker2').on('colorpickerChange', function (event) {
+			$('.my-colorpicker2 .fa-square').css('color', event.color.toString());
+		})
+
+		$("input[data-bootstrap-switch]").each(function () {
+			$(this).bootstrapSwitch('state', $(this).prop('checked'));
+		})
+
+	})
+	// BS-Stepper Init
+	//	document.addEventListener('DOMContentLoaded', function () {
+	//		window.stepper = new Stepper(document.querySelector('.bs-stepper'))
+	//	})
+
+	// DropzoneJS Demo Code Start
+	Dropzone.autoDiscover = false
+
+</script>
+</section>
+<!-- /.content -->
+</main> <!--end::App Main--> <!--begin::Footer-->
+
+</div>
+<!-- /.content-wrapper -->
+
+</html>

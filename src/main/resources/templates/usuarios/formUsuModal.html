@@ -12,7 +12,7 @@
 				</div>
 			</div>
 			<!--								<h1 class="text-center" th:text="${titulo}"></h1>-->
-			<form th:action="@{/usuarios/formUsuN}" th:object="${usu}" method="post">
+			<form th:action="@{/usuarios/formUsuUP}" th:object="${usu}" method="post">
 				<input type="hidden" th:field="*{id}" th:value="${usu.id}" />
 				<div class="form-group">
 					<label>Nombre: </label>
@@ -24,7 +24,7 @@
 				<div class="form-group">
 					<label>Contraseña: </label>
 					<input type="password" th:field="${usu.pass}" class="form-control"
-						th:errorClass="'form-control alert-danger'" minlength="5" required autocomplete="off"
+						th:errorClass="'form-control alert-danger'" minlength="5" autocomplete="off"
 						pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}" />
 					<small class="form-text text-danger" th:if="${#fields.hasErrors('pass')}"
 						th:errors="${usu.pass}"></small>

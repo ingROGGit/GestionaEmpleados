@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Vacaciones", catalog = "db_gestion_empleados", schema = "public")
+@Table(name = "Vacaciones", catalog = "db_gestion_empleados2", schema = "public")
 @EntityListeners({ AuditingEntityListener.class})
 public class VacacionesEntity extends AuditableDateEntity implements Serializable {
 private static final long serialVersionUID = 1L;
@@ -152,4 +152,13 @@ private static final long serialVersionUID = 1L;
 	@OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_Empleado") // This remains the owning side, holds the FK
     private Empleados empleadoV;
+	@Override
+	public String toString() {
+		return "VacacionesEntity [id=" + id + ", diasVacaciones=" + diasVacaciones + ", diasDisfrutados="
+				+ diasDisfrutados + ", diasRestantes=" + diasRestantes + ", dia1=" + dia1 + ", dia2=" + dia2 + ", dia3="
+				+ dia3 + ", dia4=" + dia4 + ", dia5=" + dia5 + ", dia6=" + dia6 + ", dia7=" + dia7 + ", dia8=" + dia8
+				+ ", dia9=" + dia9 + ", dia10=" + dia10 + ", dia11=" + dia11 + ", dia12=" + dia12 + ", dia13=" + dia13
+				+ ", dia14=" + dia14 + ", dia15=" + dia15 + ", dia16=" + dia16 + ", dia17=" + dia17 + ", dia18=" + dia18
+				+ ", dia19=" + dia19 + ", dia20=" + dia20 + "]";
+	}
 }
