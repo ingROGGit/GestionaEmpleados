@@ -54,10 +54,10 @@ public class DomiciliosEntity extends AuditableDateEntity implements Serializabl
 	@Column(name = "calle")
 	private String calle;
 	@NotNull
-	@Size(max = 5)
+	@Size(max = 10)
 	@Column(name = "numExt")
 	private String numExt;
-	@Size(max = 5)
+	@Size(max = 10)
 	@Column(name = "numInt")
 	private String numInt;
 	@NotNull

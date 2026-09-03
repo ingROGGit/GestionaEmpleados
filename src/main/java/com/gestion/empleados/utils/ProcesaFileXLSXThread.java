@@ -37,83 +37,92 @@ import org.springframework.stereotype.Service;
 
 import com.gestion.empleados.entity.BancosEntity;
 import com.gestion.empleados.entity.CatCPJALEntity;
+import com.gestion.empleados.entity.CuentasEntity;
 import com.gestion.empleados.entity.DeduccionesEntity;
 import com.gestion.empleados.entity.DetalleDeduccionesEntiy;
 import com.gestion.empleados.entity.DetallePersepcionesEntity;
+import com.gestion.empleados.entity.DomiciliosEntity;
 import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.PersepcionesEntity;
 import com.gestion.empleados.entity.PuestosEntity;
 import com.gestion.empleados.entity.QuincenaCatEntity;
 import com.gestion.empleados.entity.QuincenasEntity;
 import com.gestion.empleados.entity.ReglasDiasEntity;
+import com.gestion.empleados.entity.SINAVIDEntity;
 import com.gestion.empleados.entity.ServiciosEntity;
 import com.gestion.empleados.entity.TurnosEntity;
 import com.gestion.empleados.entity.VacacionesEntity;
 import com.gestion.empleados.repository.BancosRepositoryJPA;
 import com.gestion.empleados.repository.CatCPJALRepositoryJPA;
+import com.gestion.empleados.repository.CuentasRepositoryJPA;
+import com.gestion.empleados.repository.CuentasRepositoryJPA;
 import com.gestion.empleados.repository.DeduccionesRepositoryJPA;
 import com.gestion.empleados.repository.DetalleDeduccionesRepositoryJPA;
 import com.gestion.empleados.repository.DetallePersepcionesRepositoryJPA;
+import com.gestion.empleados.repository.DomicilioRepositoryJPA;
 import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
 import com.gestion.empleados.repository.PersepcionesRepositoryJPA;
 import com.gestion.empleados.repository.PuestosRepositoryJPA;
 import com.gestion.empleados.repository.QuincenaRepositoryJPA;
 import com.gestion.empleados.repository.QuincenasCatRepositoryJPA;
 import com.gestion.empleados.repository.ReglasDiasRepository;
+import com.gestion.empleados.repository.SINAVIDRepositoryJPA;
 import com.gestion.empleados.repository.ServiciosRepositoryJPA;
 import com.gestion.empleados.repository.TurnosRepositoryJPA;
 import com.gestion.empleados.repository.VacacionesRepository;
 import com.gestion.empleados.service.EmpleadoService;
+
+import jakarta.transaction.Transactional;
+
 import java.math.RoundingMode;
 
 @Service
 public class ProcesaFileXLSXThread {
-
+	@Autowired
 	private EmpleadosRepositoryJPA empleadosJPA;
-	private TurnosRepositoryJPA trunosRJPA;
+	@Autowired
+	private TurnosRepositoryJPA trunosJPA;
+	@Autowired
 	private PuestosRepositoryJPA puestosJPA;
+	@Autowired
 	private ServiciosRepositoryJPA serviciosJPA;
+	@Autowired
 	private VacacionesRepository vacacionesRJPA;
+	@Autowired
 	private ReglasDiasRepository reglasDiasRJPA;
+	@Autowired
 	private QuincenasCatRepositoryJPA quincenasCatJPA;
+	@Autowired
 	private PersepcionesRepositoryJPA persepcionesJPA;
+	@Autowired
 	private DeduccionesRepositoryJPA deduccionesJPA;
+	@Autowired
 	private BancosRepositoryJPA bancosJPA;
+	@Autowired
 	private CatCPJALRepositoryJPA catCPJALRepositoryJPA;
+	@Autowired
 	private DetallePersepcionesRepositoryJPA detallePerJPA;
+	@Autowired
 	private DetalleDeduccionesRepositoryJPA detalleDedJPA;
 	@Autowired
 	private QuincenaRepositoryJPA quincenaJPA;
-	
-	public ProcesaFileXLSXThread(EmpleadosRepositoryJPA empleadoService, TurnosRepositoryJPA trunosRJPA,
-			VacacionesRepository vacacionesRJPA, ReglasDiasRepository reglasDiasRJPA, PuestosRepositoryJPA puestosJPA,
-			ServiciosRepositoryJPA serviciosJPA, QuincenasCatRepositoryJPA quincenasCatJPA,
-			PersepcionesRepositoryJPA persepcionesJPA, DeduccionesRepositoryJPA deduccionesJPA,
-			BancosRepositoryJPA bancosJPA, CatCPJALRepositoryJPA catCPJALRepositoryJPA,
-			DetallePersepcionesRepositoryJPA detallePerJPA, DetalleDeduccionesRepositoryJPA detalleDedJPA) {
-		this.empleadosJPA = empleadoService;
-		this.trunosRJPA = trunosRJPA;
-		this.vacacionesRJPA = vacacionesRJPA;
-		this.reglasDiasRJPA = reglasDiasRJPA;
-		this.puestosJPA = puestosJPA;
-		this.serviciosJPA = serviciosJPA;
-		this.quincenasCatJPA = quincenasCatJPA;
-		this.persepcionesJPA = persepcionesJPA;
-		this.deduccionesJPA = deduccionesJPA;
-		this.bancosJPA = bancosJPA;
-		this.catCPJALRepositoryJPA = catCPJALRepositoryJPA;
-		this.detallePerJPA = detallePerJPA;
-		this.detalleDedJPA = detalleDedJPA;
-	}
+	@Autowired
+	private ProcesServiceTransactional procesTransactional;
+	@Autowired
+	private CuentasRepositoryJPA cuentasJPA;
+	@Autowired
+	private DomicilioRepositoryJPA domiJPA;
+	@Autowired
+	private SINAVIDRepositoryJPA sinavidJPA;
 
 	@Async
 	public void run(File fileProces, String tipoCarga, String quinString) {
+
 		try {
 			OPCPackage pkg = null;
 			Workbook Workbook = null;
 			Sheet Sheet = null;
 			try {
-
 				LocalDate hoy = LocalDate.now();
 				Workbook = WorkbookFactory.create(fileProces);
 				for (int h = 0; h < Workbook.getNumberOfSheets(); h++) {
@@ -133,6 +142,7 @@ public class ProcesaFileXLSXThread {
 										banco = BancosEntity.builder().banco(Row.getCell(0).getStringCellValue().trim())
 												.nombre(Row.getCell(1).getStringCellValue().trim()).build();
 										this.bancosJPA.save(banco);
+										this.bancosJPA.saveAndFlush(banco);
 									}
 								}
 							}
@@ -302,10 +312,16 @@ public class ProcesaFileXLSXThread {
 													emp.setPuestosEntity(this.puestosJPA.findById(0).get());
 													emp.setServicioEntity(this.serviciosJPA.findById(0).get());
 													emp.isNew();
-													this.empleadosJPA.save(emp);
+//												this.empleadosJPA.save(emp);
+//												saveTransactional(emp);
+													try {
+														procesTransactional.saveEmpleado(emp);
+													} catch (Exception err) {
+														err.printStackTrace();
+													}
 												}
 												quin = new QuincenasEntity();
-											} catch (Exception err) {
+											} catch (Throwable e) {
 											}
 											if (Row.getCell(0).getStringCellValue().contains("P")) {
 												String valor = Row.getCell(0).getStringCellValue();
@@ -496,7 +512,6 @@ public class ProcesaFileXLSXThread {
 												Date fecha = DateUtil.getJavaDate(Row.getCell(5).getNumericCellValue());
 												emp.setFechaIngreso(fecha);
 												emp.setClaveP(Row.getCell(7).getStringCellValue());
-												emp.markNotNew();
 												this.empleadosJPA.save(emp);
 											}
 
@@ -562,6 +577,7 @@ public class ProcesaFileXLSXThread {
 											Set<QuincenaCatEntity> lquiCat = new HashSet<>();
 											lquiCat.add(quinCat);
 											quin.setQuinCat(lquiCat);
+											quin.setTipoPago("TEMPORAL");
 											quincenaJPA.save(quin);
 											quin = null;
 										}
@@ -722,79 +738,259 @@ public class ProcesaFileXLSXThread {
 						}
 					}
 					if (tipoCarga.equals("CNOM")) {
-						
-					}
-					if (tipoCarga.equals("CEM")) {
-						if (Sheet.getSheetName().equals("Empleados")) {
-							List<ReglasDiasEntity> LReglasDias = reglasDiasRJPA.findAll();
-							ArrayList<TurnosEntity> ALTurnos = new ArrayList<>();
-							for (int r = 1; r <= rows; r++) {
-								Row = Sheet.getRow(r);
-								if (Row == null) {
-									break;
-								} else {
-									TurnosEntity turno = null;
-									turno = trunosRJPA.findByTurno(Row.getCell(9).getStringCellValue().trim());
-									if (turno == null) {
-										turno = TurnosEntity.builder().turno(Row.getCell(9).getStringCellValue().trim())
-												.build();
-										trunosRJPA.save(turno);
-										ALTurnos.add(turno);
-									}
-									String fechaIngreso;
-									Date fechaIngresoD = null;
-									WorkDates workD = new WorkDates();
-									LocalDate localDate = null;
-									try {
-										fechaIngreso = Row.getCell(7).getStringCellValue();
-										String[] splitfechas = fechaIngreso.split("DE");
-										DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-										localDate = LocalDate.parse(splitfechas[0].trim() + "/"
-												+ workD.getMM(splitfechas[1].trim()) + "/" + splitfechas[2].trim(),
-												formatter);
-										Instant instant = localDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
-										fechaIngresoD = Date.from(instant);
-									} catch (Exception err) {
-										fechaIngresoD = Row.getCell(7).getDateCellValue();
-									}
-									Empleados empleado = Empleados.builder()
-											.id((long) Row.getCell(2).getNumericCellValue())
-											.nombre(Row.getCell(4).getStringCellValue())
-											.apellidop(Row.getCell(5).getStringCellValue())
-											.apellidom(Row.getCell(6).getStringCellValue()).fechaIngreso(fechaIngresoD)
-											.fechaNacimiento(Row.getCell(11).getDateCellValue())
-											.sexo(Row.getCell(12).getStringCellValue())
-											.correo(Row.getCell(13).getStringCellValue())
-											.telefono(Long.toString((long) Row.getCell(14).getNumericCellValue()))
-//										.sueldoNeto(BigDecimal.valueOf(Row.getCell(15).getNumericCellValue()))
-											.turnosEm(ALTurnos)
-//											.edad((int) Row.getCell(10).getNumericCellValue())
-											.build();
-									this.empleadosJPA.save(empleado);
-									Period periodo = Period.between(localDate, hoy);
-									if (periodo.getMonths() < 6) {
-										VacacionesEntity vacaciones = VacacionesEntity.builder().diasDisfrutados(0)
-												.diasVacaciones(0).diasRestantes(0).empleadoV(empleado).build();
-										this.vacacionesRJPA.save(vacaciones);
-									} else if (periodo.getMonths() >= 6 && periodo.getMonths() < 12) {
-										VacacionesEntity vacaciones = VacacionesEntity.builder().diasDisfrutados(0)
-												.diasVacaciones(10).diasRestantes(10).empleadoV(empleado).build();
-										this.vacacionesRJPA.save(vacaciones);
-									} else {
-										for (ReglasDiasEntity RD : LReglasDias) {
-											if (periodo.getYears() >= RD.getDesde()
-													&& periodo.getYears() <= RD.getAsta()) {
-												VacacionesEntity vacaciones = VacacionesEntity.builder()
-														.diasDisfrutados(0).diasVacaciones(RD.getDias())
-														.diasRestantes(RD.getDias()).empleadoV(empleado).build();
-												this.vacacionesRJPA.save(vacaciones);
+						QuincenaCatEntity quinCat = this.quincenasCatJPA.findByIdQNA(quinString);
+						Empleados emp;
+						for (int r = 1; r <= rows; r++) {
+							Row = Sheet.getRow(r);
+							if (Row != null) {
+								if (Row.getCell(0) != null) {
+									if (Row.getCell(0).getCellType() != CellType.BLANK) {
+										try {
+											System.out.println((long) Row.getCell(0).getNumericCellValue());
+											Long IDEMPLEADO = (long) Row.getCell(0).getNumericCellValue();
+											emp = this.empleadosJPA.findById(IDEMPLEADO);
+											if(emp==null)
+											{
+												emp = new Empleados();
+												emp.setId(IDEMPLEADO);
+												emp.setNombreCompleto(Row.getCell(1).getStringCellValue());
+												String[] valores = emp.getNombreCompleto().split(" ");
+												emp.setApellidop(valores[0]);
+												emp.setApellidom(valores[1]);
+												emp.setNombre(String.join(" ",
+														Arrays.copyOfRange(valores, 2, valores.length)));
+												emp.setActivo(true);
+												emp.setPuestosEntity(this.puestosJPA.findById(0).get());
+												emp.setServicioEntity(this.serviciosJPA.findById(0).get());
+												emp.isNew();
+												try {
+													procesTransactional.saveEmpleado(emp);
+												} catch (Exception err) {
+													err.printStackTrace();
+												}
 											}
+											QuincenasEntity quin=this.quincenaJPA.findByQuinCatAndEmpleadoQN_Id(quinCat, emp.getId());
+											quin.setSueldoNeto(Row.getCell(4).getCellType()==CellType.NUMERIC?new BigDecimal(Row.getCell(4).getNumericCellValue()).setScale(2, RoundingMode.HALF_UP):new BigDecimal(Row.getCell(4).getStringCellValue()).setScale(2, RoundingMode.HALF_UP));
+											quin.setTipoPago(Row.getCell(5).getStringCellValue());
+											quin.setFolioQuin(Row.getCell(6).getStringCellValue());
+											this.quincenaJPA.save(quin);
+										} catch (Exception err) {
+											err.printStackTrace();
 										}
 									}
 								}
 							}
-							System.gc();
 						}
+					}
+					if (tipoCarga.equals("CEM")) {
+						Empleados emp;
+						PuestosEntity puesto;
+						ServiciosEntity servi;
+						TurnosEntity turno = new TurnosEntity();
+						BancosEntity banco = new BancosEntity();
+						CuentasEntity cuenta = new CuentasEntity();
+						DomiciliosEntity domi = new DomiciliosEntity();
+						SINAVIDEntity sinavid = new SINAVIDEntity();
+						for (int r = 2; r <= rows; r++) {
+							Row = Sheet.getRow(r);
+							if (Row != null) {
+								if (Row.getCell(2) != null) {
+									if (Row.getCell(2).getCellType() != CellType.BLANK) {
+										try {
+											System.out.println((long) Row.getCell(2).getNumericCellValue());
+											Long IDEMPLEADO = (long) Row.getCell(2).getNumericCellValue();
+											emp = this.empleadosJPA.findById(IDEMPLEADO);
+											if(emp==null)
+											{
+												emp = new Empleados();
+												emp.setId(IDEMPLEADO);
+												emp.setNombreCompleto(Row.getCell(7).getStringCellValue());
+												String[] valores = emp.getNombreCompleto().split(" ");
+												emp.setApellidop(valores[0]);
+												emp.setApellidom(valores[1]);
+												emp.setNombre(String.join(" ",
+														Arrays.copyOfRange(valores, 2, valores.length)));
+												emp.setActivo(true);
+												emp.setPuestosEntity(this.puestosJPA.findById(0).get());
+												emp.setServicioEntity(this.serviciosJPA.findById(0).get());
+												emp.isNew();
+												try {
+													procesTransactional.saveEmpleado(emp);
+												} catch (Exception err) {
+													err.printStackTrace();
+												}
+											}
+											if (Row.getCell(9).getCellType() == CellType.NUMERIC) {
+												Date fecha = DateUtil.getJavaDate(Row.getCell(9).getNumericCellValue());
+												emp.setFechaIngresoH(fecha);
+											}
+											emp.setTipoContrato(Row.getCell(15).getStringCellValue());
+											emp.setCurp(Row.getCell(21).getStringCellValue());
+											emp.setRfc(Row.getCell(22).getStringCellValue());
+											emp.setTelefono(Row.getCell(36).getCellType() == CellType.NUMERIC
+													? Integer.toString((int) Row.getCell(36).getNumericCellValue())
+													: Row.getCell(36).getStringCellValue());
+											puesto = puestosJPA.findByPuesto(Row.getCell(32).getStringCellValue());
+											emp.setPuestosEntity(puesto);
+											servi = serviciosJPA.findByServicio(Row.getCell(33).getStringCellValue());
+											emp.setServicioEntity(servi);
+											this.empleadosJPA.save(emp);
+											turno = this.trunosJPA.findByTurno(Row.getCell(34).getStringCellValue());
+											if (turno == null) {
+												turno = TurnosEntity.builder()
+														.turno(Row.getCell(34).getStringCellValue())
+														.horario(Row.getCell(35).getStringCellValue()).empleado(emp)
+														.build();
+												this.trunosJPA.save(turno);
+											}
+											banco = this.bancosJPA.findByBanco(Row.getCell(30).getStringCellValue());
+											if (banco == null) {
+												banco = BancosEntity.builder()
+														.banco(Row.getCell(30).getStringCellValue())
+														.nombre(Row.getCell(30).getStringCellValue()).build();
+												this.bancosJPA.save(banco);
+											}
+											cuenta = this.cuentasJPA.findByCuenta(Row.getCell(31).getStringCellValue());
+											if (cuenta == null) {
+												cuenta = CuentasEntity.builder().bancoE(banco).empleadoC(emp)
+														.cuenta(Row.getCell(31).getStringCellValue()).estatus("ALTA")
+														.alta(Row.getCell(29).getCellType()==CellType.NUMERIC?String.valueOf((int)Row.getCell(29).getNumericCellValue()): Row.getCell(29).getStringCellValue()).build();
+												this.cuentasJPA.save(cuenta);
+											}
+											if (!Row.getCell(23).getStringCellValue().equals("No Encontrado")) {
+												domi = DomiciliosEntity.builder()
+														.calle(Row.getCell(23).getStringCellValue())
+														.numExt(Row.getCell(24).getCellType() == CellType.NUMERIC
+																? String.valueOf(
+																		(int) Row.getCell(24).getNumericCellValue())
+																: Row.getCell(24).getStringCellValue())
+														.numInt(Row.getCell(25) != null
+																? Row.getCell(25).getCellType() == CellType.NUMERIC
+																		? String.valueOf((int) Row.getCell(25)
+																				.getNumericCellValue())
+																		: Row.getCell(25).getStringCellValue()
+																: "")
+														.colonia(Row.getCell(26) != null
+																? Row.getCell(26).getStringCellValue()
+																: "")
+														.cp(Row.getCell(27).getCellType() == CellType.NUMERIC
+																? String.valueOf(
+																		(int) Row.getCell(27).getNumericCellValue())
+																: Row.getCell(27).getStringCellValue())
+														.build();
+												this.domiJPA.save(domi);
+											}
+											if (Row.getCell(20).getCellType() == CellType.NUMERIC) {
+												sinavid = this.sinavidJPA.findByNumISSSTE(Row.getCell(38)!=null?
+														Row.getCell(38).getCellType() == CellType.NUMERIC
+																? String.valueOf(
+																		(long) Row.getCell(38).getNumericCellValue())
+																: Row.getCell(38).getStringCellValue():"");
+												if (sinavid == null) {
+													sinavid = SINAVIDEntity.builder()
+															.pagaduria(String.valueOf(
+																	(int) Row.getCell(20).getNumericCellValue()))
+															.estatus(Row.getCell(19).getStringCellValue())
+															.alta(Row.getCell(17).getStringCellValue())
+															.fechaRegistro(new Date())
+															.nss(Row.getCell(39)!=null?Row.getCell(39).getCellType() == CellType.NUMERIC
+																	? String.valueOf(
+																			(int) Row.getCell(39).getNumericCellValue())
+																	: Row.getCell(39).getStringCellValue():"")
+															.numISSSTE(Row.getCell(38)!=null?Row.getCell(38).getCellType() == CellType.NUMERIC
+																	? String.valueOf((long) Row.getCell(38)
+																			.getNumericCellValue())
+																	: Row.getCell(38).getStringCellValue():"")
+															.sueldoSINAVID(BigDecimal
+																	.valueOf(Row.getCell(40).getNumericCellValue())
+																	.setScale(2, RoundingMode.HALF_UP))
+															.sueldoSAR(BigDecimal
+																	.valueOf(Row.getCell(41).getNumericCellValue())
+																	.setScale(2, RoundingMode.HALF_UP))
+															.remTotal(BigDecimal
+																	.valueOf(Row.getCell(42).getNumericCellValue())
+																	.setScale(2, RoundingMode.HALF_UP))
+															.sinavidEm(emp).build();
+													this.sinavidJPA.save(sinavid);
+												}
+											}
+										} catch (Exception err) {
+											err.printStackTrace();
+										}
+									}
+								}
+							}
+						}
+//					if (Sheet.getSheetName().equals("Empleados")) {
+//						List<ReglasDiasEntity> LReglasDias = reglasDiasRJPA.findAll();
+//						ArrayList<TurnosEntity> ALTurnos = new ArrayList<>();
+//						for (int r = 1; r <= rows; r++) {
+//							Row = Sheet.getRow(r);
+//							if (Row == null) {
+//								break;
+//							} else {
+//								TurnosEntity turno = null;
+//								turno = trunosRJPA.findByTurno(Row.getCell(9).getStringCellValue().trim());
+//								if (turno == null) {
+//									turno = TurnosEntity.builder().turno(Row.getCell(9).getStringCellValue().trim())
+//											.build();
+//									trunosRJPA.save(turno);
+//									ALTurnos.add(turno);
+//								}
+//								String fechaIngreso;
+//								Date fechaIngresoD = null;
+//								WorkDates workD = new WorkDates();
+//								LocalDate localDate = null;
+//								try {
+//									fechaIngreso = Row.getCell(7).getStringCellValue();
+//									String[] splitfechas = fechaIngreso.split("DE");
+//									DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//									localDate = LocalDate.parse(splitfechas[0].trim() + "/"
+//											+ workD.getMM(splitfechas[1].trim()) + "/" + splitfechas[2].trim(),
+//											formatter);
+//									Instant instant = localDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+//									fechaIngresoD = Date.from(instant);
+//								} catch (Exception err) {
+//									fechaIngresoD = Row.getCell(7).getDateCellValue();
+//								}
+//								Empleados empleado = Empleados.builder()
+//										.id((long) Row.getCell(2).getNumericCellValue())
+//										.nombre(Row.getCell(4).getStringCellValue())
+//										.apellidop(Row.getCell(5).getStringCellValue())
+//										.apellidom(Row.getCell(6).getStringCellValue()).fechaIngreso(fechaIngresoD)
+//										.fechaNacimiento(Row.getCell(11).getDateCellValue())
+//										.sexo(Row.getCell(12).getStringCellValue())
+//										.correo(Row.getCell(13).getStringCellValue())
+//										.telefono(Long.toString((long) Row.getCell(14).getNumericCellValue()))
+////									.sueldoNeto(BigDecimal.valueOf(Row.getCell(15).getNumericCellValue()))
+//										.turnosEm(ALTurnos)
+////										.edad((int) Row.getCell(10).getNumericCellValue())
+//										.build();
+//								this.empleadosJPA.save(empleado);
+//								Period periodo = Period.between(localDate, hoy);
+//								if (periodo.getMonths() < 6) {
+//									VacacionesEntity vacaciones = VacacionesEntity.builder().diasDisfrutados(0)
+//											.diasVacaciones(0).diasRestantes(0).empleadoV(empleado).build();
+//									this.vacacionesRJPA.save(vacaciones);
+//								} else if (periodo.getMonths() >= 6 && periodo.getMonths() < 12) {
+//									VacacionesEntity vacaciones = VacacionesEntity.builder().diasDisfrutados(0)
+//											.diasVacaciones(10).diasRestantes(10).empleadoV(empleado).build();
+//									this.vacacionesRJPA.save(vacaciones);
+//								} else {
+//									for (ReglasDiasEntity RD : LReglasDias) {
+//										if (periodo.getYears() >= RD.getDesde()
+//												&& periodo.getYears() <= RD.getAsta()) {
+//											VacacionesEntity vacaciones = VacacionesEntity.builder()
+//													.diasDisfrutados(0).diasVacaciones(RD.getDias())
+//													.diasRestantes(RD.getDias()).empleadoV(empleado).build();
+//											this.vacacionesRJPA.save(vacaciones);
+//										}
+//									}
+//								}
+//							}
+//						}
+//					}
+						System.gc();
 					}
 
 					if (tipoCarga.equals("CCP")) {
@@ -824,8 +1020,8 @@ public class ProcesaFileXLSXThread {
 				throw new Exception(err);
 			} finally {
 				try {
-					pkg.close();
-//					Workbook.close();
+//				pkg.close();
+					Workbook.close();
 					fileProces.delete();
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -837,7 +1033,6 @@ public class ProcesaFileXLSXThread {
 		}
 		System.gc();
 	}
-
 //	private boolean isRowEmpty(XSSFRow row) {
 //		if (row == null) {
 //			return true; // Considera null como fila vacía

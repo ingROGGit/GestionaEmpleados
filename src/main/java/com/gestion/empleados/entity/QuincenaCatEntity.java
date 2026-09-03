@@ -15,6 +15,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,7 +29,9 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -69,11 +72,12 @@ public class QuincenaCatEntity extends AuditableDateEntity implements Serializab
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fechaSuspencion;
-	@ManyToMany(mappedBy = "quinCat")
+	@EqualsAndHashCode.Exclude
+	@ManyToMany(mappedBy = "quinCat", fetch = FetchType.LAZY)
 	private Set<QuincenasEntity> quincenas;
-	@OneToMany(mappedBy = "quincenaCatDD", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "quincenaCatDD", fetch = FetchType.LAZY)
 	private List<DetalleDeduccionesEntiy> detalleDeducciones;
-	@OneToMany(mappedBy = "quincenaCatDP", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "quincenaCatDP", fetch = FetchType.LAZY)
 	private List<DetallePersepcionesEntity> detallePercepciones;
 	@Override
 	public String toString() {

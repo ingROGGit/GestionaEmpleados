@@ -48,7 +48,7 @@ public class AuditoryTurnosListener {
 		}
 		auditoryEntity.setOperation(operacion);
 		auditoryEntity.setFecha(LocalDateTime.now());
-		auditoryEntity.setName(auditory.getId().toString());
+		auditoryEntity.setName(auditory.getId()==null?auditory.getTurno():auditory.getId().toString());
 		auditoryEntity.setUsu(usuLoguin);
 		auditoryEntity.setDetalle(auditory.toString());
 		return auditoryEntity;

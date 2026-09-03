@@ -5,9 +5,9 @@
 package com.gestion.empleados.repository;
 
 import java.io.Serializable;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import com.gestion.empleados.entity.Empleados;
 
 /**
@@ -17,4 +17,6 @@ import com.gestion.empleados.entity.Empleados;
 @Repository
 public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Serializable>{
     public Empleados findById(Long IDEmpleado);
+    public List<Empleados> findByNombreCompletoContainingIgnoreCaseOrCurpContainingIgnoreCaseOrRfcContainingIgnoreCase(String nom,String curp,String rfc);
+    public List<Empleados> findByTipoContrato(String tipoContrato);
 }

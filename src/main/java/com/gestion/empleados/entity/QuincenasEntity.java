@@ -79,13 +79,13 @@ public class QuincenasEntity extends AuditableDateEntity implements Serializable
 	private BigDecimal salarioMen;
 	@Column(name = "salarioAn")
 	private BigDecimal salarioAn;
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "quincenas_empleadoqn", // Nombre de la tabla intermedia
 			joinColumns = @JoinColumn(name = "quincenas_id"), // Clave foránea de esta entidad
 			inverseJoinColumns = @JoinColumn(name = "empleadoqn_id") // Clave foránea de la otra entidad
 	)
 	private List<Empleados> empleadoQN;
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "Quincenas_QNCat", // Nombre de la tabla intermedia
 			joinColumns = @JoinColumn(name = "quincena_id"), // Clave foránea de esta entidad
 			inverseJoinColumns = @JoinColumn(name = "qnaCat_id") // Clave foránea de la otra entidad

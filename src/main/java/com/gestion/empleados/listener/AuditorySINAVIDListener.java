@@ -48,7 +48,7 @@ public class AuditorySINAVIDListener {
 		}
 		auditoryEntity.setOperation(operacion);
 		auditoryEntity.setFecha(LocalDateTime.now());
-		auditoryEntity.setName(auditory.getId().toString());
+		auditoryEntity.setName(auditory.getId()==null?auditory.getNumISSSTE():auditory.getId().toString());
 		auditoryEntity.setUsu(usuLoguin);
 		auditoryEntity.setDetalle(auditory.toString());
 		return auditoryEntity;

@@ -3,7 +3,10 @@ package com.gestion.empleados.controller;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,22 +16,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.PuestosEntity;
 import com.gestion.empleados.entity.QuincenaCatEntity;
 import com.gestion.empleados.entity.QuincenasEntity;
 import com.gestion.empleados.entity.ServiciosEntity;
 import com.gestion.empleados.entity.filtrosConsultaDTO;
+import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
 import com.gestion.empleados.repository.PuestosRepositoryJPA;
 import com.gestion.empleados.repository.QuincenaRepositoryJPA;
 import com.gestion.empleados.repository.QuincenasCatRepositoryJPA;
 import com.gestion.empleados.repository.ServiciosRepositoryJPA;
 import com.gestion.empleados.utils.PageRender;
+
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
 
 @Controller
 public class NominaController {
@@ -40,13 +49,23 @@ public class NominaController {
 	private PuestosRepositoryJPA puestosJPA;
 	@Autowired
 	private ServiciosRepositoryJPA serviciosJPA;
+	@Autowired
+	private EmpleadosRepositoryJPA empleadoRJPA;
+
 	@GetMapping("quincenas/listarQuincena")
 	public String listarQNA(Model model, @RequestParam(required = false) String keyword,
 			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "7000") int size,
-			@RequestParam(defaultValue = "empleadoQN.id,asc") String[] sort) {
+			@RequestParam(defaultValue = "empleadoQN.id,asc") String[] sort,
+			@RequestParam(required = false) String quincenaSel) {
 		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
 		String quincenasCat = quincenasCatJPA.findQNAACT(fechaSqlHoy);
-		QuincenaCatEntity quinShearch=quincenasCatJPA.findByIdQNA(quincenasCat);
+		QuincenaCatEntity quinShearch;
+		if (quincenaSel != null)
+			quinShearch = quincenasCatJPA.findByIdQNA(quincenaSel);
+		else {
+			quinShearch = quincenasCatJPA.findByIdQNA(quincenasCat);
+			quincenaSel = quincenasCat;
+		}
 		filtrosConsultaDTO filtros = new filtrosConsultaDTO();
 		List<String> LquincenasCat = quincenasCatJPA.findByAllIdQNA();
 		List<String> lpuesto = puestosJPA.findByAllPuesto();
@@ -57,27 +76,37 @@ public class NominaController {
 		Order order = new Order(direction, sortField);
 		Pageable pageRequest = PageRequest.of(page - 1, size, Sort.by(order));
 		Page<QuincenasEntity> quincena;
-		Long idEmpleado=(long) 0;
-		if(keyword==null)
-			quincena= quincenaJPA.findByQuinCat(quinShearch,pageRequest);
+		Long idEmpleado = (long) 0;
+		if (keyword == null || keyword.isEmpty())
+			quincena = quincenaJPA.findByQuinCat(quinShearch, pageRequest);
 		else {
 			try {
-				idEmpleado=Long.valueOf(keyword);
-			}catch(Exception err) {}
-			quincena= quincenaJPA.findByQuinCatAndEmpleadoQN_IdOrEmpleadoQN_NombreCompletoContainingIgnoreCaseOrEmpleadoQN_CurpContainingIgnoreCaseOrEmpleadoQN_RfcContainingIgnoreCase(quinShearch,idEmpleado,keyword,keyword,keyword,pageRequest);
+				idEmpleado = Long.valueOf(keyword);
+			} catch (Exception err) {
+			}
+			Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
+//			quincena= quincenaJPA.findByQuinCatKeyword(quinShearch,keyword,idEmpleado,keyword,keyword,keyword,keyword,pageable);
+			if (idEmpleado > 0) {
+				quincena = quincenaJPA.findByQuinCatAndEmpleadoQN_Id(quinShearch, idEmpleado, pageable);
+			} else {
+				Collection<Empleados> collEmpleados = new HashSet<>();
+				collEmpleados = empleadoRJPA
+						.findByNombreCompletoContainingIgnoreCaseOrCurpContainingIgnoreCaseOrRfcContainingIgnoreCase(
+								keyword, keyword, keyword);
+				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collEmpleados, pageable);
+			}
 		}
 		PageRender<QuincenasEntity> pageRender = new PageRender<>("/quincenas/listarQuincena", quincena);
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String fa = df.format(new Date());
-		File file=new File("QUINCENA" + fa + ".xlsx");
-		boolean fileExDownload=false;
-		if(file.exists() &&file.canWrite())
-		{
-			fileExDownload=true;
+		File file = new File("QUINCENA" + fa + ".xlsx");
+		boolean fileExDownload = false;
+		if (file.exists() && file.canWrite()) {
+			fileExDownload = true;
 		}
 		filtros.setQna(quincenasCat);
 		model.addAttribute("filtros", filtros);
-		model.addAttribute("fileExDownload",fileExDownload);
+		model.addAttribute("fileExDownload", fileExDownload);
 		model.addAttribute("titulo", "Listado QUINCENA");
 		model.addAttribute("LquincenasCat", LquincenasCat);
 		model.addAttribute("lpuesto", lpuesto);
@@ -94,21 +123,23 @@ public class NominaController {
 		model.addAttribute("funLista", "quincenas/listarQuincena");
 		model.addAttribute("funVer", "verXMLRec");
 		model.addAttribute("funStatus", "statusXMLRec");
+		model.addAttribute("quincenaSel", quincenaSel);
 		return "quincenas/listarQuincena";
 	}
+
 	@PostMapping("/quincenas/listarQuincena")
-	public String listarQNA(Model model, filtrosConsultaDTO filtrosSet,
-			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "50") int size,
+	public String listarQNA(Model model, filtrosConsultaDTO filtrosSet, @RequestParam(defaultValue = "1") int page,
+			@RequestParam(defaultValue = "5000") int size,
 			@RequestParam(defaultValue = "empleadoQN.id,asc") String[] sort) {
-		List<PuestosEntity> lpuesto = puestosJPA.findAll();
-		List<ServiciosEntity> lservicio = serviciosJPA.findAll();
+		List<String> LquincenasCat = quincenasCatJPA.findByAllIdQNA();
+		List<String> lpuesto = puestosJPA.findByAllPuesto();
+		List<String> lservicio = serviciosJPA.findByAllServicio();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String fa = df.format(new Date());
-		File file=new File("QUINCENA" + fa + ".xlsx");
-		boolean fileExDownload=false;
-		if(file.exists() &&file.canWrite())
-		{
-			fileExDownload=true;
+		File file = new File("QUINCENA" + fa + ".xlsx");
+		boolean fileExDownload = false;
+		if (file.exists() && file.canWrite()) {
+			fileExDownload = true;
 		}
 		String sortField = sort[0];
 		String sortDirection = sort[1];
@@ -116,10 +147,34 @@ public class NominaController {
 		Order order = new Order(direction, sortField);
 		Pageable pageRequest = PageRequest.of(page - 1, size, Sort.by(order));
 		Page<QuincenasEntity> quincena = null;
-		quincena = quincenaJPA.findAll(pageRequest);
-		List<QuincenaCatEntity> LquincenasCat = quincenasCatJPA.findAll();
-		PageRender<QuincenasEntity> pageRender = new PageRender<>("/cfdi/listaXMLRec", quincena);
-		model.addAttribute("fileExDownload",fileExDownload);
+		QuincenaCatEntity quinShearch=this.quincenasCatJPA.findByIdQNA(filtrosSet.getQna());
+		if(filtrosSet.getTipoContrato()!=null&&!filtrosSet.getTipoContrato().isEmpty()) {
+			Collection<Empleados> collEmpleados = new HashSet<>();
+			collEmpleados = empleadoRJPA.findByTipoContrato(filtrosSet.getTipoContrato());
+			quincena=quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch,collEmpleados,pageRequest);
+		}
+			else if(filtrosSet.getStatus()!=null&&!filtrosSet.getStatus().isEmpty()) {
+				boolean bajaStatus=false;
+				if(filtrosSet.getStatus().equals("Baja"))
+					bajaStatus=true;
+				quincena = quincenaJPA.findByQuinCatAndBaja(quinShearch,bajaStatus,pageRequest);
+			}
+			else if(filtrosSet.getPuesto()!=null&&!filtrosSet.getPuesto().isEmpty()) {
+				 PuestosEntity puesto=puestosJPA.findByPuesto(filtrosSet.getPuesto());
+				 Collection<Empleados> collectionEmp = new ArrayList<Empleados>(puesto.getLEmpleados());
+				 quincena=quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch,collectionEmp,pageRequest);
+			}
+			else if(filtrosSet.getServicio()!=null&&!filtrosSet.getServicio().isEmpty()) {
+				ServiciosEntity servicio=this.serviciosJPA.findByServicio(filtrosSet.getServicio());
+				Collection<Empleados> collectionEmp = new ArrayList<Empleados>(servicio.getLEmpleados());
+				 quincena=quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch,collectionEmp,pageRequest);
+			}
+			else if(filtrosSet.getTipoPago()!=null&&!filtrosSet.getTipoPago().isEmpty()) {
+				quincena = quincenaJPA.findByQuinCatAndTipoPago(quinShearch,filtrosSet.getTipoPago(),pageRequest);
+		}else
+			quincena = quincenaJPA.findByQuinCat(quinShearch,pageRequest);
+		PageRender<QuincenasEntity> pageRender = new PageRender<>("/quincenas/listarQuincena", quincena);
+		model.addAttribute("fileExDownload", fileExDownload);
 		model.addAttribute("lpuesto", lpuesto);
 		model.addAttribute("lservicio", lservicio);
 		model.addAttribute("titulo", "Listado QUINCENA");
@@ -135,7 +190,7 @@ public class NominaController {
 		model.addAttribute("totalItems", quincena.getTotalElements());
 		model.addAttribute("totalPages", quincena.getTotalPages());
 		model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
-		model.addAttribute("funLista", "listaXMLEmi");
+		model.addAttribute("funLista", "quincenas/listarQuincena");
 		model.addAttribute("funVer", "verXMLRec");
 		model.addAttribute("funStatus", "statusXMLRec");
 		return "quincenas/listarQuincena";

@@ -4,54 +4,144 @@
 	<div class="card-body">
 		<div class="row">
 			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-				Numero Empleado: <li class="list-group-item" th:text="${empleado.NEmpleado}"></li>
-				Edad:<li class="list-group-item" th:text="${empleado.edad}"></li>
-				Fecha Inicio laboral:<li class="list-group-item" th:text="${empleado.fechaIngreso}">
+				Numero Empleado: <li class="list-group-item" th:text="${empleado.id}"></li>
+				Fecha Ingreso:<li class="list-group-item" th:text="${empleado.fechaIngreso}"></li>
+				Tipo Contrato:<li class="list-group-item" th:text="${empleado.tipoContrato}"></li>
 				</li>
 			</div>
 			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 				Nombre: <li class="list-group-item" th:text="${empleado.nombre}"></li>
-				Sexo:<li class="list-group-item" th:text="${empleado.sexo}"></li>
-				Salario:<li class="list-group-item" th:text="${empleado.salario}"></li>
-
+				Fecha inicio Hospital:<li class="list-group-item" th:text="${empleado.fechaIngresoH}"></li>
+				CURP:<li class="list-group-item" th:text="${empleado.curp}"></li>
 			</div>
 			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 				Apellido Paterno:<li class="list-group-item" th:text="${empleado.apellidop}"></li>
-				Correo:<li class="list-group-item" th:text="${empleado.correo}"></li>
+				Telefono:<li class="list-group-item" th:text="${empleado.telefono}"></li>
+				RFC:<li class="list-group-item" th:text="${empleado.rfc}">
 			</div>
 			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 				Apellido Materno:<li class="list-group-item" th:text="${empleado.apellidom}"></li>
-				Telefono:<li class="list-group-item" th:text="${empleado.telefono}"></li>
+				Correo:<li class="list-group-item" th:text="${empleado.correo}"></li>
+				Puesto:<li class="list-group-item" th:text="${empleado?.puestosEntity?.puesto}"></li>
 			</div>
 		</div>
-		<div class="row">
-			<div class="card-header" th:text="Antigüedad">
+		<div class="card card-default collapsed-card">
+			<div class="card-header">
+				<h3 class="card-title">Quincena</h3>
+				<div class="card-tools">
+					<button type="button" class="btn btn-tool" data-card-widget="collapse">
+						<i class="fas fa-minus"></i>
+					</button>
+				</div>
+			</div>
+			<div class="card-body" style="display: none;">
+				<table id="tableQuincena" class="table table-hover w-auto text-nowrap" data-toggle="table" data-filter-control="true">
+								<thead class="thead-light">
+									<tr>
+								      <th data-field="tipoPago" data-filter-control="select">TIPO PAGO</th>
+								      <th data-filter-control="select">SUELDO PRE</th>
+								      <th data-filter-control="select">SUELDO NETO</th>
+								      <th data-filter-control="select">FOLIO PRE</th>
+								      <th data-filter-control="select">FOLIO</th>
+								    </tr>
+								</thead>
+								<tbody>
+									<th:block th:each="quin : ${empleado.quincenas}" th:if="${quin != null}">
+										<td>[[${quin.tipoPago}]]</td>
+										<td>[[${quin.sueldoPre}]]</td>
+										<td>[[${quin.sueldoNeto}]]</td>
+										<td>[[${quin.folioPre}]]</td>
+										<td>[[${quin.folioQuin}]]</td>
+									</th:block>
+								</tbody>
+							</table>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-				Años: <li class="list-group-item" th:text="${periodo.Years}"></li>
+				<div class="card card-default collapsed-card">
+			<div class="card-header">
+				<h3 class="card-title">SINAVID</h3>
+				<div class="card-tools">
+					<button type="button" class="btn btn-tool" data-card-widget="collapse">
+						<i class="fas fa-minus"></i>
+					</button>
+				</div>
 			</div>
-			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-				Meses: <li class="list-group-item" th:text="${periodo.Months}"></li>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-				Dias: <li class="list-group-item" th:text="${periodo.Days}"></li>
+			<div class="card-body" style="display: none;">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<th:block th:if="${empleado.sinavidEm != null}">
+					<div class="row">
+						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+							Estatus: <li class="list-group-item" th:text="${empleado.sinavidEm.estatus}"></li>
+							Sueldo SINAVID: <li class="list-group-item" th:text="${empleado.sinavidEm.sueldoSINAVID}"></li>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+							Alta: <li class="list-group-item" th:text="${empleado.sinavidEm.alta}"></li>
+							Sueldo SAR: <li class="list-group-item" th:text="${empleado.sinavidEm.sueldoSAR}"></li>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+							Pagaduria: <li class="list-group-item" th:text="${empleado.sinavidEm.pagaduria}"></li>
+							Sueldo Total: <li class="list-group-item" th:text="${empleado.sinavidEm.remTotal}"></li>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+							Numero ISSSTE: <li class="list-group-item" th:text="${empleado.sinavidEm.numISSSTE}"></li>
+						</div>
+					</div>
+					</th:block>
+				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="card-header" th:text="Vacaciones">
+		<div class="card card-default collapsed-card">
+			<div class="card-header">
+				<h3 class="card-title">Antigüedad</h3>
+				<div class="card-tools">
+					<button type="button" class="btn btn-tool" data-card-widget="collapse">
+						<i class="fas fa-minus"></i>
+					</button>
+				</div>
+			</div>
+			<div class="card-body" style="display: none;">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div class="row">
+						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+							Años: <li class="list-group-item" th:text="${periodo.Years}"></li>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+							Meses: <li class="list-group-item" th:text="${periodo.Months}"></li>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+							Dias: <li class="list-group-item" th:text="${periodo.Days}"></li>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-				Dias Correspondientes: <li class="list-group-item" th:text="${empleado.EmpleadoV.diasVacaciones}"></li>
+		<div class="card card-default collapsed-card">
+			<div class="card-header">
+				<h3 class="card-title">Vacaciones</h3>
+				<div class="card-tools">
+					<button type="button" class="btn btn-tool" data-card-widget="collapse">
+						<i class="fas fa-minus"></i>
+					</button>
+				</div>
 			</div>
-			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-				Dias Disfrutados: <li class="list-group-item" th:text="${empleado.EmpleadoV.diasDisfrutados}"></li>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-				Dias Restantes: <li class="list-group-item" th:text="${empleado.EmpleadoV.diasRestantes}"></li>
+			<div class="card-body" style="display: none;">
+				<th:block th:if="${empleado.EmpleadoV != null}">
+					<div class="row">
+						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+							Dias Correspondientes: <li class="list-group-item"
+								th:text="${empleado.EmpleadoV.diasVacaciones}">
+							</li>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+							Dias Disfrutados: <li class="list-group-item"
+								th:text="${empleado.EmpleadoV.diasDisfrutados}"></li>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+							Dias Restantes: <li class="list-group-item" th:text="${empleado.EmpleadoV.diasRestantes}">
+							</li>
+						</div>
+					</div>
+				</th:block>
 			</div>
 		</div>
 	</div>

@@ -13,6 +13,6 @@ public interface QuincenasCatRepositoryJPA extends JpaRepository<QuincenaCatEnti
 	public QuincenaCatEntity findByIdQNA(String idQNA);
 	@Query("select q.idQNA from QuincenaCatEntity q")
 	public List<String> findByAllIdQNA();
-	@Query("select q.idQNA from QuincenaCatEntity q where q.fechaPago < :hoy and q.fechaFin>= :hoy")
+	@Query("select q.idQNA from QuincenaCatEntity q where :hoy BETWEEN  q.fechaInicio and q.fechaFin")
 	public String findQNAACT(@Param("hoy") Date hoy);
 }

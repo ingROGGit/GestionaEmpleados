@@ -41,7 +41,6 @@ public class SINAVIDEntity extends AuditableDateEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Basic(optional = false)
 	@Column(name = "id")
 	private Long id;
 	@Size(max = 250)
@@ -51,13 +50,13 @@ public class SINAVIDEntity extends AuditableDateEntity implements Serializable {
 	protected String nss;
 	@Column(name = "numISSSTE")
 	protected String numISSSTE;
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "sueldoSINAVID")
 	private BigDecimal sueldoSINAVID;
-	@Basic(optional=false)
+	@Basic(optional=true)
 	@Column(name= "sueldoSAR")
 	private BigDecimal sueldoSAR;
-	@Basic(optional=false)
+	@Basic(optional=true)
 	@Column(name= "remTotal")
 	private BigDecimal remTotal;
 	@Basic(optional = true)

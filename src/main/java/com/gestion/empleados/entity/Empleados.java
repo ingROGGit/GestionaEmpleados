@@ -50,14 +50,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "empleados", catalog = "db_gestion_empleados2", schema = "public", uniqueConstraints = {
-		@UniqueConstraint(name = "UC_Empleado", columnNames = { "id", "nombre", "apellidop",
-				"apellidom" }) }, indexes = { @Index(name = "index_nombre", columnList = "nombre"),
-						@Index(name = "index_apellidop", columnList = "apellidop"),
-						@Index(name = "index_apellidom", columnList = "apellidom") })
+@Table(name = "empleados", catalog = "db_gestion_empleados2", schema = "public")
 @EntityListeners({ AuditingEntityListener.class, AuditoryEmpleadosListener.class })
-@NamedQueries({ @NamedQuery(name = "Empleados.findAll", query = "SELECT e FROM Empleados e") })
-public class Empleados extends AuditableDateEntity implements Serializable,Persistable<Long> {
+public class Empleados extends AuditableDateEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -65,9 +60,11 @@ public class Empleados extends AuditableDateEntity implements Serializable,Persi
 	@Column(name = "id")
 	private Long id;
 	@Transient
-	private boolean isNew=true; 
+	@Builder.Default
+	private boolean isNew = true;
 	@Transient
-	private boolean updateAction = false; 
+	@Builder.Default
+	private boolean updateAction = false;
 	@Column(name = "fechaIngreso")
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -121,7 +118,7 @@ public class Empleados extends AuditableDateEntity implements Serializable,Persi
 	@Size(max = 14)
 	@Column(name = "rfc")
 	private String rfc;
-	@ManyToMany(mappedBy = "LTEmpledos", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "empleado", fetch = FetchType.LAZY)
 	private List<TurnosEntity> turnosEm = new ArrayList<>();
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_puesto")
@@ -144,18 +141,18 @@ public class Empleados extends AuditableDateEntity implements Serializable,Persi
 	@OneToMany(mappedBy = "empleadoPer", fetch = FetchType.LAZY)
 	private List<DetallePersepcionesEntity> detallePercepcione;
 
+//	@Override
+//	public boolean isNew() {
+//		return !this.updateAction; 
+//	}
+//
+//	@PostLoad
+//			 
+//	public void markNotNew() {
+//		this.updateAction = true; 
+//		this.isNew=false;
+//	}
 	
-	@Override
-	public boolean isNew() {
-		return !this.updateAction; 
-	}
-
-	@PostLoad
-	public void markNotNew() {
-		this.updateAction = true; 
-		this.isNew=false;
-	}
-
 	@Override
 	public String toString() {
 		return "Empleados [id=" + id + ", isNew=" + isNew + ", updateAction=" + updateAction + ", fechaIngreso="

@@ -74,10 +74,8 @@ public class EmpleadoController {
 	private VacacionesRepository vacacionesRJPA;
 	@Autowired
 	private ReglasDiasRepository reglasDiasRJPA;
-	
 	@Autowired
 	private EmpleadosRepositoryJPA  empleadoRJPA;
-	
 	@Autowired
 	private PuestosRepositoryJPA puestosJPA;
 	@Autowired
@@ -97,7 +95,11 @@ public class EmpleadoController {
 	@Autowired
 	private DetalleDeduccionesRepositoryJPA detalleDedJPA;
 	@Autowired
-	QuincenaRepositoryJPA quincenaJPA;
+	private QuincenaRepositoryJPA quincenaJPA;
+	private final ProcesaFileXLSXThread thread;
+	 public EmpleadoController(ProcesaFileXLSXThread procesaFileXLSXThread) {
+	        this.thread = procesaFileXLSXThread;
+	    }
 	@GetMapping({ "/", "/start", "" })
 	public String menu(Model model) {
 		model.addAttribute("titulo", "Inicio");
@@ -291,7 +293,7 @@ public class EmpleadoController {
 	}
 	@PostMapping("empleados/addXLSX")
 	public String addEmpleadosXLSX(Model modelo, RedirectAttributes flash, SessionStatus status,
-			@RequestParam("fileXLS") MultipartFile fileXLS,@RequestParam("TIPOCARGA") String TIPOCARGA,@RequestParam("CatalogoCarga") String CatalogoCarga,@RequestParam("quin") String quin) {
+			@RequestParam("fileXLS") MultipartFile fileXLS,@RequestParam("TIPOCARGA") String TIPOCARGA,@RequestParam("CatalogoCarga") String CatalogoCarga,@RequestParam(required = false) String quin) {
 		try {
 			File filewrite = new File(fileXLS.getOriginalFilename());
 			try (FileOutputStream fos = new FileOutputStream(filewrite)) {
@@ -300,9 +302,9 @@ public class EmpleadoController {
 				e.printStackTrace();
 				throw new Exception(e);
 			}
-			ProcesaFileXLSXThread thread = new ProcesaFileXLSXThread(empleadosJPA,trunosRJPA,vacacionesRJPA,reglasDiasRJPA,puestosJPA,
-					serviciosJPA,quincenasCatJPA,persepcionesJPA,deduccionesJPA,bancosJPA,catCPJALRepositoryJPA,detallePerJPA,detalleDedJPA);
-			thread.run(filewrite,TIPOCARGA,quin);
+//			ProcesaFileXLSXThread thread = new ProcesaFileXLSXThread(empleadosJPA,trunosRJPA,vacacionesRJPA,reglasDiasRJPA,puestosJPA,
+//					serviciosJPA,quincenasCatJPA,persepcionesJPA,deduccionesJPA,bancosJPA,catCPJALRepositoryJPA,detallePerJPA,detalleDedJPA,quincenaJPA);
+			this.thread.run(filewrite,TIPOCARGA,quin);
 			modelo.addAttribute("success", "Archivo cargado Satisfactoriamente se prosesaran en segundo plano");
 		} catch (Exception err) {
 			err.printStackTrace();

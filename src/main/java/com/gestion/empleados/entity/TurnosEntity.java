@@ -49,15 +49,9 @@ private static final long serialVersionUID = 1L;
     protected String turno;
 	@Column(name = "horario")
     protected String horario;
-	
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(
-	        name = "turno_empleado", // Nombre de la tabla intermedia
-	        joinColumns = @JoinColumn(name = "turno_id"), // FK a esta entidad (Turno)
-	        inverseJoinColumns = @JoinColumn(name = "empleado_id") // FK a la otra entidad (Empresa)
-	    )
-	private List<Empleados> LTEmpledos = new ArrayList<>();
-
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_Empleado")
+	private  Empleados empleado;
 	@Override
 	public String toString() {
 		return "TurnosEntity [id=" + id + ", turno=" + turno + ", horario=" + horario + "]";
