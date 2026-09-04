@@ -749,31 +749,33 @@ public class ProcesaFileXLSXThread {
 											System.out.println((long) Row.getCell(0).getNumericCellValue());
 											Long IDEMPLEADO = (long) Row.getCell(0).getNumericCellValue();
 											emp = this.empleadosJPA.findById(IDEMPLEADO);
-											if(emp==null)
-											{
-												emp = new Empleados();
-												emp.setId(IDEMPLEADO);
-												emp.setNombreCompleto(Row.getCell(1).getStringCellValue());
-												String[] valores = emp.getNombreCompleto().split(" ");
-												emp.setApellidop(valores[0]);
-												emp.setApellidom(valores[1]);
-												emp.setNombre(String.join(" ",
-														Arrays.copyOfRange(valores, 2, valores.length)));
-												emp.setActivo(true);
-												emp.setPuestosEntity(this.puestosJPA.findById(0).get());
-												emp.setServicioEntity(this.serviciosJPA.findById(0).get());
-												emp.isNew();
-												try {
-													procesTransactional.saveEmpleado(emp);
-												} catch (Exception err) {
-													err.printStackTrace();
-												}
+											if(emp!=null) {
+												QuincenasEntity quin=this.quincenaJPA.findByQuinCatAndEmpleadoQN_Id(quinCat, emp.getId());
+												quin.setSueldoNeto(Row.getCell(4).getCellType()==CellType.NUMERIC?new BigDecimal(Row.getCell(4).getNumericCellValue()).setScale(2, RoundingMode.HALF_UP):new BigDecimal(Row.getCell(4).getStringCellValue()).setScale(2, RoundingMode.HALF_UP));
+												quin.setTipoPago(Row.getCell(5).getStringCellValue());
+												quin.setFolioQuin(Row.getCell(6).getStringCellValue());
+												this.quincenaJPA.save(quin);
 											}
-											QuincenasEntity quin=this.quincenaJPA.findByQuinCatAndEmpleadoQN_Id(quinCat, emp.getId());
-											quin.setSueldoNeto(Row.getCell(4).getCellType()==CellType.NUMERIC?new BigDecimal(Row.getCell(4).getNumericCellValue()).setScale(2, RoundingMode.HALF_UP):new BigDecimal(Row.getCell(4).getStringCellValue()).setScale(2, RoundingMode.HALF_UP));
-											quin.setTipoPago(Row.getCell(5).getStringCellValue());
-											quin.setFolioQuin(Row.getCell(6).getStringCellValue());
-											this.quincenaJPA.save(quin);
+//											if(emp==null)
+//											{
+//												emp = new Empleados();
+//												emp.setId(IDEMPLEADO);
+//												emp.setNombreCompleto(Row.getCell(1).getStringCellValue());
+//												String[] valores = emp.getNombreCompleto().split(" ");
+//												emp.setApellidop(valores[0]);
+//												emp.setApellidom(valores[1]);
+//												emp.setNombre(String.join(" ",
+//														Arrays.copyOfRange(valores, 2, valores.length)));
+//												emp.setActivo(true);
+//												emp.setPuestosEntity(this.puestosJPA.findById(0).get());
+//												emp.setServicioEntity(this.serviciosJPA.findById(0).get());
+//												emp.isNew();
+//												try {
+//													procesTransactional.saveEmpleado(emp);
+//												} catch (Exception err) {
+//													err.printStackTrace();
+//												}
+//											}
 										} catch (Exception err) {
 											err.printStackTrace();
 										}
@@ -878,6 +880,7 @@ public class ProcesaFileXLSXThread {
 																		(int) Row.getCell(27).getNumericCellValue())
 																: Row.getCell(27).getStringCellValue())
 														.build();
+												domi.setDomiEm(emp);
 												this.domiJPA.save(domi);
 											}
 											if (Row.getCell(20).getCellType() == CellType.NUMERIC) {

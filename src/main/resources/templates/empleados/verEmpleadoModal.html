@@ -35,29 +35,90 @@
 				</div>
 			</div>
 			<div class="card-body" style="display: none;">
-				<table id="tableQuincena" class="table table-hover w-auto text-nowrap" data-toggle="table" data-filter-control="true">
-								<thead class="thead-light">
-									<tr>
-								      <th data-field="tipoPago" data-filter-control="select">TIPO PAGO</th>
-								      <th data-filter-control="select">SUELDO PRE</th>
-								      <th data-filter-control="select">SUELDO NETO</th>
-								      <th data-filter-control="select">FOLIO PRE</th>
-								      <th data-filter-control="select">FOLIO</th>
-								    </tr>
-								</thead>
-								<tbody>
-									<th:block th:each="quin : ${empleado.quincenas}" th:if="${quin != null}">
-										<td>[[${quin.tipoPago}]]</td>
-										<td>[[${quin.sueldoPre}]]</td>
-										<td>[[${quin.sueldoNeto}]]</td>
-										<td>[[${quin.folioPre}]]</td>
-										<td>[[${quin.folioQuin}]]</td>
-									</th:block>
-								</tbody>
-							</table>
+				<table id="tableQuincena" class="table table-hover w-auto text-nowrap" data-toggle="table"
+					data-filter-control="true">
+					<thead class="thead-light">
+						<tr>
+							<th data-field="tipoPago" data-filter-control="select">TIPO PAGO</th>
+							<th data-filter-control="select">SUELDO PRE</th>
+							<th data-filter-control="select">SUELDO NETO</th>
+							<th data-filter-control="select">FOLIO PRE</th>
+							<th data-filter-control="select">FOLIO</th>
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:each="quin : ${empleado.quincenas}" th:if="${quin != null}">
+							<tr>
+								<td>[[${quin.tipoPago}]]</td>
+								<td>[[${quin.sueldoPre}]]</td>
+								<td>[[${quin.sueldoNeto}]]</td>
+								<td>[[${quin.folioPre}]]</td>
+								<td>[[${quin.folioQuin}]]</td>
+							<tr>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+			<div class="card-body" style="display: none;">
+				<div class="card-header">
+				<h3 class="card-title">Persepciones</h3>
+				<div class="card-tools">
+					<button type="button" class="btn btn-tool" data-card-widget="collapse">
+						<i class="fas fa-minus"></i>
+					</button>
+				</div>
+				<table id="tableQuincena" class="table table-hover w-auto text-nowrap" data-toggle="table"
+					data-filter-control="true">
+					<thead class="thead-light">
+						<tr>
+							<th data-field="tipoPago" data-filter-control="select">ID Persepcion</th>
+							<th data-filter-control="select">Descripcion</th>
+							<th data-filter-control="select">Importe</th>
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:each="per : ${empleado.detallePercepcione}" th:if="${per != null}">
+							<tr>
+								<td>[[${per.persepciones.clave}]]</td>
+								<td>[[${per.persepciones.descripcion}]]</td>
+								<td>[[${per.importe}]]</td>
+							<tr>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+			</div>
+			<div class="card-body" style="display: none;">
+				<div class="card-header">
+				<h3 class="card-title">Deducciones</h3>
+				<div class="card-tools">
+					<button type="button" class="btn btn-tool" data-card-widget="collapse">
+						<i class="fas fa-minus"></i>
+					</button>
+				</div>
+				<table id="tableQuincena" class="table table-hover w-auto text-nowrap" data-toggle="table"
+					data-filter-control="true">
+					<thead class="thead-light">
+						<tr>
+							<th data-field="tipoPago" data-filter-control="select">ID Deduccion</th>
+							<th data-filter-control="select">Descripcion</th>
+							<th data-filter-control="select">Importe</th>
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:each="ded : ${empleado.detalleDeducciones}" th:if="${ded != null}">
+							<tr>
+								<td>[[${ded.deducciones.clave}]]</td>
+								<td>[[${ded.deducciones.descripcion}]]</td>
+								<td>[[${ded.importe}]]</td>
+							<tr>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
 			</div>
 		</div>
-				<div class="card card-default collapsed-card">
+		<div class="card card-default collapsed-card">
 			<div class="card-header">
 				<h3 class="card-title">SINAVID</h3>
 				<div class="card-tools">
@@ -69,23 +130,45 @@
 			<div class="card-body" style="display: none;">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<th:block th:if="${empleado.sinavidEm != null}">
-					<div class="row">
-						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-							Estatus: <li class="list-group-item" th:text="${empleado.sinavidEm.estatus}"></li>
-							Sueldo SINAVID: <li class="list-group-item" th:text="${empleado.sinavidEm.sueldoSINAVID}"></li>
+						<div class="row">
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Estatus: <li class="list-group-item" th:text="${empleado.sinavidEm.estatus}"></li>
+								Sueldo SINAVID: <li class="list-group-item"
+									th:text="${empleado.sinavidEm.sueldoSINAVID}"></li>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Alta: <li class="list-group-item" th:text="${empleado.sinavidEm.alta}"></li>
+								Sueldo SAR: <li class="list-group-item" th:text="${empleado.sinavidEm.sueldoSAR}"></li>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Pagaduria: <li class="list-group-item" th:text="${empleado.sinavidEm.pagaduria}"></li>
+								Sueldo Total: <li class="list-group-item" th:text="${empleado.sinavidEm.remTotal}"></li>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Numero ISSSTE: <li class="list-group-item" th:text="${empleado.sinavidEm.numISSSTE}">
+								</li>
+							</div>
 						</div>
-						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-							Alta: <li class="list-group-item" th:text="${empleado.sinavidEm.alta}"></li>
-							Sueldo SAR: <li class="list-group-item" th:text="${empleado.sinavidEm.sueldoSAR}"></li>
+						<th:block th:if="${empleado.domicilios != null}">
+						<div class="row">
+							<h3 class="card-title">Domicilio</h3>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Calle: <li class="list-group-item" th:text="${empleado.domicilios.calle}"></li>
+								Colonia: <li class="list-group-item"
+									th:text="${empleado.domicilios.colonia}"></li>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Num.Exte: <li class="list-group-item" th:text="${empleado.domicilios.numExt}"></li>
+								C.P.: <li class="list-group-item" th:text="${empleado.domicilios.cp}"></li>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Num Int: <li class="list-group-item" th:text="${empleado.domicilios.numInt}"></li>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								
+							</div>
 						</div>
-						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-							Pagaduria: <li class="list-group-item" th:text="${empleado.sinavidEm.pagaduria}"></li>
-							Sueldo Total: <li class="list-group-item" th:text="${empleado.sinavidEm.remTotal}"></li>
-						</div>
-						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-							Numero ISSSTE: <li class="list-group-item" th:text="${empleado.sinavidEm.numISSSTE}"></li>
-						</div>
-					</div>
+						</th:block>
 					</th:block>
 				</div>
 			</div>

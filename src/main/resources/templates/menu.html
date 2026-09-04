@@ -349,9 +349,9 @@
 							</ul>
 						</li>
 
-						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">CUENTAS
+						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORCUENTAS')">CUENTAS
 							BANCARIAS</li>
-						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORCUENTAS')">
 							<a href="#" class="nav-link">
 								<i class="nav-icon fas fa-book"></i>
 								<p>
@@ -360,14 +360,14 @@
 								</p>
 							</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
-									<a href="/empleados/AddEXLSX?TIPOCARGA=CEM" class="nav-link">
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORCUENTAS')">
+									<a href="/cuentasBancarias/ListaEmpSinCuenta" class="nav-link">
 										<i class="nav-icon fa fa-list-ul"></i>
 										<p>Lista Empleados sin Cuenta</p>
 									</a>
 								</li>
-								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
-									<a href="/empleados/AddEXLSX?TIPOCARGA=CEM" class="nav-link">
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORCUENTAS')">
+									<a href="/cuentasBancarias/ListaEmpSinCuenta" class="nav-link">
 										<div class="d-flex">
 											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
 												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
@@ -386,8 +386,8 @@
 						</li>
 
 
-						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">SINAVID</li>
-						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID')">SINAVID</li>
+						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID')">
 							<a href="#" class="nav-link">
 								<i class="nav-icon fas fa-book"></i>
 								<p>
@@ -396,7 +396,7 @@
 								</p>
 							</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID')">
 									<a href="/empleados/AddEXLSX?TIPOCARGA=CCP" class="nav-link">
 										<div class="d-flex">
 											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
@@ -412,20 +412,20 @@
 										</div>
 									</a>
 								</li>
-								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID')">
 									<a href="/catalogos/listarCCPJAL" class="nav-link">
 										<i class="nav-icon fa fa-list-ul"></i>
 										<p>Lista C.P. JALISCO</p>
 									</a>
 								</li>
-								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
-									<a href="/empleados/AddEXLSX?TIPOCARGA=CEM" class="nav-link">
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID')">
+									<a href="/GestionSINAVID/ListaSinSINAVID" class="nav-link">
 										<i class="nav-icon fa fa-list-ul"></i>
 										<p>Lista Empleados sin SINAVID</p>
 									</a>
 								</li>
-								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
-									<a href="/empleados/AddEXLSX?TIPOCARGA=CEM" class="nav-link">
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID')">
+									<a href="/GestionSINAVID/ListaSinSINAVID" class="nav-link">
 										<div class="d-flex">
 											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
 												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
