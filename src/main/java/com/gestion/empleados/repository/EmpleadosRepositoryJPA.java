@@ -51,4 +51,5 @@ public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Seriali
    public Page<Empleados> findByDomiciliosIsNotNull(Pageable pageable);
    public List<Empleados> findByDomiciliosIsNotNull();
    public Page<Empleados> findByTelefonoIsNull(Pageable pageable);
+   public Empleados findByCurp(String curp);
 }

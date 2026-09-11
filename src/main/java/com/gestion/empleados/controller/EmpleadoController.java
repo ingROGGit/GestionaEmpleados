@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -316,17 +317,19 @@ public class EmpleadoController {
 		CatalogoCarga.put("CALSINAVID", "Carga Alta SINAVID");
 		CatalogoCarga.put("CEMTEL", "Carga Telefonos");
 		CatalogoCarga.put("CEMCURP", "Carga CURP RFC");
+		CatalogoCarga.put("CEXTSINAVID", "Carga Extracto");
 		model.addAttribute("titulo", "EXCEL "+CatalogoCarga.get(TIPOCARGA));
 		model.addAttribute("TIPOCARGA", TIPOCARGA);
 		model.addAttribute("quin", "");
 		model.addAttribute("lquincenas", lquincenas);
 		model.addAttribute("CatalogoCarga", CatalogoCarga);
 		model.addAttribute("quinCatSelectPost",quinCatSelectPost);
+		model.addAttribute("fechaExt",new Date());
 		return "empleados/AddEmpleados";
 	}
 	@PostMapping("empleados/addXLSX")
 	public String addEmpleadosXLSX(Model modelo, RedirectAttributes flash, SessionStatus status,
-			@RequestParam("fileXLS") MultipartFile fileXLS,@RequestParam("TIPOCARGA") String TIPOCARGA,@RequestParam("CatalogoCarga") String CatalogoCarga,@RequestParam(required = false) String quinCatSelectPost) {
+			@RequestParam("fileXLS") MultipartFile fileXLS,@RequestParam("TIPOCARGA") String TIPOCARGA,@RequestParam("CatalogoCarga") String CatalogoCarga,@RequestParam(required = false) String quinCatSelectPost,@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")  Date fechaExt) {
 		try {
 			if(TIPOCARGA.equals("CPRE")||TIPOCARGA.equals("CNOM")) {
 				if(this.quincenaJPA.countByQuinCat_IdQNA(quinCatSelectPost)>0)
@@ -341,7 +344,7 @@ public class EmpleadoController {
 			}
 //			ProcesaFileXLSXThread thread = new ProcesaFileXLSXThread(empleadosJPA,trunosRJPA,vacacionesRJPA,reglasDiasRJPA,puestosJPA,
 //					serviciosJPA,quincenasCatJPA,persepcionesJPA,deduccionesJPA,bancosJPA,catCPJALRepositoryJPA,detallePerJPA,detalleDedJPA,quincenaJPA);
-			this.thread.run(filewrite,TIPOCARGA,quinCatSelectPost);
+			this.thread.run(filewrite,TIPOCARGA,quinCatSelectPost,fechaExt);
 			modelo.addAttribute("success", "Archivo cargado Satisfactoriamente se prosesaran en segundo plano");
 			status.setComplete();
 	        flash.addFlashAttribute("success", "Archivo procesado con éxito.");

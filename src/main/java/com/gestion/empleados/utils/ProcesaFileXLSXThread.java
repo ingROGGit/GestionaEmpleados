@@ -45,6 +45,8 @@ import com.gestion.empleados.entity.DetalleDeduccionesEntiy;
 import com.gestion.empleados.entity.DetallePersepcionesEntity;
 import com.gestion.empleados.entity.DomiciliosEntity;
 import com.gestion.empleados.entity.Empleados;
+import com.gestion.empleados.entity.ExtractoSINAVIDFilesEntity;
+import com.gestion.empleados.entity.HistoricoExtSINAVIDEntity;
 import com.gestion.empleados.entity.PersepcionesEntity;
 import com.gestion.empleados.entity.PuestosEntity;
 import com.gestion.empleados.entity.QuincenaCatEntity;
@@ -65,6 +67,8 @@ import com.gestion.empleados.repository.DetalleDeduccionesRepositoryJPA;
 import com.gestion.empleados.repository.DetallePersepcionesRepositoryJPA;
 import com.gestion.empleados.repository.DomicilioRepositoryJPA;
 import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
+import com.gestion.empleados.repository.ExtractoSINAVIDFilesRepository;
+import com.gestion.empleados.repository.HistoricoExtSINAVIDRepository;
 import com.gestion.empleados.repository.PersepcionesRepositoryJPA;
 import com.gestion.empleados.repository.PuestosRepositoryJPA;
 import com.gestion.empleados.repository.QuincenaRepositoryJPA;
@@ -123,9 +127,12 @@ public class ProcesaFileXLSXThread {
 	private AltaCuentasFileRepository acfileJPA;
 	@Autowired
 	private AltaSINAVIDFileRepository alsinfileJPA;
+	@Autowired
+	private ExtractoSINAVIDFilesRepository extraSINAVIDJPA;
+	@Autowired
+	private HistoricoExtSINAVIDRepository historicoExtJPA;
 	@Async
-	public void run(File fileProces, String tipoCarga, String quinString) {
-
+	public void run(File fileProces, String tipoCarga, String quinString,Date fechaCarga) {
 		try {
 			OPCPackage pkg = null;
 			Workbook Workbook = null;
@@ -137,7 +144,6 @@ public class ProcesaFileXLSXThread {
 					AltaCuentasFilesEntity acfile = AltaCuentasFilesEntity.builder().alta(fileProces.getName())
 							.fechaAlta(new Date()).fileAlta(Files.readAllBytes(fileProces.toPath())).build();
 					this.acfileJPA.save(acfile);
-					fileProces.delete();
 				}else if(tipoCarga.equals("CALSINAVID")) {
 					AltaSINAVIDFilesEntity alsinfile=AltaSINAVIDFilesEntity.builder().alta(fileProces.getName())
 							.fechaAlta(new Date()).fileAlta(Files.readAllBytes(fileProces.toPath()))
@@ -1227,7 +1233,90 @@ public class ProcesaFileXLSXThread {
 								}
 							}
 						}
+						if(tipoCarga.equals("CEXTSINAVID")) {
+							for (int r = 1; r <= rows; r++) {
+								Row = Sheet.getRow(r);
+								if (Row == null) {
+									break;
+								} else {
+									Empleados emp = this.empleadosJPA.findByCurp(Row.getCell(3).getStringCellValue());
+									if (emp != null) {
+										HistoricoExtSINAVIDEntity hisExt = this.historicoExtJPA.findByEmpleado_IdAndFileName(emp.getId(),fileProces.getName());
+										if (hisExt == null) {
+											Date fechaA = DateUtil
+													.getJavaDate(Row.getCell(12).getNumericCellValue());
+											Date fechaM = null;
+											if(Row.getCell(13)!=null) {
+												fechaM= DateUtil.getJavaDate(Row.getCell(13).getNumericCellValue());
+											}
+											hisExt=HistoricoExtSINAVIDEntity.builder().disCve((int)Row.getCell(0).getNumericCellValue())
+													.numRamo((int)Row.getCell(1).getNumericCellValue())
+													.pagaduria(Row.getCell(2).getCellType() == CellType.NUMERIC
+															? String.valueOf(
+																	(int) Row.getCell(2).getNumericCellValue())
+															: Row.getCell(2).getStringCellValue())
+													.fechaAlta(fechaA).fechaModSueldo(fechaM).fechaGen(fechaCarga)
+													.fileName(fileProces.getName())
+													.tipoNombramiento((int)Row.getCell(11).getNumericCellValue())
+													.sueldoISSSTE(BigDecimal
+															.valueOf(Row.getCell(14).getNumericCellValue())
+															.setScale(2, RoundingMode.HALF_UP))
+													.sueldoSAR(BigDecimal
+															.valueOf(Row.getCell(17).getNumericCellValue())
+															.setScale(2, RoundingMode.HALF_UP))
+													.remTotal(BigDecimal
+															.valueOf(Row.getCell(18).getNumericCellValue())
+															.setScale(2, RoundingMode.HALF_UP))
+													.claveCobro(Row.getCell(2).getCellType() == CellType.NUMERIC
+															? String.valueOf(
+																	(long) Row.getCell(2).getNumericCellValue())
+															: Row.getCell(2).getStringCellValue())
+													.empleado(emp)
+													.build();
+											this.historicoExtJPA.save(hisExt);
+										}
+										SINAVIDEntity sinavid=this.sinavidJPA.findBySinavidEm_Id(emp.getId());
+										if(sinavid==null) {
+											sinavid=new SINAVIDEntity();
+										}
+										sinavid.setPagaduria(String.valueOf(
+														(int) Row.getCell(2).getNumericCellValue()));
+										sinavid.setEstatus("ALTA");
+										sinavid.setAlta(sinavid.getAlta()==null?"YA ALTA":sinavid.getAlta());
+										sinavid.setFechaRegistro(sinavid.getFechaRegistro()==null?new Date():sinavid.getFechaRegistro());
+										sinavid.setNss(Row.getCell(6) != null ? Row.getCell(6)
+														.getCellType() == CellType.NUMERIC
+																? String.valueOf((int) Row.getCell(6)
+																		.getNumericCellValue())
+																: Row.getCell(6).getStringCellValue()
+														: "");
+										sinavid.setNumISSSTE(Row.getCell(5) != null ? Row.getCell(5)
+														.getCellType() == CellType.NUMERIC
+																? String.valueOf((long) Row.getCell(5)
+																		.getNumericCellValue())
+																: Row.getCell(5).getStringCellValue()
+														: "");
+										sinavid.setSueldoSINAVID(BigDecimal
+														.valueOf(Row.getCell(14).getNumericCellValue())
+														.setScale(2, RoundingMode.HALF_UP));
+										sinavid.setSueldoSAR(BigDecimal
+														.valueOf(Row.getCell(17).getNumericCellValue())
+														.setScale(2, RoundingMode.HALF_UP));
+										sinavid.setRemTotal(BigDecimal
+														.valueOf(Row.getCell(18).getNumericCellValue())
+														.setScale(2, RoundingMode.HALF_UP));
+										sinavid.setSinavidEm(emp);
+										this.sinavidJPA.save(sinavid);
+										}
+								}
+							}
+						}
 						System.gc();
+					}
+					if(tipoCarga.equals("CEXTSINAVID")) {
+						ExtractoSINAVIDFilesEntity exfile = ExtractoSINAVIDFilesEntity.builder().fileName(fileProces.getName())
+						.fechaGen(fechaCarga).fileAlta(Files.readAllBytes(fileProces.toPath())).build();
+						this.extraSINAVIDJPA.save(exfile);
 					}
 				}
 			} catch (Exception err) {

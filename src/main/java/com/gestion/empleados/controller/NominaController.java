@@ -175,6 +175,8 @@ public class NominaController {
 			}
 			else if(filtrosSet.getTipoPago()!=null&&!filtrosSet.getTipoPago().isEmpty()) {
 				quincena = quincenaJPA.findByQuinCatAndTipoPago(quinShearch,filtrosSet.getTipoPago(),pageRequest);
+		}else if(filtrosSet.isBloqueado()) {
+			quincena = quincenaJPA.findByBloqueoPago(true, pageRequest);
 		}else
 			quincena = quincenaJPA.findByQuinCat(quinShearch,pageRequest);
 		PageRender<QuincenasEntity> pageRender = new PageRender<>("/quincenas/listarQuincena", quincena);

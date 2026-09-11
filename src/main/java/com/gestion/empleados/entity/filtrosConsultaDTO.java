@@ -16,4 +16,5 @@ public class filtrosConsultaDTO {
 	private String tipoPago;
 	private String tipoContrato;
 	private String status;
+	private boolean bloqueado;
 }

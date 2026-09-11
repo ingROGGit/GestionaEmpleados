@@ -109,18 +109,6 @@
 												<option value="Baja">Baja</option>
 											</select>
 										</div>
-										<!--										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">-->
-										<!--											<label>Fecha Ingreso Instituto: </label>-->
-										<!--											<div class="input-group">-->
-										<!--												<div class="input-group-prepend">-->
-										<!--													<span class="input-group-text"><i class="far fa-clock"></i></span>-->
-										<!--												</div>-->
-										<!--												<input type="text" th:field="${filtros.rangeFecha}"-->
-										<!--													class="form-control float-right" id="rangeFecha">-->
-
-										<!--											</div>-->
-										<!--										</div>-->
-
 										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 											<label>Puesto: </label>
 											<select class="form-control" id="dropDownList" th:field="${filtros.puesto}">
@@ -138,7 +126,6 @@
 													th:text="${servicio}"></option>
 											</select>
 										</div>
-
 										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 											<label>Tipo Pago: </label>
 											<select class="form-control form-control-sm" th:field="${filtros.tipoPago}">
@@ -146,6 +133,13 @@
 												<option value="Recibo">Recibo</option>
 												<option value="Cheque">Cheque</option>
 												<option value="TEMPORAL">TEMPORAL</option>
+											</select>
+										</div>
+										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<label>Bloqueo: </label>
+											<select class="form-control form-control-sm" th:field="${filtros.bloqueado}">
+											    <option th:value="true">Bloqueado</option>
+											    <option th:value="false">No Bloqueado</option>
 											</select>
 										</div>
 									</div>
@@ -264,7 +258,7 @@
 													Pago</a>
 												<a th:if="${quin.bloqueoPago == true}" class="btn btn-success btn-sm"
 													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
-													th:href="@{/quincenas/desbloqueoQuincena/} + ${quin.id}">Desbloque de
+													th:href="@{/quincenas/desbloqueoQuincena/} + ${quin.id}">Desbloqueo de
 													Pago</a>
 											</td>
 										</tr>

@@ -19,6 +19,7 @@ public interface QuincenaRepositoryJPA extends JpaRepository<QuincenasEntity, Se
 	public Page<QuincenasEntity> findByQuinCatAndEmpleadoQNIn(QuincenaCatEntity quinCat,Collection<Empleados> cllectEmp,Pageable pageable);
 	public Page<QuincenasEntity> findByQuinCatAndTipoPago(QuincenaCatEntity quinCat,String tipoPago, Pageable pageable);
 	public Page<QuincenasEntity> findByQuinCatAndBaja(QuincenaCatEntity quinCat,boolean baja, Pageable pageable);
+	public Page<QuincenasEntity> findByBloqueoPago(boolean bloqueado , Pageable pageable);
 	public QuincenasEntity findByQuinCatAndEmpleadoQN_Id(QuincenaCatEntity quinCat, Long idEMpleado);
 	public Long countByTipoPagoAndQuinCat_IdQNA(String tipo,String idQNA);
 	public Long countByQuinCat_IdQNA(String idQNA);

@@ -67,6 +67,16 @@
 													th:text="${qna}" th:selected="${qna == quinCatSelectPost}"></option>
 											</select>
 										</div>	
+										<div th:if="${#lists.contains({'CEXTSINAVID'}, TIPOCARGA)}" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" align="center">
+										<label>FECHA DEL EXTRACTO: </label>
+											<div class="input-group date" id="reservationdate" data-target-input="nearest">
+				                                <input type="date" name="fechaExt" id="fechaExt"
+				                                       th:value="${#dates.format(fechaExt, 'yyyy-MM-dd')}" 
+				                                       class="form-control" 
+				                                       data-target="#reservationdate"
+				                                       placeholder="Seleccione una fecha"/>
+				                            </div>
+										</div>
 										</div>
 										<div class="row"></div>
 										<div class="row">									
