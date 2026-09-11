@@ -1,0 +1,95 @@
+<style>
+	/* Opcional: Elimina los márgenes predeterminados del body para un verdadero ancho completo */
+	body {
+		margin: 0;
+		padding: 0;
+		font-family: sans-serif;
+	}
+
+	form {
+		width: 100%;
+		box-sizing: border-box;
+		/* Asegura que el padding y el border se incluyan en el 100% */
+		padding: 20px;
+		/* Ejemplo de padding */
+		border: 1px solid #ccc;
+		/* Ejemplo de borde */
+		background-color: #f9f9f9;
+		/* Puedes añadir un max-width si no quieres que sea demasiado ancho en pantallas muy grandes */
+		/* max-width: 1200px; */
+		margin: 0 auto;
+		/* Centra el formulario si usas max-width */
+	}
+
+	input[type="text"],
+	input[type="submit"] {
+		width: 100%;
+		box-sizing: border-box;
+		padding: 10px;
+		margin-bottom: 10px;
+	}
+</style>
+<div class="card bg-light">
+	<div class="card-header" th:text="${titulo}">
+	</div>
+	<div class="card-body">
+		<div class="row">
+			<form th:action="@{/cuentasBancarias/formCuenta}" th:object="${cuenta}" method="post">
+				<input type="hidden" th:field="*{id}" th:value="${cuenta.id}" />
+				<input type="hidden" th:field="*{empleadoC.id}" />
+				<div class="row">
+
+					<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+						Empleado: <li class="list-group-item"
+							th:text="${cuenta.empleadoC.id} +' '+${cuenta.empleadoC.nombreCompleto}"></li>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+						Estatus: <input class="list-group-item" th:field="${cuenta.estatus}" readonly></input>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+						<label>Cuenta: </label>
+						<input type="text" class="list-group-item" th:field="${cuenta.cuenta}" inputmode="numeric"
+							pattern="[0-9]{18}" maxlength="18" minlength="18" required
+							title="Clabe interbancaria de 18 Digitos"></input>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+						<label>Banco: </label>
+						<select class="form-control" id="bancoSelect" th:field="*{bancoE.id}" required>
+							<option value="">-- Seleccionar Banco --</option>
+							<!-- Iteramos sobre la lista de bancos (LBancos) -->
+							<option th:each="banco : ${LBancos}" th:value="${banco.id}" th:text="${banco.banco}">
+							</option>
+						</select>
+						</li>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+						<h4></h4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<h4>
+							<p></p>
+						</h4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="box-footer">
+							<input type="submit" value="Guardar" class="btn btn-primary">
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div><!-- /.container-fluid -->
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>

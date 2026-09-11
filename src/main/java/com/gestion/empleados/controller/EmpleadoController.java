@@ -33,7 +33,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.gestion.empleados.entity.DetalleDeduccionesEntiy;
+import com.gestion.empleados.entity.DetallePersepcionesEntity;
 import com.gestion.empleados.entity.Empleados;
+import com.gestion.empleados.entity.QuincenasEntity;
 import com.gestion.empleados.entity.VacacionesEntity;
 import com.gestion.empleados.repository.BancosRepositoryJPA;
 import com.gestion.empleados.repository.CatCPJALRepositoryJPA;
@@ -132,13 +136,36 @@ public class EmpleadoController {
 		model.addAttribute("titulo", "Listado Empleados");
 		model.addAttribute("empleados", empleados);
 		model.addAttribute("page", pageRender);
+		model.addAttribute("addNew","SI");
 		return "empleados/listarEmpleados";
 	}
 
 	@GetMapping("empleados/verEmpleado/{id}")
-	public String verDetallesEmpleado(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
+	public String verDetallesEmpleado(@PathVariable(value = "id") Long id,@RequestParam(value = "quincena") String idQNA, Map<String, Object> modelo,
 			RedirectAttributes flash) {
 //		Empleados empleado = empleadoService.findOne(id);
+		Empleados empleado = this.empleadoRJPA.findById(id);
+		QuincenasEntity quincena = this.empleadoRJPA.findQuincenaByEmpleadoAndCatId(id,idQNA);
+		List<DetallePersepcionesEntity> detalleper=this.detallePerJPA.findByEmpleadoPerAndQuincenaCatDP_IdQNA(empleado,idQNA);
+		List<DetalleDeduccionesEntiy> detalleded=this.detalleDedJPA.findByEmpleadoDDAndQuincenaCatDD_IdQNA(empleado,idQNA);
+		LocalDate hoy = LocalDate.now();
+		LocalDate fechaIngreso = new java.sql.Date(empleado.getFechaIngreso().getTime()).toLocalDate();
+		Period periodo = Period.between(fechaIngreso, hoy);
+		if (empleado == null) {
+			flash.addFlashAttribute("error", "El empleado no Existe");
+			return "redirect:/empleados/listarEmpleados";
+		}
+		modelo.put("periodo", periodo);
+		modelo.put("empleado", empleado);
+		modelo.put("quincena", quincena);
+		modelo.put("detalleper", detalleper);
+		modelo.put("detalleded", detalleded);
+		modelo.put("titulo", "Detalles del Empleado " + empleado.getNombre());
+		return "empleados/verEmpleadoModal";
+	}
+	@GetMapping("empleados/verDatosEmpleado/{id}")
+	public String verDatosEmpleado(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
+			RedirectAttributes flash) {
 		Empleados empleado = empleadoRJPA.findById(id);
 		LocalDate hoy = LocalDate.now();
 		LocalDate fechaIngreso = new java.sql.Date(empleado.getFechaIngreso().getTime()).toLocalDate();
@@ -150,9 +177,8 @@ public class EmpleadoController {
 		modelo.put("periodo", periodo);
 		modelo.put("empleado", empleado);
 		modelo.put("titulo", "Detalles del Empleado " + empleado.getNombre());
-		return "empleados/verEmpleadoModal";
+		return "empleados/verDatosEmpleado";
 	}
-
 	@GetMapping("empleados/formEmpleado")
 	public String formularioRegistroEmpleado(Map<String, Object> modelo) {
 		Empleados empleado = new Empleados();
@@ -271,6 +297,8 @@ public class EmpleadoController {
 	}
 	@GetMapping("empleados/AddEXLSX")
 	public String addXLSX(@RequestParam("TIPOCARGA") String TIPOCARGA,Model model) {
+		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
+		String quinCatSelectPost = quincenasCatJPA.findQNAACT(fechaSqlHoy);		
 		Map<String, String> CatalogoCarga = new HashMap();
 		List<String> lquincenas = quincenasCatJPA.findByAllIdQNA();
 		CatalogoCarga.put("CEM", "Carga de Empleados");
@@ -284,17 +312,26 @@ public class EmpleadoController {
 		CatalogoCarga.put("CPRE", "Carga de Prenomina");
 		CatalogoCarga.put("CNOM", "Carga de Nomina");
 		CatalogoCarga.put("CCP", "Carga Codigos Postales");
+		CatalogoCarga.put("CALCU", "Carga Alta de Cuentas");
+		CatalogoCarga.put("CALSINAVID", "Carga Alta SINAVID");
+		CatalogoCarga.put("CEMTEL", "Carga Telefonos");
+		CatalogoCarga.put("CEMCURP", "Carga CURP RFC");
 		model.addAttribute("titulo", "EXCEL "+CatalogoCarga.get(TIPOCARGA));
 		model.addAttribute("TIPOCARGA", TIPOCARGA);
 		model.addAttribute("quin", "");
 		model.addAttribute("lquincenas", lquincenas);
 		model.addAttribute("CatalogoCarga", CatalogoCarga);
+		model.addAttribute("quinCatSelectPost",quinCatSelectPost);
 		return "empleados/AddEmpleados";
 	}
 	@PostMapping("empleados/addXLSX")
 	public String addEmpleadosXLSX(Model modelo, RedirectAttributes flash, SessionStatus status,
-			@RequestParam("fileXLS") MultipartFile fileXLS,@RequestParam("TIPOCARGA") String TIPOCARGA,@RequestParam("CatalogoCarga") String CatalogoCarga,@RequestParam(required = false) String quin) {
+			@RequestParam("fileXLS") MultipartFile fileXLS,@RequestParam("TIPOCARGA") String TIPOCARGA,@RequestParam("CatalogoCarga") String CatalogoCarga,@RequestParam(required = false) String quinCatSelectPost) {
 		try {
+			if(TIPOCARGA.equals("CPRE")||TIPOCARGA.equals("CNOM")) {
+				if(this.quincenaJPA.countByQuinCat_IdQNA(quinCatSelectPost)>0)
+					throw new Exception("Quincena "+quinCatSelectPost+" ya cargada");
+			}
 			File filewrite = new File(fileXLS.getOriginalFilename());
 			try (FileOutputStream fos = new FileOutputStream(filewrite)) {
 				fos.write(fileXLS.getBytes());
@@ -304,13 +341,20 @@ public class EmpleadoController {
 			}
 //			ProcesaFileXLSXThread thread = new ProcesaFileXLSXThread(empleadosJPA,trunosRJPA,vacacionesRJPA,reglasDiasRJPA,puestosJPA,
 //					serviciosJPA,quincenasCatJPA,persepcionesJPA,deduccionesJPA,bancosJPA,catCPJALRepositoryJPA,detallePerJPA,detalleDedJPA,quincenaJPA);
-			this.thread.run(filewrite,TIPOCARGA,quin);
+			this.thread.run(filewrite,TIPOCARGA,quinCatSelectPost);
 			modelo.addAttribute("success", "Archivo cargado Satisfactoriamente se prosesaran en segundo plano");
+			status.setComplete();
+	        flash.addFlashAttribute("success", "Archivo procesado con éxito.");
+	        
 		} catch (Exception err) {
 			err.printStackTrace();
 			modelo.addAttribute("error",
 					err.getMessage().length() > 50 ? err.getMessage().substring(0, 50) : err.getMessage());
 		}
+		List<String> lquincenas = quincenasCatJPA.findByAllIdQNA();
+		modelo.addAttribute("TIPOCARGA", TIPOCARGA);
+		modelo.addAttribute("lquincenas", lquincenas);
+		modelo.addAttribute("quinCatSelectPost",quinCatSelectPost);
 		return "empleados/AddEmpleados";
 	}
 }

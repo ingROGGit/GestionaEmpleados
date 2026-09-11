@@ -3,6 +3,11 @@
 	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en"> <!--begin::Head-->
 
 <head th:replace="headAll :: html_head" />
+<!-- 1. CSS base de Select2 -->
+<link rel="stylesheet" th:href="@{/distV32/plugins/select2/css/select2.min.css}">
+
+<!-- 2. CSS del tema Bootstrap 4 para AdminLTE 3 -->
+<link rel="stylesheet" th:href="@{/distV32/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
 
 <body th:replace="menu :: menuAll" onload="validaModal()"/>
 <!-- Content Wrapper. Contains page content -->
@@ -56,10 +61,10 @@
 									<div class="row">
 									<div th:if="${#lists.contains({'CPRE', 'CNOM'}, TIPOCARGA)}" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" align="center">
 										<label>QUINCENA: </label>
-											<select class="form-control" id="quin" name="quin">
-												<option value="">select</option>
-												<option th:each="quin : ${lquincenas}" th:value="${quin}"
-													th:text="${quin}"></option>
+											<select class="form-control" id="quinCatSelectPost" name="quinCatSelectPost" required>
+												<option value="">select QNA</option>
+												<option th:each="qna : ${lquincenas}" th:value="${qna}"
+													th:text="${qna}" th:selected="${qna == quinCatSelectPost}"></option>
 											</select>
 										</div>	
 										</div>
@@ -76,7 +81,20 @@
 						<div th:if="${message}">
 		<h2 th:text="${message}"/>
 	</div>
+	<!-- 1. Carga de librerías (Asegúrate de que jQuery se cargue ANTES de esto) -->
+<script th:src="@{/distV32/plugins/select2/js/select2.full.min.js}"></script>
+<script th:src="@{/distV32/js/pages/dashboard.js}"></script>
 
+<!-- 2. Inicialización del componente -->
+<script>
+	$(document).ready(function () {
+		$('#quinCatSelectPost').select2({
+			theme: 'bootstrap4',
+			placeholder: 'select QNA',
+			allowClear: true
+		});
+		});
+</script>
 				</section>
 				<!-- /.content -->
 			</main> <!--end::App Main--> <!--begin::Footer-->

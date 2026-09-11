@@ -27,6 +27,11 @@
 <link rel="stylesheet" href="../../distV32/plugins/bs-stepper/css/bs-stepper.min.css">
 <!-- dropzonejs -->
 <link rel="stylesheet" href="../../distV32/plugins/dropzone/min/dropzone.min.css">
+<!-- 1. CSS base de Select2 -->
+<link rel="stylesheet" th:href="@{/distV32/plugins/select2/css/select2.min.css}">
+
+<!-- 2. CSS del tema Bootstrap 4 para AdminLTE 3 -->
+<link rel="stylesheet" th:href="@{/distV32/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
 
 <body th:replace="menu :: menuAll" />
 <!-- Content Wrapper. Contains page content -->
@@ -38,6 +43,30 @@
 	<main class="app-main"> <!--begin::App Content Header-->
 		<section class="content">
 			<div class="container-fluid">
+								<div class="row">
+							<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card">
+								<div th:if="${success !=null}">
+								<div class="alert alert-primary alert-dismissible fade show"
+									role="alert">
+									<span aria-hidden="true" >&times;</span>
+									<button type="button" class="close" data-dismiss="alert"
+										aria-label="Close">
+										<span aria-hidden="true" th:text="${success}">&times;</span>
+									</button>
+								</div>
+								</div>
+								<div th:if="${error !=null}">
+								<div class="col-md-100 col-sm-100 alert alert-warning alert-dismissible fade show"
+									role="alert">
+									<span aria-hidden="true" >&times;</span>
+									<button type="button" class="close" data-dismiss="alert"
+										aria-label="Close">
+										<span aria-hidden="true" th:text="${error}">&times;</span>
+									</button>
+								</div>
+								</div>
+							</div>
+				</div>
 				<div class="py-4 ml-5 mr-5">
 					<div class="card card-default collapsed-card">
 						<div class="card-header">
@@ -55,7 +84,8 @@
 									<div class="row">
 										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 											<label>Quincena: </label>
-											<select class="form-control" id="dropDownList" th:field="${filtros.qna}">
+											<select class="form-control" id="quinCatSelectPost"
+												th:field="${filtros.qna}">
 												<option value="">select QNA</option>
 												<option th:each="qna : ${LquincenasCat}" th:value="${qna}"
 													th:text="${qna}"></option>
@@ -79,17 +109,17 @@
 												<option value="Baja">Baja</option>
 											</select>
 										</div>
-<!--										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">-->
-<!--											<label>Fecha Ingreso Instituto: </label>-->
-<!--											<div class="input-group">-->
-<!--												<div class="input-group-prepend">-->
-<!--													<span class="input-group-text"><i class="far fa-clock"></i></span>-->
-<!--												</div>-->
-<!--												<input type="text" th:field="${filtros.rangeFecha}"-->
-<!--													class="form-control float-right" id="rangeFecha">-->
+										<!--										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">-->
+										<!--											<label>Fecha Ingreso Instituto: </label>-->
+										<!--											<div class="input-group">-->
+										<!--												<div class="input-group-prepend">-->
+										<!--													<span class="input-group-text"><i class="far fa-clock"></i></span>-->
+										<!--												</div>-->
+										<!--												<input type="text" th:field="${filtros.rangeFecha}"-->
+										<!--													class="form-control float-right" id="rangeFecha">-->
 
-<!--											</div>-->
-<!--										</div>-->
+										<!--											</div>-->
+										<!--										</div>-->
 
 										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 											<label>Puesto: </label>
@@ -146,11 +176,13 @@
 												<div class="input-group-prepend">
 													<span class="input-group-text"><i class="fa fa-search"></i></span>
 												</div>
-												<select class="form-control"  id="quincenaSel" name="quincenaSel" th:value="${quincenaSel}">
-												<option value="">select QNA</option>
-												<option th:each="qna : ${LquincenasCat}" th:value="${qna}"
-													th:text="${qna}"></option>
-											</select>
+												<select class="form-control" id="quinCatSelectGet"
+													name="quinCatSelectGet">
+													<option value="">select QNA</option>
+													<option th:each="qna : ${LquincenasCat}" th:value="${qna}"
+														th:text="${qna}" th:selected="${qna == quinCatSelectGet}">
+													</option>
+												</select>
 												<input id="keyword" type="search" name="keyword" th:value="${keyword}"
 													class="form-control" placeholder="Ingrese testo"
 													title="Busca el texto ingresado todos los campos">
@@ -166,19 +198,22 @@
 														th:text="${s}" th:selected="${s == pageSize}"></option>
 												</select>
 												<button id="btnClear" class="btn btn-info">Clear</button>
+												<label class="input-group-text" for="pageSize">Total Registros:</label>
+												<a class="btn btn-info" th:text="${registros}"></a>
 											</div>
 										</div>
-										<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" style="float: right;">
-											<h4 class="card-title">
-											</h4>
-										</div>
-<!--										<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">-->
-<!--											<div class="input-group-prepend">-->
-<!--												<label class="input-group-text" for="pageSize">Exportar:</label>-->
-<!--												<a th:href="@{/quincena/exportarPDF}" class="btn btn-info">PDF</a>-->
-<!--												<a th:href="@{/quincena/exportarExcel}" class="btn btn-info">Excel</a>-->
-<!--											</div>-->
-<!--										</div>-->
+										<!--										<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" style="float: right;">-->
+										<!--											<h4 class="card-title">-->
+										<!--											</h4>-->
+										<!--										</div>-->
+										<!--										<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">-->
+										<!--											<div class="input-group-prepend">-->
+										<!--												<label class="input-group-text" for="pageSize">Total Registros:</label>-->
+										<!--												<a class="btn btn-info" th:value="${registros}"></a>-->
+										<!--												<a th:href="@{/quincena/exportarPDF}" class="btn btn-info">PDF</a>-->
+										<!--												<a th:href="@{/quincena/exportarExcel}" class="btn btn-info">Excel</a>-->
+										<!--											</div>-->
+										<!--										</div>-->
 										<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" style="float: right;">
 											<h4 class="card-title">
 											</h4>
@@ -188,62 +223,68 @@
 							</div>
 						</div>
 						<div class="card-body" style="overflow-x: auto;">
-							<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+							<link rel="stylesheet"
+								href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 							<link rel="stylesheet" href="https://unpkg.com">
-<!--							<table class="table table-hover table-responsive-xl" data-toggle="table" data-filter-control="true">-->
-								<table id="tableQuincena" class="table table-hover w-auto text-nowrap" data-toggle="table" data-filter-control="true">
+							<!--							<table class="table table-hover table-responsive-xl" data-toggle="table" data-filter-control="true">-->
+							<table id="tableQuincena" class="table table-hover w-auto text-nowrap" data-toggle="table"
+								data-filter-control="true">
 								<thead class="thead-light">
 									<tr>
-								      <th data-field="id" data-filter-control="input">ID</th>
-								      <th data-field="nombre" data-filter-control="select">NOMBRE</th>
-								      <th data-field="rfc" data-filter-control="select">RFC</th>
-								      <th data-field="curp" data-filter-control="select">CURP</th>
-								      <th data-field="tipoContrato" data-filter-control="select">TIPO CONTRATO</th>
-								      <th data-field="tipoPago" data-filter-control="select">TIPO PAGO</th>
-								      <th data-filter-control="select">SUELDO PRE</th>
-								      <th data-filter-control="select">SUELDO NETO</th>
-								      <th data-filter-control="select">FOLIO</th>
-								      <th data-field="fecha" data-filter-control="select">FECHA INSTITUTO</th>
-								    	<th>Acciones</th>
-								    </tr>
+										<th data-field="id" data-filter-control="input">ID</th>
+										<th data-field="nombre" data-filter-control="select">NOMBRE</th>
+										<th data-field="rfc" data-filter-control="select">RFC</th>
+										<th data-field="curp" data-filter-control="select">CURP</th>
+										<th data-field="tipoPago" data-filter-control="select">TIPO PAGO</th>
+										<th data-filter-control="select">SUELDO PRE</th>
+										<th data-filter-control="select">SUELDO NETO</th>
+										<th data-filter-control="select">FOLIO</th>
+										<th>Acciones</th>
+									</tr>
 								</thead>
 								<tbody>
 									<th:block th:each="quin : ${quincena}" th:if="${quin != null}">
-        
-        							<tr th:each="emp : ${quin.empleadoQN}" th:if="${emp != null}">
-										<td scope="row">[[${emp.id}]]</td>
-										<td>[[${emp.nombreCompleto}]]</td>
-										<td>[[${emp.rfc}]]</td>
-										<td>[[${emp.curp}]]</td>
-										<td>[[${emp.tipoContrato}]]</td>
-										<td>[[${quin.tipoPago}]]</td>
-										<td>[[${quin.sueldoPre}]]</td>
-										<td>[[${quin.sueldoNeto}]]</td>
-										<td th:if="${quin.folioPre !=null and quin.folioQuin==null}" >[[${quin.folioPre}]]</td>
-										<td th:if="${quin.folioQuin!=null}" >[[${quin.folioQuin}]]</td>
-										<td >[[${emp.fechaIngreso}]]</td>
-<!--            							<td>[[${emp?.puestosEntity?.puesto}]]</td>-->
-										<td>
-											<a class="btn btn-info btn-sm link-detail"
-													th:href="@{/empleados/verEmpleado/} + ${emp.id}">Detalles</a>
-										</td>
-									</tr>
+										<tr th:each="emp : ${quin.empleadoQN}" th:if="${emp != null}" th:style="${quin.bloqueoPago ==true} ? 'background-color: #ffcccc;' : ''">
+											<td scope="row">[[${emp.id}]]</td>
+											<td>[[${emp.nombreCompleto}]]</td>
+											<td>[[${emp.rfc}]]</td>
+											<td>[[${emp.curp}]]</td>
+											<td>[[${quin.tipoPago}]]</td>
+											<td>[[${quin.sueldoPre}]]</td>
+											<td>[[${quin.sueldoNeto}]]</td>
+											<td th:if="${quin.folioPre !=null and quin.folioQuin==null}">
+												[[${quin.folioPre}]]</td>
+											<td th:if="${quin.folioQuin!=null}">[[${quin.folioQuin}]]</td>
+											<td>
+												<a class="btn btn-info btn-sm link-detail"
+													th:href="@{/empleados/verEmpleado/{id}(id=${emp.id}, quincena=${quinCatSelectGet})}">Detalles</a>
+												<a th:if="${quin.bloqueoPago == false}" class="btn btn-danger btn-sm"
+													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
+													th:href="@{/quincenas/bloqueoQuincena/} + ${quin.id}">Bloqueo
+													Pago</a>
+												<a th:if="${quin.bloqueoPago == true}" class="btn btn-success btn-sm"
+													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
+													th:href="@{/quincenas/desbloqueoQuincena/} + ${quin.id}">Desbloque de
+													Pago</a>
+											</td>
+										</tr>
+<!--										</tr>-->
 									</th:block>
 								</tbody>
 							</table>
 							<script src="https://unpkg.com"></script>
 							<script src="https://unpkg.com"></script>
 							<script>
-							  $(document).ready(function() {
-							    // Escuchar el evento de hacer clic en un renglón de Bootstrap Table
-							    $('#tableQuincena').on('click-row.bs.table', function (e, row, $element) {
-							      // 1. Opcional: Deshabilitar los select de las otras filas primero
-							      $('.select-renglon').prop('disabled', true); 
-							      
-							      // 2. Activar solo el select del renglón actual
-							      $element.find('.select-renglon').prop('disabled', false);
-							    });
-							  });
+								$(document).ready(function () {
+									// Escuchar el evento de hacer clic en un renglón de Bootstrap Table
+									$('#tableQuincena').on('click-row.bs.table', function (e, row, $element) {
+										// 1. Opcional: Deshabilitar los select de las otras filas primero
+										$('.select-renglon').prop('disabled', true);
+
+										// 2. Activar solo el select del renglón actual
+										$element.find('.select-renglon').prop('disabled', false);
+									});
+								});
 							</script>
 							<nav aria-label="Pagination" th:if="${totalPages > 0}">
 								<ul class="pagination justify-content-center">
@@ -333,17 +374,27 @@
 <script src="../../distV32/plugins/dropzone/min/dropzone.min.js"></script>
 <script src="../../distV32/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<!-- 1. Carga de librerías (Asegúrate de que jQuery se cargue ANTES de esto) -->
+<script th:src="@{/distV32/plugins/select2/js/select2.full.min.js}"></script>
+<script th:src="@{/distV32/js/pages/dashboard.js}"></script>
+
+<!-- 2. Inicialización del componente -->
+<script>
+	$(document).ready(function () {
+		$('#quinCatSelectPost').select2({
+			theme: 'bootstrap4',
+			placeholder: 'select QNA',
+			allowClear: true
+		});
+		$('#quinCatSelectGet').select2({
+			theme: 'bootstrap4',
+			placeholder: 'select QNA',
+			allowClear: true
+		});
+	});
+</script>
 <script>
 	$(function () {
-
-		//Initialize Select2 Elements
-		$('.select2').select2()
-
-		//Initialize Select2 Elements
-		$('.select2bs4').select2({
-			theme: 'bootstrap4'
-		})
-
 		//Datemask dd/mm/yyyy
 		$('#datemask').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
 		//Datemask2 mm/dd/yyyy

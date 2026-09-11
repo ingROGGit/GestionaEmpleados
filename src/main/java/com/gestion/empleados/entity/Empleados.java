@@ -140,7 +140,6 @@ public class Empleados extends AuditableDateEntity implements Serializable {
 	private List<DetalleDeduccionesEntiy> detalleDeducciones;
 	@OneToMany(mappedBy = "empleadoPer", fetch = FetchType.LAZY)
 	private List<DetallePersepcionesEntity> detallePercepcione;
-
 //	@Override
 //	public boolean isNew() {
 //		return !this.updateAction; 

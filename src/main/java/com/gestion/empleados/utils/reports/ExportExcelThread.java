@@ -263,7 +263,7 @@ public class ExportExcelThread extends Thread  {
 			celda.setCellStyle(estilo);
 			
 			celda = row.createCell(13);
-			celda.setCellValue(empleado.getEmpleadoV().getDiasVacaciones());
+			celda.setCellValue(empleado.getEmpleadoV()!=null?empleado.getEmpleadoV().getDiasVacaciones():0);
 			this.sheet.autoSizeColumn(13);
 			celda.setCellStyle(estilo);
 		}

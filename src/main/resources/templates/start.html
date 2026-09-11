@@ -2,27 +2,127 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
 	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en"> <!--begin::Head-->
 
-<head th:replace="headAll :: html_head"/>
+<head th:replace="headAll :: html_head" />
 
-<body th:replace="menu :: menuAll"/>
+<body th:replace="menu :: menuAll" />
 
-		<!-- Content Wrapper. Contains page content -->
-		<div th:fragment="contenMenu" class="content-wrapper">
-			<!-- Content Header (Page header) -->
-			<div th:replace="div-header :: divHeader" />
-			<!-- /.content-header -->
+<!-- Content Wrapper. Contains page content -->
+<div th:fragment="contenMenu" class="content-wrapper">
+	<!-- Content Header (Page header) -->
+	<div th:replace="div-header :: divHeader" />
+	<!-- /.content-header -->
 
-			<!-- Main content -->
-			<main class="app-main"> <!--begin::App Content Header-->
-				<section class="content">
-					<div class="container-fluid">
+	<!-- Main content -->
+	<main class="app-main"> <!--begin::App Content Header-->
+		<section class="content">
+			<div class="container-fluid">
+				<div class="small-box text-bg-primary">
+					<div class="row">
+						<div class="col-lg-3 col-6">
+							<!--begin::Small Box Widget 1-->
+							<div class="small-box text-bg-primary">
+								<div class="col-lg-3 col-6">
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+							<h3><sup style="font-size: 20px"></sup></h3>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+							<h3>Estadisticas<sup style="font-size: 20px"></sup></h3>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-6">
+						<!--begin::Small Box Widget 1-->
+						<div class="small-box text-bg-primary">
+							<div class="col-lg-3 col-6">
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-6">
+						<!--begin::Small Box Widget 1-->
+						<div class="small-box text-bg-primary">
+							<div class="col-lg-3 col-6">
+							</div>
+							<h3>Tipos de Pago<sup style="font-size: 20px"></sup></h3>
+						</div>
+						<!-- ./col -->
+						<div>
+							<!-- small box -->
+							<div class="small-box bg-primary">
+								<div class="inner">
+									<svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24"
+										xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+										<path clip-rule="evenodd" fill-rule="evenodd"
+											d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z">
+										</path>
+										<path clip-rule="evenodd" fill-rule="evenodd"
+											d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z">
+										</path>
+									</svg>
+								</div>
+								<a href="/estadisticas/chartsTipoPagos" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-6">
+						<!--begin::Small Box Widget 1-->
+						<div class="small-box text-bg-warning">
+							<div class="col-lg-3 col-6">
+							</div>
+							<h3>SINAVID<sup style="font-size: 20px"></sup></h3>
+						</div>
+						<!-- ./col -->
+						<div>
+							<!-- small box -->
+							<div class="small-box text-bg-warning">
+								<div class="inner">
+									<svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24"
+										xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+										<path clip-rule="evenodd" fill-rule="evenodd"
+											d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z">
+										</path>
+										<path clip-rule="evenodd" fill-rule="evenodd"
+											d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z">
+										</path>
+									</svg>
+								</div>
+								<a href="/WORK" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-6">
+						<!--begin::Small Box Widget 1-->
+						<div class="small-box text-bg-primary">
+							<div class="col-lg-3 col-6">
+							</div>
+							<h3>Empleados<sup style="font-size: 20px"></sup></h3>
+						</div>
+						<!-- ./col -->
+						<div>
+							<!-- small box -->
+							<div class="small-box bg-success">
+								<div class="inner">
+									<svg class="small-box-icon" fill="currentColor" viewBox="0 0 16 16"
+										xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+										<path
+											d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+									</svg>
+								</div>
+								<a href="/WORK" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div><!-- /.container-fluid -->
+		</section>
+		<!-- /.content -->
+	</main> <!--end::App Main--> <!--begin::Footer-->
 
-					</div><!-- /.container-fluid -->
-				</section>
-				<!-- /.content -->
-			</main> <!--end::App Main--> <!--begin::Footer-->
+</div>
+<!-- /.content-wrapper -->
+<footer th:replace="footerAll :: html_footer" />
 
-		</div>
-		<!-- /.content-wrapper -->
-		<footer th:replace="footerAll :: html_footer"/>
 </html>

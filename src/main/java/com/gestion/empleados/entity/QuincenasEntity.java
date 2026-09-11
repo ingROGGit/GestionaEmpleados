@@ -79,6 +79,8 @@ public class QuincenasEntity extends AuditableDateEntity implements Serializable
 	private BigDecimal salarioMen;
 	@Column(name = "salarioAn")
 	private BigDecimal salarioAn;
+	@Column(name = "bloqueoPago")
+	private boolean bloqueoPago;
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "quincenas_empleadoqn", // Nombre de la tabla intermedia
 			joinColumns = @JoinColumn(name = "quincenas_id"), // Clave foránea de esta entidad

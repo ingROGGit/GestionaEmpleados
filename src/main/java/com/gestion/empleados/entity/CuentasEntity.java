@@ -1,8 +1,10 @@
 package com.gestion.empleados.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.gestion.empleados.listener.AuditoryCuentasListener;
 
@@ -20,6 +22,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,6 +50,11 @@ public class CuentasEntity extends AuditableDateEntity implements Serializable {
 	private String estatus;
 	@Column(name = "cuenta")
 	private String cuenta;
+	@Basic(optional = true)
+	@Column(name = "fechaAlta")
+	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fechaAlta;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_banco")
 	private  BancosEntity bancoE;

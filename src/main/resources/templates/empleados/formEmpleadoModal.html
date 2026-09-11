@@ -40,20 +40,18 @@
 				<div class="row">
 					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 						<label>Numero Empleado: </label>
-						<input type="number" th:field="*{NEmpleado}" class="form-control"
-							th:errorClass="'form-control alert-danger'" />
-						<label>Edad: </label>
-						<input type="number" th:field="*{edad}" class="form-control"
-							th:errorClass="'form-control alert-danger'" />
-						<small class="form-text text-danger" th:if="${#fields.hasErrors('edad')}"
-							th:errors="*{edad}"></small>
+						<input type="number" th:field="*{id}" class="form-control"
+							th:errorClass="'form-control alert-danger'" disabled />
 						<label>Fecha Nacimiento: </label>
 						<input type="date" th:field="*{fechaNacimiento}" class="form-control"
 							th:errorClass="'form-control alert-danger'" />
 						<small class="form-text text-danger" th:if="${#fields.hasErrors('fechaNacimiento')}"
 							th:errors="*{fechaNacimiento}"></small>
-
-
+						<label>CURP: </label>
+						<input type="text" th:field="*{curp}" class="form-control"
+							th:errorClass="'form-control alert-danger'" />
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('fechaNacimiento')}"
+							th:errors="*{curp}"></small>
 					</div>
 					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 						<label>Nombre: </label>
@@ -67,6 +65,11 @@
 							<option th:value='F'>Femenino</option>
 							<option th:value='Otro'>Otro</option>
 						</select>
+						<label>RFC: </label>
+						<input type="text" th:field="*{rfc}" class="form-control"
+							th:errorClass="'form-control alert-danger'" />
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('fechaNacimiento')}"
+							th:errors="*{rfc}"></small>
 					</div>
 					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 						<label>Apellido Paterno: </label>
@@ -79,6 +82,11 @@
 							th:errorClass="'form-control alert-danger'" />
 						<small class="form-text text-danger" th:if="${#fields.hasErrors('correo')}"
 							th:errors="*{correo}"></small>
+						<label>Tipo Contrato: </label>
+						<input type="text" th:field="*{tipoContrato}" class="form-control"
+							th:errorClass="'form-control alert-danger'" />
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('tipoContrato')}"
+							th:errors="*{tipoContrato}"></small>
 					</div>
 					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 						<label>Apellido Materno: </label>
@@ -91,6 +99,11 @@
 							th:errorClass="'form-control alert-danger'" />
 						<small class="form-text text-danger" th:if="${#fields.hasErrors('telefono')}"
 							th:errors="*{telefono}"></small>
+						<label>Fecha Ingreso: </label>
+						<input type="date" th:field="*{fechaIngreso}" class="form-control"
+							th:errorClass="'form-control alert-danger'" readonly/>
+						<small class="form-text text-danger" th:if="${#fields.hasErrors('fechaIngreso')}"
+							th:errors="*{fechaIngreso}"></small>
 					</div>
 				</div>
 				<div class="row">
@@ -99,20 +112,8 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-						<label>Fecha Ingreso: </label>
-						<input type="date" th:field="*{fechaIngreso}" class="form-control"
-							th:errorClass="'form-control alert-danger'" />
-						<small class="form-text text-danger" th:if="${#fields.hasErrors('fechaIngreso')}"
-							th:errors="*{fechaIngreso}"></small>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-						<label>Salario: </label>
-						<input type="number" th:field="*{salario}" class="form-control"
-							th:errorClass="'form-control alert-danger'" />
-						<small class="form-text text-danger" th:if="${#fields.hasErrors('salario')}"
-							th:errors="*{salario}"></small>
-					</div>
+
+
 					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 					</div>
 					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">

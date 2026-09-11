@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en"> <!--begin::Head-->
+
+<head th:replace="headAll :: html_head" />
+
+<body th:replace="menu :: menuAll" onload="validaModal()" />
+<!-- Content Wrapper. Contains page content -->
+<!-- 1. CSS base de Select2 -->
+<link rel="stylesheet" th:href="@{/distV32/plugins/select2/css/select2.min.css}">
+
+<!-- 2. CSS del tema Bootstrap 4 para AdminLTE 3 -->
+<link rel="stylesheet" th:href="@{/distV32/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->
+	<div th:replace="div-header :: divHeader" />
+	<!-- /.content-header -->
+
+	<!-- Main content -->
+	<main class="app-main"> <!--begin::App Content Header-->
+		<section class="content">
+			<div class="card card-default">
+						<div class="card-header">
+							<h3 class="card-title">QUINCENA</h3>
+							<div class="card-tools">
+								<button type="button" class="btn btn-tool" data-card-widget="collapse">
+									<i class="fas fa-minus"></i>
+								</button>
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<form th:action="@{'/'+${funLista}}" id="searchForm2"
+									method="post">
+									<div class="row">
+										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<label>Quincena: </label>
+											<select class="form-control" id="quinCatSelectPost" name="quinCatSelectPost">
+												<option value="">select QNA</option>
+												<option th:each="qna : ${LquincenasCat}" th:value="${qna}"
+													th:text="${qna}"></option>
+											</select>
+										</div>
+									</div>
+									<div class="row" style="float: right;">
+										<br>
+										<button type="submit" class="btn btn-primary pull-right">Generar Grafica</button>
+									</div>
+								</form>
+							</div>
+
+						</div>
+			</div>
+			<!-- Marco o Tarjeta de AdminLTE para el Gráfico -->
+			<div class="card card-default">
+				<div class="card-header">
+					<h3 class="card-title" th:text="'Estadisticas de '+${quinCatSelectPost}">Estadisticas </h3>
+
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-minus"></i>
+						</button>
+						<button type="button" class="btn btn-tool" data-card-widget="remove">
+							<i class="fas = fa-times"></i>
+						</button>
+					</div>
+				</div>
+				<div class="card-body">
+					<!-- El lienzo donde Chart.js pintará el gráfico -->
+					<canvas id="donutChart" 
+					        th:data-labels="${graficaLabels}" 
+					        th:data-values="${graficaValues}"
+					        style="min-height: 550px; height: 550px; max-height: 550px; max-width: 100%;">
+					</canvas>
+				</div>
+				<!-- /.card-body -->
+			</div>
+			<!-- /.card -->
+		</section>
+		<!-- /.content -->
+	</main> <!--end::App Main--> <!--begin::Footer-->
+	<script src="/plugins/jquery/jquery.min.js"></script>
+<script src="/plugins/chart.js/Chart.min.js"></script>
+<script src="../../distV32/plugins/select2/js/select2.full.min.js"></script>
+<script th:src="@{/distV32/plugins/select2/js/select2.full.min.js}"></script>
+<script th:src="@{/distV32/js/pages/dashboard.js}"></script>
+
+<!-- 2. Inicialización del componente -->
+<script>
+	$(document).ready(function () {
+		$('#quinCatSelectPost').select2({
+			theme: 'bootstrap4',
+			placeholder: 'select QNA',
+			allowClear: true
+		});
+	});
+</script>
+<script th:inline="javascript">
+  $(function () {
+    // 1. Recuperar los datos guardados en el componente HTML de forma segura
+    var lasEtiquetas = $('#donutChart').data('labels');
+    var losValores = $('#donutChart').data('values');
+
+    var donutChartCanvas = $('#donutChart').get(0).getContext('2d');
+    
+    var donutData = {
+      labels: lasEtiquetas, 
+      datasets: [
+        {
+          data: losValores, 
+          backgroundColor : [ '#f39c12', '#00a65a','#f56954', '#00c0ef', '#3c8dbc'],
+        }
+      ]
+    };
+
+    var donutOptions = {
+      maintainAspectRatio : false,
+      responsive : true,
+    };
+    
+    new Chart(donutChartCanvas, {
+      type: 'doughnut',
+      data: donutData,
+      options: donutOptions
+    });
+  });
+</script>
+</div>
+<!-- /.content-wrapper -->
+
+</html>

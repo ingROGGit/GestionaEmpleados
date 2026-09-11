@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario AdminLTE 3</title>
+    
+<!-- CSS DE FORMA LOCAL -->
+    <!-- Font Awesome Icons (Locales de AdminLTE) -->
+    <link rel="stylesheet" href="../../distV32/plugins/fontawesome-free/css/all.min.css">
+    <!-- Tempusdominus Bootstrap 4 (Date Picker CSS Local) -->
+    <link rel="stylesheet" href="../../distV32/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- Theme style (AdminLTE Core CSS Local) -->
+    <link rel="stylesheet" href="../../distV32/dist/css/adminlte.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: sans-serif;
+            background-color: #f4f6f9;
+        }
+        form {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body class="hold-transition sidebar-mini">
+
+<div class="card bg-light">
+    <div class="card-header" th:text="${titulo}">
+        Título por Defecto
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <form th:action="@{/cuentasBancarias/formFile}" th:object="${cuantasFile}" method="post">
+                <input type="hidden" th:field="*{id}" />
+                 <input type="hidden" th:field="*{fileAlta}" />
+                <div class="row">
+                    <!-- Campo de información fija -->
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label>Alta:</label>
+                            <input type="text" class="form-control" th:field="${cuantasFile.alta}" readonly/>
+                        </div>
+                    </div>
+
+                    <!-- Date picker AdminLTE 3 -->
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="reservationdate">Fecha de Alta:</label>
+                            <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                <input type="date" 
+                                       th:field="*{fechaAlta}" 
+                                       class="form-control" 
+                                       data-target="#reservationdate"
+                                       placeholder="Seleccione una fecha"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fila de botones -->
+                <div class="row mt-3">
+                    <div class="col-lg-12 text-center">
+                        <input type="submit" value="Guardar" class="btn btn-primary px-5">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
+
+<!-- SCRIPTS OBLIGATORIOS (En orden estricto de carga usando 'src') -->
+<!-- 1. jQuery -->
+<script src="https://cloudflare.com"></script>
+<!-- 2. Bootstrap 4 Bundle (Incluye popper.js) -->
+<script src="https://cloudflare.com"></script>
+<!-- 3. Moment.js (Requerido por Tempus Dominus) -->
+<script src="https://cloudflare.com"></script>
+<script src="https://cloudflare.com"></script>
+<!-- 4. Tempusdominus Bootstrap 4 (El plugin del Date Picker) -->
+<script src="https://cloudflare.com"></script>
+<!-- 5. AdminLTE App -->
+<script src="https://jsdelivr.net"></script>
+
+</body>
+</html>

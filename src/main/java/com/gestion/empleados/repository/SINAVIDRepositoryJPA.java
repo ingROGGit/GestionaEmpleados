@@ -9,4 +9,5 @@ import com.gestion.empleados.entity.SINAVIDEntity;
 
 public interface SINAVIDRepositoryJPA extends JpaRepository<SINAVIDEntity, Serializable>{
 	public SINAVIDEntity findByNumISSSTE(String numISSSTE);
+	public SINAVIDEntity findBySinavidEm_Id(Long idEmpleado);
 }

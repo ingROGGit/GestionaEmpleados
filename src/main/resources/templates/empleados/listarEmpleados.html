@@ -35,7 +35,7 @@
 										th:text="${'El reporte se encuentra en proceso de Generacion o ya fue descargado'}">&times;</span>
 								</button>
 							</div>
-							<h4 class="card-title" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')">
+							<h4 class="card-title" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR','OPERADORCUENTAS')">
 								<a th:href="@{/empleados/exportarPDF}" class="btn btn-secondary">Exportar a PDF</a>
 								<a th:href="@{/empleados/exportarExcelThread}"
 									class="btn btn-success link-Download">Exportar a
@@ -56,7 +56,7 @@
 											<th>Numero</th>
 											<th>Nombre</th>
 											<th>Apellidos</th>
-											<th>Edad</th>
+
 											<th>Email</th>
 											<th>Telefono</th>
 											<th class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Fecha Ingreso</th>
@@ -65,22 +65,27 @@
 									</thead>
 									<tbody>
 										<tr th:each="empleado : ${empleados}">
-											<td th:text="${empleado.NEmpleado}"></td>
+											<td th:text="${empleado.id}"></td>
 											<td th:text="${empleado.nombre}"></td>
 											<td class="col-lg-3 col-md-3 col-sm-6 col-xs-12"
 												th:text="${empleado.apellidop} +' '+${empleado.apellidom}"></td>
-											<td th:text="${empleado.edad}"></td>
 											<td th:text="${empleado.correo}"></td>
 											<td th:text="${empleado.telefono}"></td>
 											<td class="col-lg-3 col-md-3 col-sm-6 col-xs-12"
 												th:text="${empleado.fechaIngreso}"></td>
-											<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')"
-												class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+											<td class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
 												<a class="btn btn-info btn-sm link-detail"
-													th:href="@{/empleados/verEmpleado/} + ${empleado.id}">Detalles</a>
-												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')"
+													th:href="@{/empleados/verDatosEmpleado/} + ${empleado.id}">Detalles</a>
+												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR','ROLE_OPERADORCUENTAS')"
 													class="btn btn-warning btn-sm link-EmpleadoEdit"
 													th:href="@{/empleados/formEmpleado/} + ${empleado.id}">Editar</a>
+												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORCUENTAS')"
+													class="btn btn-warning btn-sm link-EmpleadoEdit"
+													th:href="@{/cuentasBancarias/formCuenta/{id}(id=${empleado.id}, addNew=${addNew})}">Agregar
+													Cuenta</a>
+												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR')" class="btn btn-danger btn-sm"
+													th:href="@{/empleados/baja/} + ${empleado.id}"
+													onclick="return confirm('Esta seguro de Eliminar el Empleado');">Baja</a>
 												<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger btn-sm"
 													th:href="@{/empleados/eliminar/} + ${empleado.id}"
 													onclick="return confirm('Esta seguro de Eliminar el Empleado');">Eliminar</a>

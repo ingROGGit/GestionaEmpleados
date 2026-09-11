@@ -9,4 +9,5 @@ import com.gestion.empleados.entity.CuentasEntity;
 
 public interface CuentasRepositoryJPA extends JpaRepository<CuentasEntity, Serializable> {
 	public CuentasEntity findByCuenta(String cuenta);
+	public CuentasEntity findByEmpleadoC_Id(Long idEmpleado);
 }

@@ -60,6 +60,7 @@ public class ExporterPDF {
 			pdftable.addCell("");//Edad
 			pdftable.addCell(empleado.getSexo());
 //			pdftable.addCell(String.valueOf(empleado.getSueldoNeto()));
+			pdftable.addCell("");
 			pdftable.addCell(empleado.getCorreo());
 			pdftable.addCell(String.valueOf(empleado.getTelefono()));
 			pdftable.addCell(empleado.getFechaIngreso().toString());

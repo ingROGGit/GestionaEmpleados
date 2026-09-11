@@ -1,0 +1,136 @@
+<style>
+	/* Opcional: Elimina los márgenes predeterminados del body para un verdadero ancho completo */
+	body {
+		margin: 0;
+		padding: 0;
+		font-family: sans-serif;
+	}
+
+	form {
+		width: 100%;
+		box-sizing: border-box;
+		/* Asegura que el padding y el border se incluyan en el 100% */
+		padding: 20px;
+		/* Ejemplo de padding */
+		border: 1px solid #ccc;
+		/* Ejemplo de borde */
+		background-color: #f9f9f9;
+		/* Puedes añadir un max-width si no quieres que sea demasiado ancho en pantallas muy grandes */
+		/* max-width: 1200px; */
+		margin: 0 auto;
+		/* Centra el formulario si usas max-width */
+	}
+
+	input[type="text"],
+	input[type="submit"] {
+		width: 100%;
+		box-sizing: border-box;
+		padding: 10px;
+		margin-bottom: 10px;
+	}
+</style>
+<!-- 1. CSS base de Select2 -->
+<link rel="stylesheet" th:href="@{/distV32/plugins/select2/css/select2.min.css}">
+
+<!-- 2. CSS del tema Bootstrap 4 para AdminLTE 3 -->
+<link rel="stylesheet" th:href="@{/distV32/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+
+<div class="card bg-light">
+	<div class="card-header" th:text="${titulo}">
+	</div>
+	<div class="card-body">
+		<div class="row">
+			<form th:action="@{/GestionSINAVID/formDomi}" th:object="${domi}" method="post">
+				<input type="hidden" th:field="*{id}" th:value="${domi.id}" />
+				<input type="hidden" th:field="*{domiEm.id}" />
+				<div class="row">
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+						Empleado: <li class="list-group-item"
+							th:text="${domi.domiEm.id} +' '+${domi.domiEm.nombreCompleto}"></li>
+					</div>
+				</div>
+					<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+						<label>Calle: </label>
+						<input type="text" class="list-group-item" style="text-transform: uppercase;" th:field="${domi.calle}"
+							required title="Calle"></input>
+						<label>No. Exterior: </label>
+						<input type="text" class="list-group-item" th:field="${domi.numExt}"
+							required title="Numero Exterior"></input>
+					</div>
+					<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+						<label>Codigo Postal: </label>
+						<select class="form-control" id="colonias" name="colonias" onchange="cargaColonia(this.value)" required>
+							<option value="">-- Seleccionar Colonia --</option>
+							<!-- Iteramos sobre la lista de bancos (LBancos) -->
+							<option th:each="cp : ${LCPJ}" th:value="${cp.cp}+ '|' + ${cp.colonia}" th:text="${cp.cp}+ ' ' + ${cp.colonia}">
+							</option>
+						</select>
+						</li>
+						<script>
+							function cargaColonia(valor) {
+							    const resultado = valor.split('|');
+							     document.getElementById('inputCP').value = resultado[0];
+							     document.getElementById('inputColonia').value = resultado[1];
+							}
+						</script>
+						<label>No. Interior: </label>
+						<input type="text" class="list-group-item" th:field="${domi.numInt}"
+							title="Numero Interior"></input>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+						<label>Colonia: </label>
+						<input type="text" class="list-group-item" th:field="${domi.colonia}"
+							required title="Colonia" id="inputColonia"></input>
+					</div><div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+						<label>Codigo Postal: </label>
+						<input type="text" class="list-group-item" th:field="${domi.cp}"
+							required title="C.P." id="inputCP"></input>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+						<h4></h4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<h4>
+							<p></p>
+						</h4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="box-footer">
+							<input type="submit" value="Guardar" class="btn btn-primary">
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div><!-- /.container-fluid -->
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
+<script src="../../distV32/plugins/select2/js/select2.full.min.js"></script>
+<script th:src="@{/distV32/plugins/select2/js/select2.full.min.js}"></script>
+<script th:src="@{/distV32/js/pages/dashboard.js}"></script>
+
+<!-- 2. Inicialización del componente -->
+<script>
+	$(document).ready(function () {
+		$('#colonias').select2({
+			theme: 'bootstrap4',
+			placeholder: 'select Colonia',
+			allowClear: true,
+			dropdownParent: $('#colonias').closest('.modal') 
+		});
+		document.getElementById("colonias").focus();
+	});
+</script>

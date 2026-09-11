@@ -69,6 +69,16 @@ public class SINAVIDEntity extends AuditableDateEntity implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fechaRespuesta;
+	@Basic(optional = true)
+	@Column(name = "fechaAlta")
+	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fechaAlta;
+	@Basic(optional = true)
+	@Column(name = "fechaModSueldo")
+	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fechaModSueldo;
 	@Size(max = 10)
 	@Column(name = "pagaduria")
 	private String pagaduria;

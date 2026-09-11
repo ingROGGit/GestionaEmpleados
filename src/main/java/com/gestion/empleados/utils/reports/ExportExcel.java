@@ -209,6 +209,7 @@ public class ExportExcel {
 
 			celda = row.createCell(8);
 //			celda.setCellValue(empleado.getSueldoNeto().toString());
+			celda.setCellValue("");
 			sheet.autoSizeColumn(8);
 			celda.setCellStyle(estilo);
 			

@@ -21,7 +21,7 @@
 			</div>
 			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 				Apellido Materno:<li class="list-group-item" th:text="${empleado.apellidom}"></li>
-				Correo:<li class="list-group-item" th:text="${empleado.correo}"></li>
+				Clave Puesto:<li class="list-group-item" th:text="${empleado.claveP} +' PLAZA: '+${empleado.plaza}"></li>
 				Puesto:<li class="list-group-item" th:text="${empleado?.puestosEntity?.puesto}"></li>
 			</div>
 		</div>
@@ -42,31 +42,35 @@
 							<th data-field="tipoPago" data-filter-control="select">TIPO PAGO</th>
 							<th data-filter-control="select">SUELDO PRE</th>
 							<th data-filter-control="select">SUELDO NETO</th>
+							<th data-filter-control="select">SUELDO BASE</th>
 							<th data-filter-control="select">FOLIO PRE</th>
 							<th data-filter-control="select">FOLIO</th>
 						</tr>
 					</thead>
 					<tbody>
-						<th:block th:each="quin : ${empleado.quincenas}" th:if="${quin != null}">
+						<th:block  th:if="${quincena != null}">
 							<tr>
-								<td>[[${quin.tipoPago}]]</td>
-								<td>[[${quin.sueldoPre}]]</td>
-								<td>[[${quin.sueldoNeto}]]</td>
-								<td>[[${quin.folioPre}]]</td>
-								<td>[[${quin.folioQuin}]]</td>
+								<td>[[${quincena.tipoPago}]]</td>
+								<td>[[${quincena.sueldoPre}]]</td>
+								<td>[[${quincena.sueldoNeto}]]</td>
+								<td>[[${quincena.sueldoBase}]]</td>
+								<td>[[${quincena.folioPre}]]</td>
+								<td>[[${quincena.folioQuin}]]</td>
 							<tr>
 						</th:block>
 					</tbody>
 				</table>
-			</div>
-			<div class="card-body" style="display: none;">
-				<div class="card-header">
-				<h3 class="card-title">Persepciones</h3>
+			
+			<div class="card card-default collapsed-card">
+			<div class="card-header">
+				<h3 class="card-title">Persepcones</h3>
 				<div class="card-tools">
 					<button type="button" class="btn btn-tool" data-card-widget="collapse">
 						<i class="fas fa-minus"></i>
 					</button>
 				</div>
+			</div>
+			<div class="card-body" style="display: none;">
 				<table id="tableQuincena" class="table table-hover w-auto text-nowrap" data-toggle="table"
 					data-filter-control="true">
 					<thead class="thead-light">
@@ -77,7 +81,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<th:block th:each="per : ${empleado.detallePercepcione}" th:if="${per != null}">
+						<th:block th:each="per : ${detalleper}" th:if="${per != null}">
 							<tr>
 								<td>[[${per.persepciones.clave}]]</td>
 								<td>[[${per.persepciones.descripcion}]]</td>
@@ -88,14 +92,16 @@
 				</table>
 			</div>
 			</div>
-			<div class="card-body" style="display: none;">
-				<div class="card-header">
+			<div class="card card-default collapsed-card">
+			<div class="card-header">
 				<h3 class="card-title">Deducciones</h3>
 				<div class="card-tools">
 					<button type="button" class="btn btn-tool" data-card-widget="collapse">
 						<i class="fas fa-minus"></i>
 					</button>
 				</div>
+			</div>
+			<div class="card-body" style="display: none;">
 				<table id="tableQuincena" class="table table-hover w-auto text-nowrap" data-toggle="table"
 					data-filter-control="true">
 					<thead class="thead-light">
@@ -106,7 +112,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<th:block th:each="ded : ${empleado.detalleDeducciones}" th:if="${ded != null}">
+						<th:block th:each="ded : ${detalleded}" th:if="${ded != null}">
 							<tr>
 								<td>[[${ded.deducciones.clave}]]</td>
 								<td>[[${ded.deducciones.descripcion}]]</td>
@@ -115,6 +121,7 @@
 						</th:block>
 					</tbody>
 				</table>
+			</div>
 			</div>
 			</div>
 		</div>
@@ -135,10 +142,12 @@
 								Estatus: <li class="list-group-item" th:text="${empleado.sinavidEm.estatus}"></li>
 								Sueldo SINAVID: <li class="list-group-item"
 									th:text="${empleado.sinavidEm.sueldoSINAVID}"></li>
+								Fecha Alta: <li class="list-group-item" th:text="${empleado.sinavidEm.fechaAlta}"></li>
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 								Alta: <li class="list-group-item" th:text="${empleado.sinavidEm.alta}"></li>
 								Sueldo SAR: <li class="list-group-item" th:text="${empleado.sinavidEm.sueldoSAR}"></li>
+								Fecha Modificacion Salario: <li class="list-group-item" th:text="${empleado.sinavidEm.fechaModSueldo}"></li>
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 								Pagaduria: <li class="list-group-item" th:text="${empleado.sinavidEm.pagaduria}"></li>
@@ -146,22 +155,23 @@
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 								Numero ISSSTE: <li class="list-group-item" th:text="${empleado.sinavidEm.numISSSTE}">
+								NSS: <li class="list-group-item" th:text="${empleado.sinavidEm.nss}">
 								</li>
 							</div>
 						</div>
 						<th:block th:if="${empleado.domicilios != null}">
 						<div class="row">
 							<h3 class="card-title">Domicilio</h3>
-							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 								Calle: <li class="list-group-item" th:text="${empleado.domicilios.calle}"></li>
 								Colonia: <li class="list-group-item"
 									th:text="${empleado.domicilios.colonia}"></li>
 							</div>
-							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+							<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
 								Num.Exte: <li class="list-group-item" th:text="${empleado.domicilios.numExt}"></li>
 								C.P.: <li class="list-group-item" th:text="${empleado.domicilios.cp}"></li>
 							</div>
-							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+							<div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
 								Num Int: <li class="list-group-item" th:text="${empleado.domicilios.numInt}"></li>
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -169,6 +179,37 @@
 							</div>
 						</div>
 						</th:block>
+					</th:block>
+				</div>
+			</div>
+		</div>
+				<div class="card card-default collapsed-card">
+			<div class="card-header">
+				<h3 class="card-title">CUENTA</h3>
+				<div class="card-tools">
+					<button type="button" class="btn btn-tool" data-card-widget="collapse">
+						<i class="fas fa-minus"></i>
+					</button>
+				</div>
+			</div>
+			<div class="card-body" style="display: none;">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<th:block th:each="cuen : ${empleado.LCuentas}" th:if="${cuen != null}">
+						<div class="row">
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Estatus: <li class="list-group-item" th:text="${cuen.estatus}"></li>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Alta: <li class="list-group-item" th:text="${cuen.alta}"></li>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Cuenta: <li class="list-group-item" th:text="${cuen.cuenta}"></li>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Banco: <li class="list-group-item" th:text="${cuen.bancoE.banco}">
+								</li>
+							</div>
+						</div>
 					</th:block>
 				</div>
 			</div>

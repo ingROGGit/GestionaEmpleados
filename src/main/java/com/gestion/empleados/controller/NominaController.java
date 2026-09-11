@@ -20,14 +20,17 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.PuestosEntity;
 import com.gestion.empleados.entity.QuincenaCatEntity;
 import com.gestion.empleados.entity.QuincenasEntity;
 import com.gestion.empleados.entity.ServiciosEntity;
+import com.gestion.empleados.entity.UsuariosEntity;
 import com.gestion.empleados.entity.filtrosConsultaDTO;
 import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
 import com.gestion.empleados.repository.PuestosRepositoryJPA;
@@ -56,15 +59,15 @@ public class NominaController {
 	public String listarQNA(Model model, @RequestParam(required = false) String keyword,
 			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "7000") int size,
 			@RequestParam(defaultValue = "empleadoQN.id,asc") String[] sort,
-			@RequestParam(required = false) String quincenaSel) {
+			@RequestParam(required = false) String quinCatSelectGet) {
 		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
 		String quincenasCat = quincenasCatJPA.findQNAACT(fechaSqlHoy);
 		QuincenaCatEntity quinShearch;
-		if (quincenaSel != null)
-			quinShearch = quincenasCatJPA.findByIdQNA(quincenaSel);
+		if (quinCatSelectGet != null)
+			quinShearch = quincenasCatJPA.findByIdQNA(quinCatSelectGet);
 		else {
 			quinShearch = quincenasCatJPA.findByIdQNA(quincenasCat);
-			quincenaSel = quincenasCat;
+			quinCatSelectGet = quincenasCat;
 		}
 		filtrosConsultaDTO filtros = new filtrosConsultaDTO();
 		List<String> LquincenasCat = quincenasCatJPA.findByAllIdQNA();
@@ -123,7 +126,8 @@ public class NominaController {
 		model.addAttribute("funLista", "quincenas/listarQuincena");
 		model.addAttribute("funVer", "verXMLRec");
 		model.addAttribute("funStatus", "statusXMLRec");
-		model.addAttribute("quincenaSel", quincenaSel);
+		model.addAttribute("quinCatSelectGet", quinCatSelectGet);
+		model.addAttribute("registros",quincena.getTotalElements());
 		return "quincenas/listarQuincena";
 	}
 
@@ -193,6 +197,28 @@ public class NominaController {
 		model.addAttribute("funLista", "quincenas/listarQuincena");
 		model.addAttribute("funVer", "verXMLRec");
 		model.addAttribute("funStatus", "statusXMLRec");
+		model.addAttribute("registros",quincena.getTotalElements());
+		model.addAttribute("quinCatSelectGet", filtrosSet.getQna());
 		return "quincenas/listarQuincena";
+	}
+	@GetMapping("/quincenas/bloqueoQuincena/{id}")
+	public String bloquearPago(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+		if (id > 0) {
+			QuincenasEntity quin=this.quincenaJPA.findById(id);
+			quin.setBloqueoPago(true);
+			this.quincenaJPA.save(quin);
+			flash.addFlashAttribute("error", "Pago Bloqueado");
+		}
+		return "redirect:/quincenas/listarQuincena";
+	}
+	@GetMapping("/quincenas/desbloqueoQuincena/{id}")
+	public String desbloqueoQuincena(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+		if (id > 0) {
+			QuincenasEntity quin=this.quincenaJPA.findById(id);
+			quin.setBloqueoPago(false);
+			this.quincenaJPA.save(quin);
+			flash.addFlashAttribute("success", "Pago Activo");
+		}
+		return "redirect:/quincenas/listarQuincena";
 	}
 }

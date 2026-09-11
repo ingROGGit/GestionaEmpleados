@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en"> <!--begin::Head-->
+
+<head th:replace="headAll :: html_head" />
+
+<body th:replace="menu :: menuAll" onload="validaModal()" />
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->
+	<div th:replace="div-header :: divHeader" />
+	<!-- /.content-header -->
+
+	<!-- Main content -->
+	<main class="app-main"> <!--begin::App Content Header-->
+		<section class="content">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card">
+						<div th:if="${success !=null}">
+							<div class="alert alert-primary alert-dismissible fade show" role="alert">
+								<span aria-hidden="true">&times;</span>
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true" th:text="${success}">&times;</span>
+								</button>
+							</div>
+						</div>
+						<div th:if="${error !=null}">
+							<div class="col-md-100 col-sm-100 alert alert-warning alert-dismissible fade show"
+								role="alert">
+								<span aria-hidden="true">&times;</span>
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true" th:text="${error}">&times;</span>
+								</button>
+							</div>
+						</div>
+						<form th:action="@{/cuentasBancarias/formCuenta}" th:object="${cuenta}" method="post">
+							<input type="hidden" th:field="*{id}" th:value="${cuenta.id}" />
+							<div class="row">
+								<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									Estatus: <li class="list-group-item" th:text="${cuenta.estatus}"></li>
+								</div>
+								<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									Alta: <li class="list-group-item" th:text="${cuenta.alta}"></li>
+								</div>
+								<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									Cuenta: <li class="list-group-item" th:text="${cuenta.cuenta}"></li>
+								</div>
+								<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									Banco: <li class="list-group-item">
+										<select class="form-control" id="bancoSelect" th:field="*{bancoE.id}">
+											<option value="">-- Seleccionar Banco --</option>
+											<!-- Iteramos sobre la lista de bancos (LBancos) -->
+											<option th:each="banco : ${LBancos}" th:value="${banco.id}"
+												th:text="${banco.banco}">
+											</option>
+										</select>
+									</li>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+									<h4></h4>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+									<h4>
+										<p></p>
+									</h4>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+								</div>
+								<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+									<div class="box-footer">
+										<input type="submit" value="Guardar" class="btn btn-primary">
+									</div>
+								</div>
+								<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div><!-- /.container-fluid -->
+			<div th:if="${message}">
+				<h2 th:text="${message}" />
+			</div>
+
+		</section>
+		<!-- /.content -->
+	</main> <!--end::App Main--> <!--begin::Footer-->
+
+</div>
+<!-- /.content-wrapper -->
+
+</html>
