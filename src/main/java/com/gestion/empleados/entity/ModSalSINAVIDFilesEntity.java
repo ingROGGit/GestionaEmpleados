@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "AltaCuentasFilesEntity", catalog = "db_gestion_empleados2", schema = "public")
+@Table(name = "ModSalSINAVIDFilesEntity", catalog = "db_gestion_empleados2", schema = "public")
 @EntityListeners({ AuditingEntityListener.class })
 public class ModSalSINAVIDFilesEntity extends AuditableDateEntity implements Serializable {
 		private static final long serialVersionUID = 1L;

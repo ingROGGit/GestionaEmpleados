@@ -8,5 +8,5 @@ import com.gestion.empleados.entity.ExtractoSINAVIDFilesEntity;
 
 
 public interface ExtractoSINAVIDFilesRepository extends JpaRepository<ExtractoSINAVIDFilesEntity, Serializable>{
-
+	public ExtractoSINAVIDFilesEntity findById(Long id);
 }

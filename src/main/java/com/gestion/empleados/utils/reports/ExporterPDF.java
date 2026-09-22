@@ -38,17 +38,17 @@ public class ExporterPDF {
 		pdftable.addCell(celda);
 		celda.setPhrase(new Phrase("Apellido M",fuente));
 		pdftable.addCell(celda);
-		celda.setPhrase(new Phrase("Edad",fuente));
+		celda.setPhrase(new Phrase("CURP",fuente));
 		pdftable.addCell(celda);
-		celda.setPhrase(new Phrase("Sexo",fuente));
+		celda.setPhrase(new Phrase("RFC",fuente));
 		pdftable.addCell(celda);
-		celda.setPhrase(new Phrase("Salario",fuente));
+		celda.setPhrase(new Phrase("claveP",fuente));
 		pdftable.addCell(celda);
-		celda.setPhrase(new Phrase("Correo",fuente));
+		celda.setPhrase(new Phrase("plaza",fuente));
 		pdftable.addCell(celda);
 		celda.setPhrase(new Phrase("Telefono",fuente));
 		pdftable.addCell(celda);
-		celda.setPhrase(new Phrase("Fecha",fuente));
+		celda.setPhrase(new Phrase("Fecha Ingreso",fuente));
 		pdftable.addCell(celda);
 	}
 	private void writeDetalleTabla(PdfPTable pdftable) {
@@ -57,17 +57,16 @@ public class ExporterPDF {
 			pdftable.addCell(empleado.getNombre());
 			pdftable.addCell(empleado.getApellidop());
 			pdftable.addCell(empleado.getApellidom());
-			pdftable.addCell("");//Edad
-			pdftable.addCell(empleado.getSexo());
-//			pdftable.addCell(String.valueOf(empleado.getSueldoNeto()));
-			pdftable.addCell("");
-			pdftable.addCell(empleado.getCorreo());
+			pdftable.addCell(empleado.getCurp());
+			pdftable.addCell(empleado.getRfc());
+			pdftable.addCell(empleado.getClaveP());
+			pdftable.addCell(empleado.getPlaza());
 			pdftable.addCell(String.valueOf(empleado.getTelefono()));
 			pdftable.addCell(empleado.getFechaIngreso().toString());
 		}
 	}
 	public void exportarPDF(HttpServletResponse response) throws DocumentException, IOException {
-		Document documento=new Document(PageSize.A4);
+		Document documento=new Document(PageSize.A4.rotate());
 		PdfWriter.getInstance(documento, response.getOutputStream());
 		documento.open();
 		Font fuente= FontFactory.getFont(FontFactory.HELVETICA);

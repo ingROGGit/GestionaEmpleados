@@ -85,9 +85,15 @@ public class SINAVIDEntity extends AuditableDateEntity implements Serializable {
 	@Size(max = 100)
 	@Column(name = "alta")
 	private String alta;
+	@Column(name = "idBaja", columnDefinition = "int default 30")
+	private int idBaja;
+	@Column(name = "fechaBaja")
+	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fechaBaja;
 	@OneToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "id_Empleado") // This remains the owning side, holds the FK
-	private Empleados sinavidEm;
+	private Empleados empleado;
 	@Override
 	public String toString() {
 		return "SINAVIDEntity [id=" + id + ", estatus=" + estatus + ", nss=" + nss + ", numISSSTE=" + numISSSTE

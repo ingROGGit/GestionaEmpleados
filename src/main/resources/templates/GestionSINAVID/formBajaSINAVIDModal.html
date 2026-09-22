@@ -34,38 +34,39 @@
 	</div>
 	<div class="card-body">
 		<div class="row">
-			<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card text-center">
-				<a>
-					<h2><span th:text="${titulo}"></span></h2>
-				</a>
-			</div>
-			<form th:action="@{/cuentasBancarias/formCuenta}" th:object="${cuenta}" method="post">
-				<input type="hidden" th:field="*{id}" th:value="${cuenta.id}" />
-				<input type="hidden" th:field="*{empleadoC.id}" />
+			<form th:action="@{/GestionSINAVID/formBajaSINAVID}" th:object="${sinavid}" method="post">
+				<input type="hidden" th:field="*{id}" th:value="${sinavid.id}" />
 				<div class="row">
 
 					<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 						Empleado: <li class="list-group-item"
-							th:text="${cuenta.empleadoC.id} +' '+${cuenta.empleadoC.nombreCompleto}"></li>
+							th:text="${sinavid.empleado.id} +' '+${sinavid.empleado.nombreCompleto}"></li>
 					</div>
 					<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-						Estatus: <input class="list-group-item" th:field="${cuenta.estatus}" readonly></input>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-						<label>Cuenta: </label>
-						<input type="text" class="list-group-item" th:field="${cuenta.cuenta}" inputmode="numeric"
-							pattern="[0-9]{18}" maxlength="18" minlength="18" required
-							title="Clabe interbancaria de 18 Digitos"></input>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-						<label>Banco: </label>
-						<select class="form-control" id="bancoSelect" th:field="*{bancoE.id}" required>
-							<option value="">-- Seleccionar Banco --</option>
-							<!-- Iteramos sobre la lista de bancos (LBancos) -->
-							<option th:each="banco : ${LBancos}" th:value="${banco.id}" th:text="${banco.banco}">
-							</option>
+						<label>Tipo Baja: </label>
+						<select class="form-control" th:field="*{idBaja}">
+							<option th:value='10'>10|Licencia sin goce de sueldo por asuntos</option>
+							<option th:value='11'>11|Licencia sin goce de sueldo por comision</option>
+							<option th:value='12'>12|Licencia sin goce de sueldo por suspension</option>
+							<option th:value='20'>20|Defuncion</option>
+							<option th:value='30'>30|Recision de contrato</option>
+							<option th:value='40'>40|Pension o Jubilacion</option>
+							<option th:value='50'>50|Renuncia</option>
+							<option th:value='60'>60|Retiro Voluntario</option>
+							<option th:value='70'>70|Otros</option>
 						</select>
-						</li>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+						<div class="form-group">
+                            <label for="reservationdate">Fecha de Baja:</label>
+                            <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                <input type="date" 
+                                       th:field="*{fechaBaja}" 
+                                       class="form-control" 
+                                       data-target="#reservationdate"
+                                       placeholder="Seleccione una fecha"/>
+                            </div>
+                        </div>
 					</div>
 				</div>
 				<div class="row">

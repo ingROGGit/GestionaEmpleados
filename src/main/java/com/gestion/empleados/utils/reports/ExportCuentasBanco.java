@@ -9,6 +9,8 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.gestion.empleados.entity.CuentasEntity;
 import com.gestion.empleados.entity.Empleados;
 
 public class ExportCuentasBanco{
@@ -175,14 +177,20 @@ public class ExportCuentasBanco{
 	                row.createCell(3).setCellValue(emp.getRfc());
 
 	                // Desglosar la CLABE de 18 dígitos celda por celda (columnas 4 a 21)
-	                String clabe = emp.getLCuentas().get(0).getCuenta();
+	                
+	                String clabe = null;
+	                for(CuentasEntity cuenta:emp.getLisCuentas()) {
+	            		if(cuenta.getEstatus().equals("En Registro")) {
+	            			clabe=cuenta.getCuenta();
+	            		}
+	                }
 	                for (int i = 0; i < clabe.length(); i++) {
 	                    // Convertimos cada char a entero o string individual
 	                    row.createCell(4 + i).setCellValue(Character.getNumericValue(clabe.charAt(i)));
 	                }
 
 	                // Columna del Banco (Columna 22)
-	                row.createCell(22).setCellValue(emp.getLCuentas().get(0).getBancoE().getBanco());
+	                row.createCell(22).setCellValue(emp.getLisCuentas().get(0).getBancoE().getBanco());
 	            }
 
 

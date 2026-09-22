@@ -38,7 +38,7 @@
 											<select class="form-control" id="quinCatSelectPost" name="quinCatSelectPost">
 												<option value="">select QNA</option>
 												<option th:each="qna : ${LquincenasCat}" th:value="${qna}"
-													th:text="${qna}"></option>
+													th:text="${qna}" th:selected="${qna == quinCatSelectPost}"></option>
 											</select>
 										</div>
 									</div>

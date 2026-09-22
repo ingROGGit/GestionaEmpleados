@@ -9,107 +9,112 @@
 <!-- 2. CSS del tema Bootstrap 4 para AdminLTE 3 -->
 <link rel="stylesheet" th:href="@{/distV32/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
 
-<body th:replace="menu :: menuAll" onload="validaModal()"/>
+<body th:replace="menu :: menuAll" onload="validaModal()" />
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
-			<div th:replace="div-header :: divHeader" />
-			<!-- /.content-header -->
+	<div th:replace="div-header :: divHeader" />
+	<!-- /.content-header -->
 
-			<!-- Main content -->
-			<main class="app-main"> <!--begin::App Content Header-->
-				<section class="content">
-					<div class="container-fluid">
-						<div class="row">
-							<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card">
-								<div th:if="${success !=null}">
-								<div class="alert alert-primary alert-dismissible fade show"
-									role="alert">
-									<span aria-hidden="true" >&times;</span>
-									<button type="button" class="close" data-dismiss="alert"
-										aria-label="Close">
-										<span aria-hidden="true" th:text="${success}">&times;</span>
-									</button>
-								</div>
-								</div>
-								<div th:if="${error !=null}">
-								<div class="col-md-100 col-sm-100 alert alert-warning alert-dismissible fade show"
-									role="alert">
-									<span aria-hidden="true" >&times;</span>
-									<button type="button" class="close" data-dismiss="alert"
-										aria-label="Close">
-										<span aria-hidden="true" th:text="${error}">&times;</span>
-									</button>
-								</div>
-								</div>
-								<!--								<h1 class="text-center" th:text="${titulo}"></h1>-->
-								<form id="addCatalogo" enctype="multipart/form-data" th:action="@{/empleados/addXLSX}" method="post">
-									<input type="hidden" id="TIPOCARGA" name="TIPOCARGA" th:value="${TIPOCARGA}">
-									<input type="hidden" id="CatalogoCarga" name="CatalogoCarga" th:value="*{CatalogoCarga}">
-									<div class="row">
-										<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-										</div>
-<!--									<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">-->
-<!--										<label title="Atributo Requerido" th:text="${titulo}"> </label>-->
-<!--										<input class="form-control-file" type="file" name="fileXLS" required autocomplete="off" accept=".xlsx"/>-->
-<!--									</div>-->
-									<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">
-									  <label for="formFileLg" class="form-label" th:text="${titulo}"></label>
-									  <input class="form-control form-control-lg" id="fileXLS" type="file" name="fileXLS" required autocomplete="off" accept=".xlsx,.xls">
-									</div>
-									</div>
-									<div class="row">
-									<div th:if="${#lists.contains({'CPRE', 'CNOM'}, TIPOCARGA)}" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" align="center">
-										<label>QUINCENA: </label>
-											<select class="form-control" id="quinCatSelectPost" name="quinCatSelectPost" required>
-												<option value="">select QNA</option>
-												<option th:each="qna : ${lquincenas}" th:value="${qna}"
-													th:text="${qna}" th:selected="${qna == quinCatSelectPost}"></option>
-											</select>
-										</div>	
-										<div th:if="${#lists.contains({'CEXTSINAVID'}, TIPOCARGA)}" class="col-lg-6 col-md-6 col-sm-6 col-xs-12" align="center">
-										<label>FECHA DEL EXTRACTO: </label>
-											<div class="input-group date" id="reservationdate" data-target-input="nearest">
-				                                <input type="date" name="fechaExt" id="fechaExt"
-				                                       th:value="${#dates.format(fechaExt, 'yyyy-MM-dd')}" 
-				                                       class="form-control" 
-				                                       data-target="#reservationdate"
-				                                       placeholder="Seleccione una fecha"/>
-				                            </div>
-										</div>
-										</div>
-										<div class="row"></div>
-										<div class="row">									
-									<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">
-										<input type="submit" value="Guardar" class="btn btn-primary" on>
-									</div>
-									</div>
-								</form>
+	<!-- Main content -->
+	<main class="app-main"> <!--begin::App Content Header-->
+		<section class="content">
+			<div class="container-fluid">
+				<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card text-center">
+					<a>
+						<h2><span th:text="${titulo}"></span></h2>
+					</a>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card">
+						<div th:if="${success !=null}">
+							<div class="alert alert-primary alert-dismissible fade show" role="alert">
+								<span aria-hidden="true">&times;</span>
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true" th:text="${success}">&times;</span>
+								</button>
 							</div>
 						</div>
-					</div><!-- /.container-fluid -->
-						<div th:if="${message}">
-		<h2 th:text="${message}"/>
-	</div>
-	<!-- 1. Carga de librerías (Asegúrate de que jQuery se cargue ANTES de esto) -->
-<script th:src="@{/distV32/plugins/select2/js/select2.full.min.js}"></script>
-<script th:src="@{/distV32/js/pages/dashboard.js}"></script>
+						<div th:if="${error !=null}">
+							<div class="col-md-100 col-sm-100 alert alert-warning alert-dismissible fade show"
+								role="alert">
+								<span aria-hidden="true">&times;</span>
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true" th:text="${error}">&times;</span>
+								</button>
+							</div>
+						</div>
+						<!--								<h1 class="text-center" th:text="${titulo}"></h1>-->
+						<form id="addCatalogo" enctype="multipart/form-data" th:action="@{/empleados/addXLSX}"
+							method="post">
+							<input type="hidden" id="TIPOCARGA" name="TIPOCARGA" th:value="${TIPOCARGA}">
+							<input type="hidden" id="CatalogoCarga" name="CatalogoCarga" th:value="*{CatalogoCarga}">
+							<div class="row">
+								<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+								</div>
+								<!--									<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">-->
+								<!--										<label title="Atributo Requerido" th:text="${titulo}"> </label>-->
+								<!--										<input class="form-control-file" type="file" name="fileXLS" required autocomplete="off" accept=".xlsx"/>-->
+								<!--									</div>-->
+								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">
+									<label for="formFileLg" class="form-label" th:text="${titulo}"></label>
+									<input class="form-control form-control-lg" id="fileXLS" type="file" name="fileXLS"
+										required autocomplete="off" accept=".xlsx,.xls">
+								</div>
+							</div>
+							<div class="row">
+								<div th:if="${#lists.contains({'CPRE', 'CNOM'}, TIPOCARGA)}"
+									class="col-lg-6 col-md-6 col-sm-6 col-xs-12" align="center">
+									<label>QUINCENA: </label>
+									<select class="form-control" id="quinCatSelectPost" name="quinCatSelectPost"
+										required>
+										<option value="">select QNA</option>
+										<option th:each="qna : ${lquincenas}" th:value="${qna}" th:text="${qna}"
+											th:selected="${qna == quinCatSelectPost}"></option>
+									</select>
+								</div>
+								<div th:if="${#lists.contains({'CEXTSINAVID'}, TIPOCARGA)}"
+									class="col-lg-6 col-md-6 col-sm-6 col-xs-12" align="center">
+									<label>FECHA DEL EXTRACTO: </label>
+									<div class="input-group date" id="reservationdate" data-target-input="nearest">
+										<input type="date" name="fechaExt" id="fechaExt"
+											th:value="${#dates.format(fechaExt, 'yyyy-MM-dd')}" class="form-control"
+											data-target="#reservationdate" placeholder="Seleccione una fecha" />
+									</div>
+								</div>
+							</div>
+							<div class="row"></div>
+							<div class="row">
+								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">
+									<input type="submit" value="Guardar" class="btn btn-primary" on>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div><!-- /.container-fluid -->
+			<div th:if="${message}">
+				<h2 th:text="${message}" />
+			</div>
+			<!-- 1. Carga de librerías (Asegúrate de que jQuery se cargue ANTES de esto) -->
+			<script th:src="@{/distV32/plugins/select2/js/select2.full.min.js}"></script>
+			<script th:src="@{/distV32/js/pages/dashboard.js}"></script>
 
-<!-- 2. Inicialización del componente -->
-<script>
-	$(document).ready(function () {
-		$('#quinCatSelectPost').select2({
-			theme: 'bootstrap4',
-			placeholder: 'select QNA',
-			allowClear: true
-		});
-		});
-</script>
-				</section>
-				<!-- /.content -->
-			</main> <!--end::App Main--> <!--begin::Footer-->
+			<!-- 2. Inicialización del componente -->
+			<script>
+				$(document).ready(function () {
+					$('#quinCatSelectPost').select2({
+						theme: 'bootstrap4',
+						placeholder: 'select QNA',
+						allowClear: true
+					});
+				});
+			</script>
+		</section>
+		<!-- /.content -->
+	</main> <!--end::App Main--> <!--begin::Footer-->
 
-		</div>
-		<!-- /.content-wrapper -->
+</div>
+<!-- /.content-wrapper -->
 
 </html>

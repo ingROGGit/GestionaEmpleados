@@ -61,18 +61,18 @@ public class NominaController {
 			@RequestParam(defaultValue = "empleadoQN.id,asc") String[] sort,
 			@RequestParam(required = false) String quinCatSelectGet) {
 		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
-		String quincenasCat = quincenasCatJPA.findQNAACT(fechaSqlHoy);
+		String quincenasCat = this.quincenasCatJPA.findQNAACT(fechaSqlHoy);
 		QuincenaCatEntity quinShearch;
 		if (quinCatSelectGet != null)
-			quinShearch = quincenasCatJPA.findByIdQNA(quinCatSelectGet);
+			quinShearch = this.quincenasCatJPA.findByIdQNA(quinCatSelectGet);
 		else {
-			quinShearch = quincenasCatJPA.findByIdQNA(quincenasCat);
+			quinShearch = this.quincenasCatJPA.findByIdQNA(quincenasCat);
 			quinCatSelectGet = quincenasCat;
 		}
 		filtrosConsultaDTO filtros = new filtrosConsultaDTO();
-		List<String> LquincenasCat = quincenasCatJPA.findByAllIdQNA();
-		List<String> lpuesto = puestosJPA.findByAllPuesto();
-		List<String> lservicio = serviciosJPA.findByAllServicio();
+		List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
+		List<String> lpuesto = this.puestosJPA.findByAllPuesto();
+		List<String> lservicio = this.serviciosJPA.findByAllServicio();
 		String sortField = sort[0];
 		String sortDirection = sort[1];
 		Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
@@ -110,7 +110,7 @@ public class NominaController {
 		filtros.setQna(quincenasCat);
 		model.addAttribute("filtros", filtros);
 		model.addAttribute("fileExDownload", fileExDownload);
-		model.addAttribute("titulo", "Listado QUINCENA");
+		model.addAttribute("titulo", "Listado QUINCENA "+quinCatSelectGet);
 		model.addAttribute("LquincenasCat", LquincenasCat);
 		model.addAttribute("lpuesto", lpuesto);
 		model.addAttribute("lservicio", lservicio);
@@ -183,7 +183,7 @@ public class NominaController {
 		model.addAttribute("fileExDownload", fileExDownload);
 		model.addAttribute("lpuesto", lpuesto);
 		model.addAttribute("lservicio", lservicio);
-		model.addAttribute("titulo", "Listado QUINCENA");
+		model.addAttribute("titulo", "Listado QUINCENA "+filtrosSet.getQna());
 		model.addAttribute("LquincenasCat", LquincenasCat);
 		model.addAttribute("quincena", quincena);
 		model.addAttribute("page", pageRender);

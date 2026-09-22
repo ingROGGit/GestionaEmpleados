@@ -34,7 +34,11 @@
 	</div>
 	<div class="card-body">
 		<div class="row">
-			<!--								<h1 class="text-center" th:text="${titulo}"></h1>-->
+			<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card text-center">
+				<a>
+					<h2><span th:text="${titulo}"></span></h2>
+				</a>
+			</div>
 			<form th:action="@{/cuentasBancarias/formEmpleado}" th:object="${empleado}" method="post">
 				<input type="hidden" th:field="*{id}" th:value="${empleado.id}" />
 				<div class="row">
@@ -101,7 +105,7 @@
 							th:errors="*{telefono}"></small>
 						<label>Fecha Ingreso: </label>
 						<input type="date" th:field="*{fechaIngreso}" class="form-control"
-							th:errorClass="'form-control alert-danger'" readonly/>
+							th:errorClass="'form-control alert-danger'" readonly />
 						<small class="form-text text-danger" th:if="${#fields.hasErrors('fechaIngreso')}"
 							th:errors="*{fechaIngreso}"></small>
 					</div>

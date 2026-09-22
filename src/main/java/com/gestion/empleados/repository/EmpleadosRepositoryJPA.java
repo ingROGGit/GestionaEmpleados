@@ -38,18 +38,34 @@ public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Seriali
     	       "JOIN q.quinCat cat " +
     	       "WHERE e.id = :idEmp AND cat.idQNA = :idQNA")
    public QuincenasEntity findQuincenaByEmpleadoAndCatId(@Param("idEmp") Long idEmp, @Param("idQNA") String idQNA);
-   public Page<Empleados> findByLCuentasIsEmpty(Pageable page);
+   public Page<Empleados> findByLisCuentasIsEmpty(Pageable page);
    public Page<Empleados> findByDomiciliosIsEmpty(Pageable page);
-   public Page<Empleados> findBySinavidEmIsNull(Pageable page);
-   public Page<Empleados> findByDomiciliosIsNullAndSinavidEmIsNull(Pageable page);
-   public Page<Empleados> findByDomiciliosIsNotNullAndSinavidEmIsNull(Pageable page);
-   public List<Empleados> findByDomiciliosIsNotNullAndSinavidEmIsNull();
-   @Query("SELECT e FROM Empleados e JOIN FETCH e.LCuentas c WHERE c.estatus = :estatus")
-   public Page<Empleados> findByLCuentasEstatus(@Param("estatus") String estatus, Pageable pageable);
-   @Query("SELECT e FROM Empleados e JOIN FETCH e.LCuentas c WHERE c.estatus = :estatus")
-   public List<Empleados> findByLCuentasEstatus(@Param("estatus") String estatus);
+   public Page<Empleados> findBySinavidIsNull(Pageable page);
+   public Page<Empleados> findByDomiciliosIsNullAndSinavidIsNull(Pageable page);
+   public Page<Empleados> findByDomiciliosIsNotNullAndSinavidIsNull(Pageable page);
+   public List<Empleados> findByDomiciliosIsNotNullAndSinavidIsNull();
+   @Query("SELECT e FROM Empleados e JOIN FETCH e.lisCuentas c WHERE c.estatus = :estatus")
+   public Page<Empleados> findByLisCuentasEstatus(@Param("estatus") String estatus, Pageable pageable);
+   @Query("SELECT e FROM Empleados e JOIN FETCH e.lisCuentas c WHERE c.estatus = :estatus")
+   public List<Empleados> findByLisCuentas_Estatus(@Param("estatus") String estatus);
    public Page<Empleados> findByDomiciliosIsNotNull(Pageable pageable);
    public List<Empleados> findByDomiciliosIsNotNull();
    public Page<Empleados> findByTelefonoIsNull(Pageable pageable);
    public Empleados findByCurp(String curp);
+   public Page<Empleados> findBySinavid_Estatus(Pageable page,String estatus);
+   public List<Empleados> findBySinavid_Estatus(String estatus);
+   public List<Empleados> findBySinavid_EstatusAndSinavid_FechaBajaIsNotNull(String estatus);
+   public Long countBySinavidIsNull();
+   @Query("SELECT e FROM Empleados e " +
+	       "JOIN FETCH e.quincenas q " +
+	       "JOIN q.quinCat cat " +
+	       "JOIN e.sinavid s " +
+	       "WHERE cat.idQNA = :idQNA AND q.sueldoBase > s.sueldoSINAVID")
+   public List<Empleados> findByModificacionSalario(@Param("idQNA") String idQNA);
+   @Query("SELECT e FROM Empleados e " +
+	       "JOIN FETCH e.quincenas q " +
+	       "JOIN q.quinCat cat " +
+	       "JOIN e.sinavid s " +
+	       "WHERE cat.idQNA = :idQNA ")
+   public List<Empleados> findByEMpleadosXQuincena(@Param("idQNA") String idQNA);
 }

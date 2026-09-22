@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,11 +36,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import java.util.Set;
+import java.util.stream.Collectors;
 import com.gestion.empleados.entity.DetalleDeduccionesEntiy;
 import com.gestion.empleados.entity.DetallePersepcionesEntity;
 import com.gestion.empleados.entity.Empleados;
+import com.gestion.empleados.entity.QuincenaCatEntity;
 import com.gestion.empleados.entity.QuincenasEntity;
+import com.gestion.empleados.entity.SINAVIDEntity;
 import com.gestion.empleados.entity.VacacionesEntity;
 import com.gestion.empleados.repository.BancosRepositoryJPA;
 import com.gestion.empleados.repository.CatCPJALRepositoryJPA;
@@ -70,8 +77,6 @@ import jakarta.validation.Valid;
 public class EmpleadoController {
 
 	@Autowired
-	private EmpleadoService empleadoService;
-	@Autowired
 	private EmpleadosRepositoryJPA empleadosJPA;
 	@Autowired
 	private TurnosRepositoryJPA trunosRJPA;
@@ -79,8 +84,6 @@ public class EmpleadoController {
 	private VacacionesRepository vacacionesRJPA;
 	@Autowired
 	private ReglasDiasRepository reglasDiasRJPA;
-	@Autowired
-	private EmpleadosRepositoryJPA  empleadoRJPA;
 	@Autowired
 	private PuestosRepositoryJPA puestosJPA;
 	@Autowired
@@ -123,21 +126,34 @@ public class EmpleadoController {
 	@GetMapping("empleados/listarEmpleados")
 	public String listarEmpleados(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
 		Pageable pageRequest = PageRequest.of(page, 5000);
-		Page<Empleados> empleados = empleadoService.findAll(pageRequest);
+		Page<Empleados> empleados = this.empleadosJPA.findAll(pageRequest);
 		PageRender<Empleados> pageRender = new PageRender<>("/empleados/listarEmpleados", empleados);
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String fa = df.format(new Date());
 		File file=new File("Empleados_" + fa + ".xlsx");
-		boolean fileExDownload=false;
-		if(file.exists() &&file.canWrite())
+		boolean fileExDownload=false,filefull=false;
+		if(file.exists() )
 		{
-			fileExDownload=true;
+			if(file.canWrite()) {
+				fileExDownload=true;
+				filefull=true;
+			}
+			else
+				filefull=false;
+				
 		}
+		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
+		String quincenasCat = this.quincenasCatJPA.findQNAACT(fechaSqlHoy);
+		List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
 		model.addAttribute("fileExDownload",fileExDownload);
+		model.addAttribute("filefull",filefull);
 		model.addAttribute("titulo", "Listado Empleados");
 		model.addAttribute("empleados", empleados);
+		model.addAttribute("registros", empleados.getSize());
 		model.addAttribute("page", pageRender);
 		model.addAttribute("addNew","SI");
+		model.addAttribute("quinCatSelectGet", quincenasCat);
+		model.addAttribute("LquincenasCat", LquincenasCat);
 		return "empleados/listarEmpleados";
 	}
 
@@ -145,8 +161,8 @@ public class EmpleadoController {
 	public String verDetallesEmpleado(@PathVariable(value = "id") Long id,@RequestParam(value = "quincena") String idQNA, Map<String, Object> modelo,
 			RedirectAttributes flash) {
 //		Empleados empleado = empleadoService.findOne(id);
-		Empleados empleado = this.empleadoRJPA.findById(id);
-		QuincenasEntity quincena = this.empleadoRJPA.findQuincenaByEmpleadoAndCatId(id,idQNA);
+		Empleados empleado = this.empleadosJPA.findById(id);
+		QuincenasEntity quincena = this.empleadosJPA.findQuincenaByEmpleadoAndCatId(id,idQNA);
 		List<DetallePersepcionesEntity> detalleper=this.detallePerJPA.findByEmpleadoPerAndQuincenaCatDP_IdQNA(empleado,idQNA);
 		List<DetalleDeduccionesEntiy> detalleded=this.detalleDedJPA.findByEmpleadoDDAndQuincenaCatDD_IdQNA(empleado,idQNA);
 		LocalDate hoy = LocalDate.now();
@@ -167,7 +183,7 @@ public class EmpleadoController {
 	@GetMapping("empleados/verDatosEmpleado/{id}")
 	public String verDatosEmpleado(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
 			RedirectAttributes flash) {
-		Empleados empleado = empleadoRJPA.findById(id);
+		Empleados empleado = this.empleadosJPA.findById(id);
 		LocalDate hoy = LocalDate.now();
 		LocalDate fechaIngreso = new java.sql.Date(empleado.getFechaIngreso().getTime()).toLocalDate();
 		Period periodo = Period.between(fechaIngreso, hoy);
@@ -178,7 +194,7 @@ public class EmpleadoController {
 		modelo.put("periodo", periodo);
 		modelo.put("empleado", empleado);
 		modelo.put("titulo", "Detalles del Empleado " + empleado.getNombre());
-		return "empleados/verDatosEmpleado";
+		return "empleados/verEmpleadoModal";
 	}
 	@GetMapping("empleados/formEmpleado")
 	public String formularioRegistroEmpleado(Map<String, Object> modelo) {
@@ -188,27 +204,51 @@ public class EmpleadoController {
 		return "empleados/formEmpleado";
 	}
 
-	@PostMapping("empleados/formEmpleado")
+	@PostMapping("empleados/formEmpleadoSave")
 	public String guardaEmpleado(@Valid Empleados empleado, BindingResult result, Model modelo,
 			RedirectAttributes flash, SessionStatus status) {
 		if (result.hasErrors()) {
 			modelo.addAttribute("titulo", "Registro de Empleado");
-			return "empleados/formEmpleado";
+			return "empleados/formEmpleadoModal";
+		}
+		Empleados getEmpleado=this.empleadosJPA.findById(empleado.getId());
+		getEmpleado.setSexo(empleado.getSexo());
+		getEmpleado.setCorreo(empleado.getCorreo());
+		getEmpleado.setTelefono(empleado.getTelefono());
+		getEmpleado.setTelefonoEmer(empleado.getTelefonoEmer());
+		// 1. Obtener la autenticación actual
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		// 2. Extraer los nombres de los roles
+		Set<String> roles = authentication.getAuthorities().stream()
+		        .map(grantedAuthority -> grantedAuthority.getAuthority())
+		        .collect(Collectors.toSet());
+		boolean grabar=false;
+		for (String rol : roles) {
+		   if(rol.equals("ROLE_ADMIN")||rol.equals("ROLE_OPERADORCUENTAS")||rol.equals("ROLE_OPERADORSINAVID"))
+			   grabar=true;
+		}
+		if(grabar) {
+			getEmpleado.setFechaIngreso(empleado.getFechaIngreso());
+			getEmpleado.setFechaIngresoH(empleado.getFechaIngresoH());
+			getEmpleado.setTipoContrato(empleado.getTipoContrato());
+			getEmpleado.setCurp(empleado.getCurp());
+			getEmpleado.setRfc(empleado.getRfc());
 		}
 		String mensaje = (empleado.getId() != null) ? "Empleado Actualizado con Exito"
 				: "Empleado Registrado con Exito";
-		empleadoService.save(empleado);
+		this.empleadosJPA.save(getEmpleado);
 		status.setComplete();
 		flash.addFlashAttribute("success", mensaje);
 		return "redirect:/empleados/listarEmpleados";
 	}
 
-	@GetMapping("/empleados/formEmpleado/{id}")
+	@GetMapping("/empleados/formEmpleadoEdit/{id}")
 	public String editarEmpleado(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
 			RedirectAttributes flash) {
 		Empleados empleado = null;
 		if (id > 0) {
-			empleado = empleadoService.findOne(id);
+			empleado = this.empleadosJPA.findById(id);
 			if (empleado == null) {
 				flash.addFlashAttribute("error", "El Empleado no Existe");
 				return "redirect:/empleados/listarEmpleados";
@@ -225,7 +265,7 @@ public class EmpleadoController {
 	@GetMapping("/empleados/eliminar/{id}")
 	public String eliminarEmpleado(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 		if (id > 0) {
-			empleadoService.delete(id);
+			this.empleadosJPA.delete(this.empleadosJPA.findById(id));
 			flash.addFlashAttribute("success", "Empleado Eliminado con Exito");
 		}
 		return "redirect:/empleados/listarEmpleados";
@@ -239,7 +279,7 @@ public class EmpleadoController {
 		String cabecera = "Content-Disposition";
 		String valor = "attachment; filename=Empleados_" + fa + ".pdf";
 		respons.setHeader(cabecera, valor);
-		List<Empleados> lempeados = empleadoService.findAll();
+		List<Empleados> lempeados = this.empleadosJPA.findAll();
 		ExporterPDF expdf = new ExporterPDF(lempeados);
 		expdf.exportarPDF(respons);
 	}
@@ -252,18 +292,27 @@ public class EmpleadoController {
 		String cabecera = "Content-Disposition";
 		String valor = "attachment; filename=Empleados_" + fa + ".xlsx";
 		respons.setHeader(cabecera, valor);
-		List<Empleados> lempeados = empleadoService.findAll();
+		List<Empleados> lempeados = this.empleadosJPA.findAll();
 		ExportExcel exexcel = new ExportExcel();
 		exexcel.ExportExcel(lempeados);
 		exexcel.exportarExcel(respons,"Empleados");
 	}
 	@GetMapping("/empleados/exportarExcelThread")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void exportEmpleadosExcelThread() throws DocumentException, IOException {
+	public void exportEmpleadosExcelThread(@RequestParam("quinCatSelectGet") String quinCatSelectGet) throws DocumentException, IOException {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String fa = df.format(new Date());
-		File file=new File("Empleados_" + fa + ".xlsx");
-		List<Empleados> lempeados = empleadoService.findAll();
+		File dirUsu=new File(SecurityContextHolder.getContext().getAuthentication().getName());
+		if(!dirUsu.exists())
+			dirUsu.mkdirs();
+		File file=new File(dirUsu+"\\Empleados_" + fa + ".xlsx");
+		List<Empleados> lempeados = this.empleadosJPA.findByEMpleadosXQuincena(quinCatSelectGet);
+		for (Empleados e : lempeados) {
+			if(e.getPuestosEntity()!=null)
+				e.getPuestosEntity().getPuesto();
+			if(e.getServicioEntity()!=null)
+				e.getServicioEntity().getServicio();
+		}
 		ExportExcelThread exexcel = new ExportExcelThread(file.getName(), "Empleados", null, null, lempeados);
 		exexcel.setName("Export-Empleados");
 		exexcel.setPriority(Thread.MAX_PRIORITY);
@@ -273,7 +322,8 @@ public class EmpleadoController {
 	public String FileExcel(HttpServletResponse respons) throws DocumentException, IOException {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String fa = df.format(new Date());
-		File file=new File("Empleados_" + fa + ".xlsx");
+		File dirUsu=new File(SecurityContextHolder.getContext().getAuthentication().getName());
+		File file=new File(dirUsu+"\\Empleados_" + fa + ".xlsx");
 		if(file.exists() &&file.canWrite())
 		{
 		respons.setContentType("application/octet-stream");

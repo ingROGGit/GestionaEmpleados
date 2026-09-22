@@ -4,61 +4,59 @@
 
 <head th:replace="headAll :: html_head" />
 
-<body th:replace="menu :: menuAll" onload="validaModal()"/>
+<body th:replace="menu :: menuAll" onload="validaModal()" />
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
-			<div th:replace="div-header :: divHeader" />
-			<!-- /.content-header -->
+	<div th:replace="div-header :: divHeader" />
+	<!-- /.content-header -->
 
-			<!-- Main content -->
-			<main class="app-main"> <!--begin::App Content Header-->
-				<section class="content">
-				<div class="container-fluid">
+	<!-- Main content -->
+	<main class="app-main"> <!--begin::App Content Header-->
+		<section class="content">
+			<div class="container-fluid">
+				<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card text-center">
+					<a>
+						<h2><span th:text="${titulo}"></span></h2>
+					</a>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card">
+						<div th:if="${success !=null}">
+							<div class="alert alert-primary alert-dismissible fade show" role="alert">
+								<span aria-hidden="true">&times;</span>
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true" th:text="${success}">&times;</span>
+								</button>
+							</div>
+						</div>
+						<div th:if="${error !=null}">
+							<div class="col-md-100 col-sm-100 alert alert-warning alert-dismissible fade show"
+								role="alert">
+								<span aria-hidden="true">&times;</span>
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true" th:text="${error}">&times;</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
 				<div class="py-4 ml-5 mr-5">
 					<div class="carf bg-light">
-						<!--								<div class="sidebar-brand"> -->
-						<!--									<a href="menu" class="brand-link"> -->
-						<!--										<span class="brand-text fw-light" th:text="${titulo}"></span>-->
-						<!--								</div> -->
 						<div class="card-body col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-							<link rel="stylesheet"
-								href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-								integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-								crossorigin="anonymous">
-							<!--							<div th:if="${!fileExDownload}" class="alert alert-primary alert-dismissible fade show"-->
-							<!--								role="alert">-->
-							<!--								<span aria-hidden="true">&times;</span>-->
-							<!--								<button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
-							<!--									<span aria-hidden="true"-->
-							<!--										th:text="${'El reporte se encuentra en proceso de Generacion o ya fue descargado'}">&times;</span>-->
-							<!--								</button>-->
-							<!--							</div>-->
-							<h4 class="card-title" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORCUENTAS')">
-								<!--								<a th:href="@{/cuentasBancarias/exportarPDF}" class="btn btn-secondary">Exportar a-->
-								<!--									PDF</a>-->
-								<!--								<a th:href="@{/cuentasBancarias/exportarExcelThread}"-->
-								<!--									class="btn btn-success link-Download">Exportar a-->
-								<!--									Excel</a>-->
-								<!--								<a th:if="${fileExDownload}" th:href="@{/cuentasBancarias/FileExcel}"-->
-								<!--									class="btn btn-success">Descargar Reporte</a>-->
+							<h4 class="card-title">
 								<a th:href="@{/WORK}" class="btn btn-secondary">Exportar a
 									PDF</a>
-									<a th:href="@{/WORK}" class="btn btn-secondary">Exportar a
+								<a th:href="@{/WORK}" class="btn btn-secondary">Exportar a
 									Excel</a>
-<!--								<a th:href="@{/WORK}" class="btn btn-success link-Download">Exportar a-->
-<!--									Excel</a>-->
-									
 								<a th:if="${fileExDownload}" th:href="@{/cuentasBancarias/FileExcel}"
 									class="btn btn-success">Descargar Reporte</a>
 
 								<h2>
 									<input class="form-control" id="search" type="text" placeholder="Buscar..">Total
 									Registros:<a class="btn btn-info" th:text="${registros}"></a>
-
 								</h2>
-
 							</h4>
 							<div class="contenedor-tabla">
 								<table id="EmTable" class="table table-striped">
@@ -67,10 +65,10 @@
 										<tr>
 											<th>Numero</th>
 											<th>Nombre</th>
-											<th>Email</th>
+											<th>CURP</th>
 											<th>Telefono</th>
-											<th class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Fecha Ingreso</th>
-											<th class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Acciones</th>
+											<th class="col-lg-2 col-md-2 col-sm-2 col-xs-6">Fecha Ingreso</th>
+											<th>Acciones</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -78,21 +76,21 @@
 											<td th:text="${empleado.id}"></td>
 											<td class="col-lg-5 col-md-5 col-sm-5 col-xs-12"
 												th:text="${empleado.nombreCompleto}"></td>
-											<!--											<td class="col-lg-3 col-md-3 col-sm-6 col-xs-12"-->
-											<!--												th:text="${empleado.apellidop} +' '+${empleado.apellidom}"></td>-->
-											<td th:text="${empleado.correo}"></td>
+											<td th:text="${empleado.curp}"></td>
 											<td th:text="${empleado.telefono}"></td>
-											<td class="col-lg-2 col-md-2 col-sm-2 col-xs-12"
+											<td class="col-lg-2 col-md-2 col-sm-2 col-xs-6"
 												th:text="${empleado.fechaIngreso}"></td>
 											<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID')"
 												class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
-												<a th:if="${empleado.domicilios==null}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID')"
+												<a th:if="${empleado.domicilios==null}"
+													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID')"
 													class="btn btn-warning btn-sm link-EmpleadoEdit"
 													th:href="@{/GestionSINAVID/formDomi/} + ${empleado.id}">Agregar
 													Domicilio</a>
-													<a th:if="${empleado.curp==null and empleado.rfc==null}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID')"
+												<a th:if="${empleado.curp==null and empleado.rfc==null}"
+													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID')"
 													class="btn btn-warning btn-sm link-EmpleadoEdit"
-													th:href="@{/empleados/formEmpleado/} + ${empleado.id}">Agregar
+													th:href="@{/empleados/formEmpleadoEdit/} + ${empleado.id}">Agregar
 													CUR y RFC</a>
 											</td>
 										</tr>
@@ -106,32 +104,6 @@
 						aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-xl" role="document">
 							<div class="modal-content">
-							</div>
-						</div>
-					</div>
-					<div id="modalDownload" class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog"
-						aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-						<div class="modal-dialog modal-xl" role="document">
-							<div class="modal-content">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h5 class="modal-title" id="exampleModalLabel">Descarga de Reportes</h5>
-										<button type="button" class="btn-close" data-bs-dismiss="modal"
-											aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-										<span aria-hidden="true">&times;</span>
-										<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-											<span aria-hidden="true" th:text="${'El Reporte se esta ejecutando en segundo plano Favor de esperar unos minutos y
-										dar clic en  Descargar Reporte'}">&times;</span>
-										</button>
-
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-secondary"
-											data-dismiss="modal">Close</button>
-									</div>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -214,11 +186,11 @@
 				</style>
 				<footer th:replace="layout/layout :: footer"></footer>
 			</div><!-- /.container-fluid -->
-				</section>
-				<!-- /.content -->
-			</main> <!--end::App Main--> <!--begin::Footer-->
+		</section>
+		<!-- /.content -->
+	</main> <!--end::App Main--> <!--begin::Footer-->
 
-		</div>
-		<!-- /.content-wrapper -->
+</div>
+<!-- /.content-wrapper -->
 
 </html>

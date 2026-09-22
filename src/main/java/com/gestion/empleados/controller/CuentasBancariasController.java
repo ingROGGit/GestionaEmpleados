@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gestion.empleados.entity.AltaCuentasFilesEntity;
@@ -60,7 +62,7 @@ public class CuentasBancariasController {
 	@GetMapping({ "/cuentasBancarias/ListaEmpSinCuenta"})
 	public String ListaEmpSinCuenta(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
 		Pageable pageRequest = PageRequest.of(page, 5000);
-		Page<Empleados> empleados = empleadosJPA.findByLCuentasIsEmpty(pageRequest);
+		Page<Empleados> empleados = this.empleadosJPA.findByLisCuentasIsEmpty(pageRequest);
 		PageRender<Empleados> pageRender = new PageRender<>("/empleados/listarEmpleados", empleados);
 		boolean fileExDownload=false;
 		model.addAttribute("fileExDownload",fileExDownload);
@@ -134,7 +136,7 @@ public class CuentasBancariasController {
 		model.addAttribute("fileExDownload",fileExDownload);
 		model.addAttribute("files", lFileCuentas);
 		model.addAttribute("page", pageRender);
-		model.addAttribute("titulo", "Empleados sin Cuenta");
+		model.addAttribute("titulo", "Lista Archivos de Altas");
 		model.addAttribute("registros",lFileCuentas.getTotalElements());
 		return "cuentasBancarias/ListaFilesCuenta";
 	}
@@ -190,7 +192,7 @@ public class CuentasBancariasController {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String fa = df.format(new Date());
 		Pageable pageRequest = PageRequest.of(page, 100);
-		Page<Empleados> empleados = empleadosJPA.findByLCuentasEstatus("En Registro",pageRequest);
+		Page<Empleados> empleados = empleadosJPA.findByLisCuentasEstatus("En Registro",pageRequest);
 		PageRender<Empleados> pageRender = new PageRender<>("/cuentasBancarias/ListaEmpSinCuenta", empleados);
 		List<String> LquincenasCat = quincenasCatJPA.findByAllIdQNA();
 		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
@@ -209,7 +211,7 @@ public class CuentasBancariasController {
 	public void FileExcel(HttpServletResponse respons,@RequestParam("alta") String alta,@RequestParam("quinCatSelect") String quinCatSelect) throws Exception {
 		try {
 		File file=new File(alta + ".xlsx");
-		List<Empleados> lEmpleadosCuentas=this.empleadosJPA.findByLCuentasEstatus("En Registro");
+		List<Empleados> lEmpleadosCuentas=this.empleadosJPA.findByLisCuentas_Estatus("En Registro");
 		ExportCuentasBanco excelCuentas =new ExportCuentasBanco(alta, lEmpleadosCuentas,quinCatSelect);
 		excelCuentas.run();
 		if(file.exists() &&file.canWrite())
@@ -229,9 +231,13 @@ public class CuentasBancariasController {
 	            this.acfileJPA.save(acfile);
 	            file.delete();
 	            for(Empleados emp:lEmpleadosCuentas) {
-	            	CuentasEntity cuenta=emp.getLCuentas().get(0);
-	            	cuenta.setEstatus(alta);
-	            	this.cuentasJPA.save(cuenta);
+	            	for(CuentasEntity cuenta:emp.getLisCuentas()) {
+	            		if(cuenta.getEstatus().equals("En Registro")) {
+			            	cuenta.setEstatus("ALTA");
+			            	cuenta.setAlta(alta);
+			            	this.cuentasJPA.save(cuenta);
+	            		}
+	            	}
 	            }
 	        } catch (IOException e) {
 	            e.printStackTrace();
@@ -244,14 +250,31 @@ public class CuentasBancariasController {
 			throw new Exception(err);
 		}
 	}
-	@GetMapping("/cuentasBancarias/download/{id}")
-	public void download(HttpServletResponse respons,@PathVariable(value = "id") Long id) throws DocumentException, IOException {
+	@GetMapping("/cuentasBancarias/downloadExcel/{id}")
+	public void downloadExcel(HttpServletResponse respons,@PathVariable(value = "id") Long id) throws DocumentException, IOException {
 		AltaCuentasFilesEntity fileCuenta=this.acfileJPA.findById(id);
 		respons.setContentType("application/octet-stream");
 		String cabecera = "Content-Disposition";
 		String valor = "attachment; filename=" + fileCuenta.getAlta()+".xlsx";
 		respons.setHeader(cabecera, valor);
 		try (InputStream inputStream = new ByteArrayInputStream(fileCuenta.getFileAlta());
+	             ServletOutputStream outputStream = respons.getOutputStream()) {
+	            IOUtils.copy(inputStream, outputStream);
+	            respons.flushBuffer();
+	            inputStream.close();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            throw new RuntimeException("Error writing file to response", e);
+	        }
+	}
+	@GetMapping("/cuentasBancarias/downloadPDF/{id}")
+	public void downloadPDF(HttpServletResponse respons,@PathVariable(value = "id") Long id) throws DocumentException, IOException {
+		AltaCuentasFilesEntity fileCuenta=this.acfileJPA.findById(id);
+		respons.setContentType("application/octet-stream");
+		String cabecera = "Content-Disposition";
+		String valor = "attachment; filename=" + fileCuenta.getAlta()+".pdf";
+		respons.setHeader(cabecera, valor);
+		try (InputStream inputStream = new ByteArrayInputStream(fileCuenta.getFilePDF());
 	             ServletOutputStream outputStream = respons.getOutputStream()) {
 	            IOUtils.copy(inputStream, outputStream);
 	            respons.flushBuffer();
@@ -282,4 +305,27 @@ public class CuentasBancariasController {
 		flash.addFlashAttribute("success", mensaje);
 		return "redirect:/cuentasBancarias/ListaFilesCuenta";
 	}
+	@GetMapping("/cuentasBancarias/formFilePDF/{id}")
+	public String upFilePDF(@PathVariable(value = "id") Long id,@RequestParam(required = false) String addNew, Map<String, Object> modelo,
+			RedirectAttributes flash) {
+		AltaCuentasFilesEntity cuantasFile=this.acfileJPA.findById(id);
+		modelo.put("iDcuantasFile", cuantasFile.getId());
+		modelo.put("alta", cuantasFile.getAlta());
+		modelo.put("titulo", "Carga PDF de Alta");
+		return "cuentasBancarias/formFilePDFModal";
+	}
+	@PostMapping("cuentasBancarias/formFilePDF")
+	public String addEmpleadosXLSX(Model modelo, RedirectAttributes flash, SessionStatus status,
+			@RequestParam("filePDF") MultipartFile filePDF,@RequestParam("iDcuantasFile") Long iDcuantasFile) throws Exception{
+		
+		
+		AltaCuentasFilesEntity fileDB=this.acfileJPA.getById(iDcuantasFile);
+		String mensaje = "PDF Cargado Correctamente "+fileDB.getAlta();
+		fileDB.setFilePDF(filePDF.getBytes());
+		this.acfileJPA.save(fileDB);
+		status.setComplete();
+		flash.addFlashAttribute("success", mensaje);
+		return "redirect:/cuentasBancarias/ListaFilesCuenta";
+	}
+	
 }

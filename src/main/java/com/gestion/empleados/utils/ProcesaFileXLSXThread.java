@@ -1054,7 +1054,7 @@ public class ProcesaFileXLSXThread {
 																.getJavaDate(Row.getCell(44).getNumericCellValue());
 														sinavid.setFechaModSueldo(fechas);
 													}
-													sinavid.setSinavidEm(emp);
+													sinavid.setEmpleado(emp);
 													this.sinavidJPA.save(sinavid);
 												}
 											} catch (Exception err) {
@@ -1163,6 +1163,9 @@ public class ProcesaFileXLSXThread {
 								if (Row == null) {
 									break;
 								} else {
+									System.out.println(Row.getCell(0).getCellType() == CellType.NUMERIC
+													? (long) Row.getCell(0).getNumericCellValue()
+													: Long.valueOf(Row.getCell(0).getStringCellValue()));
 									Empleados emp = this.empleadosJPA
 											.findById(Row.getCell(0).getCellType() == CellType.NUMERIC
 													? (long) Row.getCell(0).getNumericCellValue()
@@ -1174,6 +1177,10 @@ public class ProcesaFileXLSXThread {
 										emp.setTelefonoEmer(Row.getCell(2).getCellType() == CellType.NUMERIC
 												? Long.toString((long) Row.getCell(2).getNumericCellValue())
 												: Row.getCell(2).getStringCellValue());
+										if(emp.getTelefono().length()>10)
+											emp.setTelefono(emp.getTelefono().substring(0,10));
+										if(emp.getTelefonoEmer().length()>10)
+											emp.setTelefonoEmer(emp.getTelefonoEmer().substring(0,10));
 										this.empleadosJPA.save(emp);
 									}
 								}
@@ -1220,9 +1227,9 @@ public class ProcesaFileXLSXThread {
 											}
 										}
 										if (Row.getCell(8) != null) {
-											SINAVIDEntity sinavid = this.sinavidJPA.findBySinavidEm_Id(emp.getId());
+											SINAVIDEntity sinavid = this.sinavidJPA.findByEmpleado_Id(emp.getId());
 											if (sinavid == null) {
-												sinavid = SINAVIDEntity.builder().sinavidEm(emp)
+												sinavid = SINAVIDEntity.builder().empleado(emp)
 														.pagaduria(String
 																.valueOf((int) Row.getCell(8).getNumericCellValue()))
 														.build();
@@ -1267,15 +1274,43 @@ public class ProcesaFileXLSXThread {
 													.remTotal(BigDecimal
 															.valueOf(Row.getCell(18).getNumericCellValue())
 															.setScale(2, RoundingMode.HALF_UP))
-													.claveCobro(Row.getCell(2).getCellType() == CellType.NUMERIC
+													.claveCobro(Row.getCell(16).getCellType() == CellType.NUMERIC
 															? String.valueOf(
-																	(long) Row.getCell(2).getNumericCellValue())
-															: Row.getCell(2).getStringCellValue())
+																	(long) Row.getCell(16).getNumericCellValue())
+															: Row.getCell(16).getStringCellValue())
+													.nss(Row.getCell(6) != null ? Row.getCell(6)
+															.getCellType() == CellType.NUMERIC
+															? String.valueOf((long) Row.getCell(6)
+																	.getNumericCellValue())
+															: Row.getCell(6).getStringCellValue()
+													: "")
+													.numISSSTE(Row.getCell(5) != null ? Row.getCell(5)
+															.getCellType() == CellType.NUMERIC
+															? String.valueOf((long) Row.getCell(5)
+																	.getNumericCellValue())
+															: Row.getCell(5).getStringCellValue()
+													: "")
 													.empleado(emp)
 													.build();
-											this.historicoExtJPA.save(hisExt);
 										}
-										SINAVIDEntity sinavid=this.sinavidJPA.findBySinavidEm_Id(emp.getId());
+										hisExt.setNss(Row.getCell(6) != null ? Row.getCell(6)
+												.getCellType() == CellType.NUMERIC
+												? String.valueOf((long) Row.getCell(6)
+														.getNumericCellValue())
+												: Row.getCell(6).getStringCellValue()
+										: "");
+										hisExt.setNumISSSTE(Row.getCell(5) != null ? Row.getCell(5)
+												.getCellType() == CellType.NUMERIC
+												? String.valueOf((long) Row.getCell(5)
+														.getNumericCellValue())
+												: Row.getCell(5).getStringCellValue()
+										: "");
+										hisExt.setClaveCobro(Row.getCell(15).getCellType() == CellType.NUMERIC
+												? String.valueOf(
+														(long) Row.getCell(15).getNumericCellValue())
+												: Row.getCell(15).getStringCellValue());
+										this.historicoExtJPA.save(hisExt);
+										SINAVIDEntity sinavid=this.sinavidJPA.findByEmpleado_Id(emp.getId());
 										if(sinavid==null) {
 											sinavid=new SINAVIDEntity();
 										}
@@ -1286,7 +1321,7 @@ public class ProcesaFileXLSXThread {
 										sinavid.setFechaRegistro(sinavid.getFechaRegistro()==null?new Date():sinavid.getFechaRegistro());
 										sinavid.setNss(Row.getCell(6) != null ? Row.getCell(6)
 														.getCellType() == CellType.NUMERIC
-																? String.valueOf((int) Row.getCell(6)
+																? String.valueOf((long) Row.getCell(6)
 																		.getNumericCellValue())
 																: Row.getCell(6).getStringCellValue()
 														: "");
@@ -1305,7 +1340,7 @@ public class ProcesaFileXLSXThread {
 										sinavid.setRemTotal(BigDecimal
 														.valueOf(Row.getCell(18).getNumericCellValue())
 														.setScale(2, RoundingMode.HALF_UP));
-										sinavid.setSinavidEm(emp);
+										sinavid.setEmpleado(emp);
 										this.sinavidJPA.save(sinavid);
 										}
 								}

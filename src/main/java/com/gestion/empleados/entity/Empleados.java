@@ -128,14 +128,14 @@ public class Empleados extends AuditableDateEntity implements Serializable {
 	private ServiciosEntity servicioEntity;
 	@OneToOne(mappedBy = "empleadoV", fetch = FetchType.LAZY)
 	private VacacionesEntity empleadoV;
-	@OneToOne(mappedBy = "sinavidEm", fetch = FetchType.LAZY)
-	private SINAVIDEntity sinavidEm;
+	@OneToOne(mappedBy = "empleado", fetch = FetchType.LAZY)
+	private SINAVIDEntity sinavid;
 	@OneToOne(mappedBy = "domiEm", fetch = FetchType.LAZY, orphanRemoval = true)
 	private DomiciliosEntity domicilios;
 	@ManyToMany(mappedBy = "empleadoQN")
 	private List<QuincenasEntity> quincenas;
-	@OneToMany(mappedBy = "empleadoC")
-	private List<CuentasEntity> LCuentas = new ArrayList<>();
+	@OneToMany(mappedBy = "empleadoC", fetch = FetchType.LAZY)
+	private List<CuentasEntity> lisCuentas = new ArrayList<>();
 	@OneToMany(mappedBy = "empleadoDD", fetch = FetchType.LAZY)
 	private List<DetalleDeduccionesEntiy> detalleDeducciones;
 	@OneToMany(mappedBy = "empleadoPer", fetch = FetchType.LAZY)

@@ -43,29 +43,31 @@
 	<main class="app-main"> <!--begin::App Content Header-->
 		<section class="content">
 			<div class="container-fluid">
-								<div class="row">
-							<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card">
-								<div th:if="${success !=null}">
-								<div class="alert alert-primary alert-dismissible fade show"
-									role="alert">
-									<span aria-hidden="true" >&times;</span>
-									<button type="button" class="close" data-dismiss="alert"
-										aria-label="Close">
-										<span aria-hidden="true" th:text="${success}">&times;</span>
-									</button>
-								</div>
-								</div>
-								<div th:if="${error !=null}">
-								<div class="col-md-100 col-sm-100 alert alert-warning alert-dismissible fade show"
-									role="alert">
-									<span aria-hidden="true" >&times;</span>
-									<button type="button" class="close" data-dismiss="alert"
-										aria-label="Close">
-										<span aria-hidden="true" th:text="${error}">&times;</span>
-									</button>
-								</div>
-								</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card text-center">
+					<a>
+						<h2><span th:text="${titulo}"></span></h2>
+					</a>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card">
+						<div th:if="${success !=null}">
+							<div class="alert alert-primary alert-dismissible fade show" role="alert">
+								<span aria-hidden="true">&times;</span>
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true" th:text="${success}">&times;</span>
+								</button>
 							</div>
+						</div>
+						<div th:if="${error !=null}">
+							<div class="col-md-100 col-sm-100 alert alert-warning alert-dismissible fade show"
+								role="alert">
+								<span aria-hidden="true">&times;</span>
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true" th:text="${error}">&times;</span>
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="py-4 ml-5 mr-5">
 					<div class="card card-default collapsed-card">
@@ -137,9 +139,10 @@
 										</div>
 										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 											<label>Bloqueo: </label>
-											<select class="form-control form-control-sm" th:field="${filtros.bloqueado}">
-											    <option th:value="true">Bloqueado</option>
-											    <option th:value="false">No Bloqueado</option>
+											<select class="form-control form-control-sm"
+												th:field="${filtros.bloqueado}">
+												<option th:value="true">Bloqueado</option>
+												<option th:value="false">No Bloqueado</option>
 											</select>
 										</div>
 									</div>
@@ -238,7 +241,8 @@
 								</thead>
 								<tbody>
 									<th:block th:each="quin : ${quincena}" th:if="${quin != null}">
-										<tr th:each="emp : ${quin.empleadoQN}" th:if="${emp != null}" th:style="${quin.bloqueoPago ==true} ? 'background-color: #ffcccc;' : ''">
+										<tr th:each="emp : ${quin.empleadoQN}" th:if="${emp != null}"
+											th:style="${quin.bloqueoPago ==true} ? 'background-color: #ffcccc;' : ''">
 											<td scope="row">[[${emp.id}]]</td>
 											<td>[[${emp.nombreCompleto}]]</td>
 											<td>[[${emp.rfc}]]</td>
@@ -258,11 +262,12 @@
 													Pago</a>
 												<a th:if="${quin.bloqueoPago == true}" class="btn btn-success btn-sm"
 													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
-													th:href="@{/quincenas/desbloqueoQuincena/} + ${quin.id}">Desbloqueo de
+													th:href="@{/quincenas/desbloqueoQuincena/} + ${quin.id}">Desbloqueo
+													de
 													Pago</a>
 											</td>
 										</tr>
-<!--										</tr>-->
+										<!--										</tr>-->
 									</th:block>
 								</tbody>
 							</table>

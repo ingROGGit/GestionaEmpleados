@@ -19,9 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gestion.empleados.entity.QuincenaCatEntity;
 import com.gestion.empleados.entity.filtrosConsultaDTO;
+import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
 import com.gestion.empleados.repository.QuincenaRepositoryJPA;
 import com.gestion.empleados.repository.QuincenasCatRepositoryJPA;
+import com.gestion.empleados.repository.SINAVIDRepositoryJPA;
 
 @Controller
 public class EstadisticasController {
@@ -29,8 +32,12 @@ public class EstadisticasController {
 	private QuincenasCatRepositoryJPA quincenasCatJPA;
 	@Autowired
 	private QuincenaRepositoryJPA quincenaJPA;
+	@Autowired
+	private SINAVIDRepositoryJPA sinavidJPA;
+	@Autowired
+	private EmpleadosRepositoryJPA empleadosJPA;
 	@GetMapping("/estadisticas/chartsTipoPagos")
-	public String listarEmpleados(Model model) throws JsonProcessingException{
+	public String chartsTipoPagos(Model model) throws JsonProcessingException{
 		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
 		String quincenasCat = this.quincenasCatJPA.findQNAACT(fechaSqlHoy);
 		List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
@@ -53,7 +60,7 @@ public class EstadisticasController {
 		return "/estadisticas/chartsTipoPagos";
 	}
 	@PostMapping("/estadisticas/chartsTipoPagos")
-	public String listarEmpleadosPost(Model model,@RequestParam("quinCatSelectPost") String quinCatSelect) throws JsonProcessingException{
+	public String chartsTipoPagosPost(Model model,@RequestParam("quinCatSelectPost") String quinCatSelect) throws JsonProcessingException{
 		List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
         // 1. Datos simulados (pueden venir de un Repository/Base de datos)
         List<String> navegadores = Arrays.asList("CHEQUE", "RECIBO", "SIN PAGO");
@@ -72,5 +79,61 @@ public class EstadisticasController {
         model.addAttribute("funLista", "estadisticas/chartsTipoPagos");
 		model.addAttribute("titulo","SI");
 		return "/estadisticas/chartsTipoPagos";
+	}
+	
+	@GetMapping("/estadisticas/chartsSINAVID")
+	public String chartsSINAVID(Model model) throws JsonProcessingException{
+		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
+		String quincenasCat = this.quincenasCatJPA.findQNAACT(fechaSqlHoy);
+		List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
+		QuincenaCatEntity quinCat=this.quincenasCatJPA.findByIdQNA(quincenasCat);
+		
+        // 1. Datos simulados (pueden venir de un Repository/Base de datos)
+        List<String> navegadores = Arrays.asList( "VALIDACION", "ALTA","FALTA ALTA","YA ALTA");
+        
+        List<Long> visitas = Arrays.asList(this.sinavidJPA.countByFechaAltaBeforeAndEstatus(quinCat.getFechaFin(),"VALIDACION"),
+        		this.sinavidJPA.countByFechaAltaBeforeAndEstatus(quinCat.getFechaFin(),"ALTA"),
+        		this.sinavidJPA.countByFechaAltaBeforeAndEstatusIsNull(quinCat.getFechaFin())+this.empleadosJPA.countBySinavidIsNull(),
+        		this.sinavidJPA.countByFechaAltaBeforeAndEstatus(quinCat.getFechaFin(),"YA ALTA"));
+
+        // 2. Convertir las listas de Java a formato JSON (String)
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonLabels = mapper.writeValueAsString(navegadores);
+        String jsonValues = mapper.writeValueAsString(visitas);
+
+        // 3. Pasar los JSON al modelo de Thymeleaf
+        model.addAttribute("graficaLabels", jsonLabels);
+        model.addAttribute("graficaValues", jsonValues);
+        model.addAttribute("LquincenasCat", LquincenasCat);
+        model.addAttribute("quinCatSelectPost", quincenasCat);
+        model.addAttribute("funLista", "estadisticas/chartsSINAVID");
+		model.addAttribute("titulo","SI");
+		return "/estadisticas/chartsSINAVID";
+	}
+	@PostMapping("/estadisticas/chartsSINAVID")
+	public String chartsSINAVIDPost(Model model,@RequestParam("quinCatSelectPost") String quinCatSelect) throws JsonProcessingException{
+		List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
+		QuincenaCatEntity quinCat=this.quincenasCatJPA.findByIdQNA(quinCatSelect);
+        // 1. Datos simulados (pueden venir de un Repository/Base de datos)
+        List<String> navegadores = Arrays.asList( "VALIDACION", "ALTA","FALTA ALTA","YA ALTA");
+        
+        List<Long> visitas = Arrays.asList(this.sinavidJPA.countByFechaAltaBeforeAndEstatus(quinCat.getFechaFin(),"VALIDACION"),
+        		this.sinavidJPA.countByFechaAltaBeforeAndEstatus(quinCat.getFechaFin(),"ALTA"),
+        		this.sinavidJPA.countByFechaAltaBeforeAndEstatusIsNull(quinCat.getFechaFin())+this.empleadosJPA.countBySinavidIsNull(),
+        		this.sinavidJPA.countByFechaAltaBeforeAndEstatus(quinCat.getFechaFin(),"YA ALTA"));
+
+        // 2. Convertir las listas de Java a formato JSON (String)
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonLabels = mapper.writeValueAsString(navegadores);
+        String jsonValues = mapper.writeValueAsString(visitas);
+
+        // 3. Pasar los JSON al modelo de Thymeleaf
+        model.addAttribute("graficaLabels", jsonLabels);
+        model.addAttribute("graficaValues", jsonValues);
+        model.addAttribute("LquincenasCat", LquincenasCat);
+        model.addAttribute("quinCatSelectPost", quinCatSelect);
+        model.addAttribute("funLista", "estadisticas/chartsSINAVID");
+		model.addAttribute("titulo","SI");
+		return "/estadisticas/chartsSINAVID";
 	}
 }

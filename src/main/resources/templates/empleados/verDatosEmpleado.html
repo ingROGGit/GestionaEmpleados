@@ -2,6 +2,11 @@
 	<div class="card-header" th:text="${titulo}">
 	</div>
 	<div class="card-body">
+		<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card text-center">
+			<a>
+				<h2><span th:text="${titulo}"></span></h2>
+			</a>
+		</div>
 		<div class="row">
 			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 				Numero Empleado: <li class="list-group-item" th:text="${empleado.id}"></li>

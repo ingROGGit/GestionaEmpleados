@@ -45,6 +45,11 @@
 	<main class="app-main"> <!--begin::App Content Header-->
 		<section class="content">
 			<div class="container-fluid">
+				<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card text-center">
+					<a>
+						<h2><span th:text="${titulo}"></span></h2>
+					</a>
+				</div>
 				<div class="row">
 					<!--								<h1 class="text-center" th:text="${titulo}"></h1>-->
 					<form th:action="@{/empleados/formEmpleado}" th:object="${empleado}" method="post">
@@ -79,13 +84,13 @@
 									<option th:value='F'>Femenino</option>
 									<option th:value='Otro'>Otro</option>
 								</select>
-<!--								<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">-->
+								<!--								<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">-->
 								<label>Fecha Ingreso: </label>
 								<input type="date" th:field="*{fechaIngreso}" class="form-control"
 									th:errorClass="'form-control alert-danger'" />
 								<small class="form-text text-danger" th:if="${#fields.hasErrors('fechaIngreso')}"
 									th:errors="*{fechaIngreso}"></small>
-<!--							</div>-->
+								<!--							</div>-->
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 								<label>Apellido Paterno: </label>
@@ -118,31 +123,32 @@
 							</div>
 						</div>
 						<div class="row">
-							
+
 							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 								<label>RFC: </label>
 								<input type="text" th:field="*{rfc}" class="form-control"
-									th:errorClass="'form-control alert-danger'" maxlength="13"/>
+									th:errorClass="'form-control alert-danger'" maxlength="13" />
 								<small class="form-text text-danger" th:if="${#fields.hasErrors('rfc')}"
 									th:errors="*{rfc}"></small>
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 								<label>CURP: </label>
 								<input type="text" th:field="*{curp}" class="form-control"
-									th:errorClass="'form-control alert-danger'" maxlength="18"/>
+									th:errorClass="'form-control alert-danger'" maxlength="18" />
 								<small class="form-text text-danger" th:if="${#fields.hasErrors('curp')}"
 									th:errors="*{curp}"></small>
-							</div>							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 								<label>Clave Puesto: </label>
 								<input type="text" th:field="*{claveP}" class="form-control"
-									th:errorClass="'form-control alert-danger'" maxlength="18"/>
+									th:errorClass="'form-control alert-danger'" maxlength="18" />
 								<small class="form-text text-danger" th:if="${#fields.hasErrors('claveP')}"
 									th:errors="*{claveP}"></small>
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 								<label>Plaza: </label>
 								<input type="text" th:field="*{plaza}" class="form-control"
-									th:errorClass="'form-control alert-danger'" maxlength="18"/>
+									th:errorClass="'form-control alert-danger'" maxlength="18" />
 								<small class="form-text text-danger" th:if="${#fields.hasErrors('plaza')}"
 									th:errors="*{plaza}"></small>
 							</div>
@@ -153,7 +159,9 @@
 						</div>
 						<div class="row">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<h4><p></p></h4>
+								<h4>
+									<p></p>
+								</h4>
 							</div>
 						</div>
 						<div class="row">

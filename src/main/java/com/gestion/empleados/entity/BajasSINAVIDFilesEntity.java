@@ -26,9 +26,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "AltaCuentasFilesEntity", catalog = "db_gestion_empleados2", schema = "public")
+@Table(name = "BajasSINAVIDFilesEntity", catalog = "db_gestion_empleados2", schema = "public")
 @EntityListeners({ AuditingEntityListener.class })
-public class AltaCuentasFilesEntity extends AuditableDateEntity implements Serializable {
+public class BajasSINAVIDFilesEntity extends AuditableDateEntity implements Serializable {
 		private static final long serialVersionUID = 1L;
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,8 +36,6 @@ public class AltaCuentasFilesEntity extends AuditableDateEntity implements Seria
 		private Long id;
 		@Column(name = "fileAlta", length = Integer.MAX_VALUE)
 		private byte[] fileAlta;
-		@Column(name = "filePDF", length = Integer.MAX_VALUE)
-		private byte[] filePDF;
 		@Column(name = "alta")
 		private String alta;
 		@Basic(optional = true)

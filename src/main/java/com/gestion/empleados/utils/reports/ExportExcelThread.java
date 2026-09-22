@@ -43,11 +43,11 @@ public class ExportExcelThread extends Thread  {
 				writeCabTable();
 				writeDetalleTabla();
 			}
-			if (this.tipo == "Reglas") {
-				this.sheet = this.libro.createSheet("Reglas");
-				writeCabTableReglas();
-				writeDetalleReglas();
-			}
+//			if (this.tipo == "Reglas") {
+//				this.sheet = this.libro.createSheet("Reglas");
+//				writeCabTableReglas();
+//				writeDetalleReglas();
+//			}
 			if (this.tipo == "Usuarios") {
 				this.sheet = this.libro.createSheet("Usuarios");
 				writeCabTableUsuarios();
@@ -94,19 +94,19 @@ public class ExportExcelThread extends Thread  {
 		celda.setCellStyle(estilo);
 
 		celda = row.createCell(4);
-		celda.setCellValue("Edad");
+		celda.setCellValue("CURP");
 		celda.setCellStyle(estilo);
 
 		celda = row.createCell(5);
-		celda.setCellValue("Sexo");
+		celda.setCellValue("RFC");
 		celda.setCellStyle(estilo);
 
 		celda = row.createCell(6);
-		celda.setCellValue("Correo");
+		celda.setCellValue("ClaveP");
 		celda.setCellStyle(estilo);
 
 		celda = row.createCell(7);
-		celda.setCellValue("Telefono");
+		celda.setCellValue("PLAZA");
 		celda.setCellStyle(estilo);
 
 		celda = row.createCell(8);
@@ -118,17 +118,13 @@ public class ExportExcelThread extends Thread  {
 		celda.setCellStyle(estilo);
 
 		celda = row.createCell(10);
-		celda.setCellValue("Años laborados");
+		celda.setCellValue("Telefono");
 		celda.setCellStyle(estilo);
 		celda = row.createCell(11);
-		celda.setCellValue("Meses laborados");
+		celda.setCellValue("Puesto");
 		celda.setCellStyle(estilo);
 		celda = row.createCell(12);
-		celda.setCellValue("Dias laborados");
-		celda.setCellStyle(estilo);
-		celda = row.createCell(13);
-		celda.setCellValue("Dias de Vacaciones");
-		celda.setCellStyle(estilo);
+		celda.setCellValue("Servicio");
 		
 	}
 
@@ -215,56 +211,48 @@ public class ExportExcelThread extends Thread  {
 			celda.setCellStyle(estilo);
 
 			celda = row.createCell(4);
-			celda.setCellValue("");//EDAD
+			celda.setCellValue(empleado.getCurp());
 			this.sheet.autoSizeColumn(4);
 			celda.setCellStyle(estilo);
 
 			celda = row.createCell(5);
-			celda.setCellValue(empleado.getSexo());
+			celda.setCellValue(empleado.getRfc());
 			this.sheet.autoSizeColumn(5);
 			celda.setCellStyle(estilo);
 
 			celda = row.createCell(6);
-			celda.setCellValue(empleado.getCorreo());
+			celda.setCellValue(empleado.getClaveP());
 			this.sheet.autoSizeColumn(6);
 			celda.setCellStyle(estilo);
 
 			celda = row.createCell(7);
-			celda.setCellValue(empleado.getTelefono());
+			celda.setCellValue(empleado.getPlaza());
 			this.sheet.autoSizeColumn(7);
 			celda.setCellStyle(estilo);
+
+			celda = row.createCell(8);
+			celda.setCellValue(empleado.getQuincenas().get(0).getSueldoNeto()!=null?empleado.getQuincenas().get(0).getSueldoNeto().toString():"");
+			this.sheet.autoSizeColumn(8);
+			celda.setCellStyle(estiloF);
 
 			celda = row.createCell(9);
 			celda.setCellValue(empleado.getFechaIngreso());
 			this.sheet.autoSizeColumn(9);
-			celda.setCellStyle(estiloF);
-
-			celda = row.createCell(8);
-//			celda.setCellValue(empleado.getSueldoNeto().toString());
-			this.sheet.autoSizeColumn(8);
 			celda.setCellStyle(estilo);
 			
-			LocalDate hoy = LocalDate.now();
-			LocalDate fechaIngreso = new java.sql.Date(empleado.getFechaIngreso().getTime()).toLocalDate();
-			Period periodo = Period.between(fechaIngreso, hoy);
 			celda = row.createCell(10);
-			celda.setCellValue(periodo.getYears());
+			celda.setCellValue(empleado.getTelefono());
 			this.sheet.autoSizeColumn(10);
 			celda.setCellStyle(estilo);
 			
 			celda = row.createCell(11);
-			celda.setCellValue(periodo.getMonths());
+			celda.setCellValue(empleado.getPuestosEntity()!=null?empleado.getPuestosEntity().getPuesto():"");
 			this.sheet.autoSizeColumn(11);
 			celda.setCellStyle(estilo);
 			
 			celda = row.createCell(12);
-			celda.setCellValue(periodo.getDays());
+			celda.setCellValue(empleado.getServicioEntity()!=null?empleado.getServicioEntity().getServicio():"");
 			this.sheet.autoSizeColumn(12);
-			celda.setCellStyle(estilo);
-			
-			celda = row.createCell(13);
-			celda.setCellValue(empleado.getEmpleadoV()!=null?empleado.getEmpleadoV().getDiasVacaciones():0);
-			this.sheet.autoSizeColumn(13);
 			celda.setCellStyle(estilo);
 		}
 	}
