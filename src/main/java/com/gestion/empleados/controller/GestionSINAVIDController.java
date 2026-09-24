@@ -134,7 +134,7 @@ public class GestionSINAVIDController {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String fa = df.format(new Date());
 		Pageable pageRequest = PageRequest.of(page, 200);
-		Page<Empleados> empleados = empleadosJPA.findByDomiciliosIsNotNullAndSinavidIsNull(pageRequest);
+		Page<Empleados> empleados = this.empleadosJPA.findByDomiciliosIsNotNullAndSinavidIsNullOrSinavid_Estatus(pageRequest,"CORREGIDO");
 		PageRender<Empleados> pageRender = new PageRender<>("/cuentasBancarias/ListaEmpSinCuenta", empleados);
 		List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
 		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
@@ -155,7 +155,7 @@ public class GestionSINAVIDController {
 			@RequestParam("quinCatSelect") String quinCatSelect) throws Exception {
 		try {
 			File file = new File(alta + ".txt");
-			List<Empleados> lEmpleadosCuentas = this.empleadosJPA.findByDomiciliosIsNotNullAndSinavidIsNull();
+			List<Empleados> lEmpleadosCuentas = this.empleadosJPA.findByDomiciliosIsNotNullAndSinavidIsNullOrSinavid_Estatus("CORREGIDO");
 			ExporterTXTSINAVID altaSINAVID = new ExporterTXTSINAVID(file.getName(), lEmpleadosCuentas, quinCatSelect);
 			altaSINAVID.runAltaCuentas();
 			if (file.exists() && file.canWrite()) {
@@ -479,5 +479,17 @@ public class GestionSINAVIDController {
 			e.printStackTrace();
 			throw new RuntimeException("Error writing file to response", e);
 		}
+	}
+	
+	@GetMapping({ "/GestionSINAVID/ListaErrorSINAVID" })
+	public String listaErroresSINAVID(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
+		Pageable pageRequest = PageRequest.of(page, 300);
+		Page<Empleados> empleados = this.empleadosJPA.findBySinavid_Estatus(pageRequest,"ERROR");
+		PageRender<Empleados> pageRender = new PageRender<>("/GestionSINAVID/ListaErrorSINAVID", empleados);
+		model.addAttribute("empleados", empleados);
+		model.addAttribute("page", pageRender);
+		model.addAttribute("titulo", "Errores en SINAVID");
+		model.addAttribute("registros", empleados.getTotalElements());
+		return "GestionSINAVID/ListaErrorSINAVID";
 	}
 }

@@ -1,8 +1,11 @@
 package com.gestion.empleados.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -37,6 +40,7 @@ import org.springframework.stereotype.Service;
 
 import com.gestion.empleados.entity.AltaCuentasFilesEntity;
 import com.gestion.empleados.entity.AltaSINAVIDFilesEntity;
+import com.gestion.empleados.entity.AsignacionTurnoEntity;
 import com.gestion.empleados.entity.BancosEntity;
 import com.gestion.empleados.entity.CatCPJALEntity;
 import com.gestion.empleados.entity.CuentasEntity;
@@ -47,6 +51,7 @@ import com.gestion.empleados.entity.DomiciliosEntity;
 import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.ExtractoSINAVIDFilesEntity;
 import com.gestion.empleados.entity.HistoricoExtSINAVIDEntity;
+import com.gestion.empleados.entity.HorariosEntity;
 import com.gestion.empleados.entity.PersepcionesEntity;
 import com.gestion.empleados.entity.PuestosEntity;
 import com.gestion.empleados.entity.QuincenaCatEntity;
@@ -58,6 +63,7 @@ import com.gestion.empleados.entity.TurnosEntity;
 import com.gestion.empleados.entity.VacacionesEntity;
 import com.gestion.empleados.repository.AltaCuentasFileRepository;
 import com.gestion.empleados.repository.AltaSINAVIDFileRepository;
+import com.gestion.empleados.repository.AsignacionTurnosRepositoryJPA;
 import com.gestion.empleados.repository.BancosRepositoryJPA;
 import com.gestion.empleados.repository.CatCPJALRepositoryJPA;
 import com.gestion.empleados.repository.CuentasRepositoryJPA;
@@ -69,6 +75,7 @@ import com.gestion.empleados.repository.DomicilioRepositoryJPA;
 import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
 import com.gestion.empleados.repository.ExtractoSINAVIDFilesRepository;
 import com.gestion.empleados.repository.HistoricoExtSINAVIDRepository;
+import com.gestion.empleados.repository.HorariosRepositoryJPA;
 import com.gestion.empleados.repository.PersepcionesRepositoryJPA;
 import com.gestion.empleados.repository.PuestosRepositoryJPA;
 import com.gestion.empleados.repository.QuincenaRepositoryJPA;
@@ -131,8 +138,13 @@ public class ProcesaFileXLSXThread {
 	private ExtractoSINAVIDFilesRepository extraSINAVIDJPA;
 	@Autowired
 	private HistoricoExtSINAVIDRepository historicoExtJPA;
+	@Autowired
+	private HorariosRepositoryJPA horariosJPA;
+	@Autowired
+	private AsignacionTurnosRepositoryJPA asignaTurJPA;
+
 	@Async
-	public void run(File fileProces, String tipoCarga, String quinString,Date fechaCarga) {
+	public void run(File fileProces, String tipoCarga, String quinString, Date fechaCarga) {
 		try {
 			OPCPackage pkg = null;
 			Workbook Workbook = null;
@@ -144,13 +156,39 @@ public class ProcesaFileXLSXThread {
 					AltaCuentasFilesEntity acfile = AltaCuentasFilesEntity.builder().alta(fileProces.getName())
 							.fechaAlta(new Date()).fileAlta(Files.readAllBytes(fileProces.toPath())).build();
 					this.acfileJPA.save(acfile);
-				}else if(tipoCarga.equals("CALSINAVID")) {
-					AltaSINAVIDFilesEntity alsinfile=AltaSINAVIDFilesEntity.builder().alta(fileProces.getName())
-							.fechaAlta(new Date()).fileAlta(Files.readAllBytes(fileProces.toPath()))
-							.build();
+				} else if (tipoCarga.equals("CALSINAVID")) {
+					AltaSINAVIDFilesEntity alsinfile = AltaSINAVIDFilesEntity.builder().alta(fileProces.getName())
+							.fechaAlta(new Date()).fileAlta(Files.readAllBytes(fileProces.toPath())).build();
 					this.alsinfileJPA.save(alsinfile);
-				}
-				else {
+				} else if (tipoCarga.equals("CERRSINAVID")) {
+					try (BufferedReader br = new BufferedReader(new FileReader(fileProces))) {
+						String linea;
+						while ((linea = br.readLine()) != null) {
+							String[] valores = linea.split("\t");
+							if (!valores[0].contains("archivoid")) {
+								DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+								SINAVIDEntity sinavid = this.sinavidJPA.findByEmpleado_Curp(valores[3]);
+								if (sinavid != null && !valores[10].contains("VIGENTE")) {
+									if (sinavid.getPagaduria() == null) {
+										sinavid.setEstatus("ERROR");
+										sinavid.setFechaRespuesta(df.parse(valores[8]));
+										sinavid.setError(valores[10]);
+										this.sinavidJPA.save(sinavid);
+									}
+								} else {
+									Empleados empleado = this.empleadosJPA.findByCurp(valores[3]);
+									if (empleado != null) {
+										sinavid = SINAVIDEntity.builder().fechaRespuesta(df.parse(valores[8]))
+												.empleado(empleado).estatus("ERROR").error(valores[10]).build();
+										this.sinavidJPA.save(sinavid);
+									}
+								}
+							}
+						}
+					} catch (Exception e) {
+						throw new Exception(e);
+					}
+				} else {
 					Workbook = WorkbookFactory.create(fileProces);
 					for (int h = 0; h < Workbook.getNumberOfSheets(); h++) {
 						Sheet = Workbook.getSheetAt(h);
@@ -901,7 +939,7 @@ public class ProcesaFileXLSXThread {
 							Empleados emp;
 							PuestosEntity puesto;
 							ServiciosEntity servi;
-							TurnosEntity turno = new TurnosEntity();
+//							TurnosEntity turno = new TurnosEntity();
 							BancosEntity banco = new BancosEntity();
 							CuentasEntity cuenta = new CuentasEntity();
 							DomiciliosEntity domi = new DomiciliosEntity();
@@ -951,15 +989,15 @@ public class ProcesaFileXLSXThread {
 														.findByServicio(Row.getCell(33).getStringCellValue());
 												emp.setServicioEntity(servi);
 												this.empleadosJPA.save(emp);
-												turno = this.trunosJPA
-														.findByTurno(Row.getCell(34).getStringCellValue());
-												if (turno == null) {
-													turno = TurnosEntity.builder()
-															.turno(Row.getCell(34).getStringCellValue())
-															.horario(Row.getCell(35).getStringCellValue()).empleado(emp)
-															.build();
-													this.trunosJPA.save(turno);
-												}
+//												turno = this.trunosJPA
+//														.findByTurno(Row.getCell(34).getStringCellValue());
+//												if (turno == null) {
+//													turno = TurnosEntity.builder()
+//															.turno(Row.getCell(34).getStringCellValue())
+//															.horario(Row.getCell(35).getStringCellValue()).empleado(emp)
+//															.build();
+//													this.trunosJPA.save(turno);
+//												}
 												banco = this.bancosJPA
 														.findByBanco(Row.getCell(30).getStringCellValue());
 												if (banco == null) {
@@ -1164,8 +1202,8 @@ public class ProcesaFileXLSXThread {
 									break;
 								} else {
 									System.out.println(Row.getCell(0).getCellType() == CellType.NUMERIC
-													? (long) Row.getCell(0).getNumericCellValue()
-													: Long.valueOf(Row.getCell(0).getStringCellValue()));
+											? (long) Row.getCell(0).getNumericCellValue()
+											: Long.valueOf(Row.getCell(0).getStringCellValue()));
 									Empleados emp = this.empleadosJPA
 											.findById(Row.getCell(0).getCellType() == CellType.NUMERIC
 													? (long) Row.getCell(0).getNumericCellValue()
@@ -1177,10 +1215,10 @@ public class ProcesaFileXLSXThread {
 										emp.setTelefonoEmer(Row.getCell(2).getCellType() == CellType.NUMERIC
 												? Long.toString((long) Row.getCell(2).getNumericCellValue())
 												: Row.getCell(2).getStringCellValue());
-										if(emp.getTelefono().length()>10)
-											emp.setTelefono(emp.getTelefono().substring(0,10));
-										if(emp.getTelefonoEmer().length()>10)
-											emp.setTelefonoEmer(emp.getTelefonoEmer().substring(0,10));
+										if (emp.getTelefono().length() > 10)
+											emp.setTelefono(emp.getTelefono().substring(0, 10));
+										if (emp.getTelefonoEmer().length() > 10)
+											emp.setTelefonoEmer(emp.getTelefonoEmer().substring(0, 10));
 										this.empleadosJPA.save(emp);
 									}
 								}
@@ -1240,7 +1278,7 @@ public class ProcesaFileXLSXThread {
 								}
 							}
 						}
-						if(tipoCarga.equals("CEXTSINAVID")) {
+						if (tipoCarga.equals("CEXTSINAVID")) {
 							for (int r = 1; r <= rows; r++) {
 								Row = Sheet.getRow(r);
 								if (Row == null) {
@@ -1248,109 +1286,189 @@ public class ProcesaFileXLSXThread {
 								} else {
 									Empleados emp = this.empleadosJPA.findByCurp(Row.getCell(3).getStringCellValue());
 									if (emp != null) {
-										HistoricoExtSINAVIDEntity hisExt = this.historicoExtJPA.findByEmpleado_IdAndFileName(emp.getId(),fileProces.getName());
+										HistoricoExtSINAVIDEntity hisExt = this.historicoExtJPA
+												.findByEmpleado_IdAndFileName(emp.getId(), fileProces.getName());
 										if (hisExt == null) {
-											Date fechaA = DateUtil
-													.getJavaDate(Row.getCell(12).getNumericCellValue());
+											Date fechaA = DateUtil.getJavaDate(Row.getCell(12).getNumericCellValue());
 											Date fechaM = null;
-											if(Row.getCell(13)!=null) {
-												fechaM= DateUtil.getJavaDate(Row.getCell(13).getNumericCellValue());
+											if (Row.getCell(13) != null) {
+												fechaM = DateUtil.getJavaDate(Row.getCell(13).getNumericCellValue());
 											}
-											hisExt=HistoricoExtSINAVIDEntity.builder().disCve((int)Row.getCell(0).getNumericCellValue())
-													.numRamo((int)Row.getCell(1).getNumericCellValue())
+											hisExt = HistoricoExtSINAVIDEntity.builder()
+													.disCve((int) Row.getCell(0).getNumericCellValue())
+													.numRamo((int) Row.getCell(1).getNumericCellValue())
 													.pagaduria(Row.getCell(2).getCellType() == CellType.NUMERIC
-															? String.valueOf(
-																	(int) Row.getCell(2).getNumericCellValue())
+															? String.valueOf((int) Row.getCell(2).getNumericCellValue())
 															: Row.getCell(2).getStringCellValue())
 													.fechaAlta(fechaA).fechaModSueldo(fechaM).fechaGen(fechaCarga)
 													.fileName(fileProces.getName())
-													.tipoNombramiento((int)Row.getCell(11).getNumericCellValue())
-													.sueldoISSSTE(BigDecimal
-															.valueOf(Row.getCell(14).getNumericCellValue())
+													.tipoNombramiento((int) Row.getCell(11).getNumericCellValue())
+													.sueldoISSSTE(
+															BigDecimal.valueOf(Row.getCell(14).getNumericCellValue())
+																	.setScale(2, RoundingMode.HALF_UP))
+													.sueldoSAR(BigDecimal.valueOf(Row.getCell(17).getNumericCellValue())
 															.setScale(2, RoundingMode.HALF_UP))
-													.sueldoSAR(BigDecimal
-															.valueOf(Row.getCell(17).getNumericCellValue())
-															.setScale(2, RoundingMode.HALF_UP))
-													.remTotal(BigDecimal
-															.valueOf(Row.getCell(18).getNumericCellValue())
+													.remTotal(BigDecimal.valueOf(Row.getCell(18).getNumericCellValue())
 															.setScale(2, RoundingMode.HALF_UP))
 													.claveCobro(Row.getCell(16).getCellType() == CellType.NUMERIC
 															? String.valueOf(
 																	(long) Row.getCell(16).getNumericCellValue())
 															: Row.getCell(16).getStringCellValue())
-													.nss(Row.getCell(6) != null ? Row.getCell(6)
-															.getCellType() == CellType.NUMERIC
-															? String.valueOf((long) Row.getCell(6)
-																	.getNumericCellValue())
-															: Row.getCell(6).getStringCellValue()
-													: "")
-													.numISSSTE(Row.getCell(5) != null ? Row.getCell(5)
-															.getCellType() == CellType.NUMERIC
-															? String.valueOf((long) Row.getCell(5)
-																	.getNumericCellValue())
-															: Row.getCell(5).getStringCellValue()
-													: "")
-													.empleado(emp)
-													.build();
+													.nss(Row.getCell(6) != null
+															? Row.getCell(6).getCellType() == CellType.NUMERIC
+																	? String.valueOf(
+																			(long) Row.getCell(6).getNumericCellValue())
+																	: Row.getCell(6).getStringCellValue()
+															: "")
+													.numISSSTE(
+															Row.getCell(5) != null
+																	? Row.getCell(5).getCellType() == CellType.NUMERIC
+																			? String.valueOf((long) Row.getCell(5)
+																					.getNumericCellValue())
+																			: Row.getCell(5).getStringCellValue()
+																	: "")
+													.empleado(emp).build();
 										}
-										hisExt.setNss(Row.getCell(6) != null ? Row.getCell(6)
-												.getCellType() == CellType.NUMERIC
-												? String.valueOf((long) Row.getCell(6)
-														.getNumericCellValue())
-												: Row.getCell(6).getStringCellValue()
-										: "");
-										hisExt.setNumISSSTE(Row.getCell(5) != null ? Row.getCell(5)
-												.getCellType() == CellType.NUMERIC
-												? String.valueOf((long) Row.getCell(5)
-														.getNumericCellValue())
-												: Row.getCell(5).getStringCellValue()
-										: "");
+										hisExt.setNss(Row.getCell(6) != null
+												? Row.getCell(6).getCellType() == CellType.NUMERIC
+														? String.valueOf((long) Row.getCell(6).getNumericCellValue())
+														: Row.getCell(6).getStringCellValue()
+												: "");
+										hisExt.setNumISSSTE(Row.getCell(5) != null
+												? Row.getCell(5).getCellType() == CellType.NUMERIC
+														? String.valueOf((long) Row.getCell(5).getNumericCellValue())
+														: Row.getCell(5).getStringCellValue()
+												: "");
 										hisExt.setClaveCobro(Row.getCell(15).getCellType() == CellType.NUMERIC
-												? String.valueOf(
-														(long) Row.getCell(15).getNumericCellValue())
+												? String.valueOf((long) Row.getCell(15).getNumericCellValue())
 												: Row.getCell(15).getStringCellValue());
 										this.historicoExtJPA.save(hisExt);
-										SINAVIDEntity sinavid=this.sinavidJPA.findByEmpleado_Id(emp.getId());
-										if(sinavid==null) {
-											sinavid=new SINAVIDEntity();
+										SINAVIDEntity sinavid = this.sinavidJPA.findByEmpleado_Id(emp.getId());
+										if (sinavid == null) {
+											sinavid = new SINAVIDEntity();
 										}
-										sinavid.setPagaduria(String.valueOf(
-														(int) Row.getCell(2).getNumericCellValue()));
+										sinavid.setPagaduria(
+												String.valueOf((int) Row.getCell(2).getNumericCellValue()));
 										sinavid.setEstatus("ALTA");
-										sinavid.setAlta(sinavid.getAlta()==null?"YA ALTA":sinavid.getAlta());
-										sinavid.setFechaRegistro(sinavid.getFechaRegistro()==null?new Date():sinavid.getFechaRegistro());
-										sinavid.setNss(Row.getCell(6) != null ? Row.getCell(6)
-														.getCellType() == CellType.NUMERIC
-																? String.valueOf((long) Row.getCell(6)
-																		.getNumericCellValue())
-																: Row.getCell(6).getStringCellValue()
-														: "");
-										sinavid.setNumISSSTE(Row.getCell(5) != null ? Row.getCell(5)
-														.getCellType() == CellType.NUMERIC
-																? String.valueOf((long) Row.getCell(5)
-																		.getNumericCellValue())
-																: Row.getCell(5).getStringCellValue()
-														: "");
-										sinavid.setSueldoSINAVID(BigDecimal
-														.valueOf(Row.getCell(14).getNumericCellValue())
-														.setScale(2, RoundingMode.HALF_UP));
-										sinavid.setSueldoSAR(BigDecimal
-														.valueOf(Row.getCell(17).getNumericCellValue())
-														.setScale(2, RoundingMode.HALF_UP));
-										sinavid.setRemTotal(BigDecimal
-														.valueOf(Row.getCell(18).getNumericCellValue())
-														.setScale(2, RoundingMode.HALF_UP));
+										sinavid.setAlta(sinavid.getAlta() == null ? "YA ALTA" : sinavid.getAlta());
+										sinavid.setFechaRegistro(sinavid.getFechaRegistro() == null ? new Date()
+												: sinavid.getFechaRegistro());
+										sinavid.setNss(Row.getCell(6) != null
+												? Row.getCell(6).getCellType() == CellType.NUMERIC
+														? String.valueOf((long) Row.getCell(6).getNumericCellValue())
+														: Row.getCell(6).getStringCellValue()
+												: "");
+										sinavid.setNumISSSTE(Row.getCell(5) != null
+												? Row.getCell(5).getCellType() == CellType.NUMERIC
+														? String.valueOf((long) Row.getCell(5).getNumericCellValue())
+														: Row.getCell(5).getStringCellValue()
+												: "");
+										sinavid.setSueldoSINAVID(
+												BigDecimal.valueOf(Row.getCell(14).getNumericCellValue()).setScale(2,
+														RoundingMode.HALF_UP));
+										sinavid.setSueldoSAR(BigDecimal.valueOf(Row.getCell(17).getNumericCellValue())
+												.setScale(2, RoundingMode.HALF_UP));
+										sinavid.setRemTotal(BigDecimal.valueOf(Row.getCell(18).getNumericCellValue())
+												.setScale(2, RoundingMode.HALF_UP));
 										sinavid.setEmpleado(emp);
 										this.sinavidJPA.save(sinavid);
+									}
+								}
+							}
+						}
+						if (tipoCarga.equals("CNOMMT4")) {
+							for (int r = 1; r <= rows; r++) {
+								Row = Sheet.getRow(r);
+								if (Row == null) {
+									break;
+								} else {
+									Empleados emp = this.empleadosJPA
+											.findById(Row.getCell(5).getCellType() == CellType.NUMERIC
+													? (long) Row.getCell(5).getNumericCellValue()
+													: Long.valueOf(Row.getCell(5).getStringCellValue()));
+									if (emp != null) {
+										DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+										if (emp.getCurp() == null)
+											emp.setCurp(Row.getCell(10).getStringCellValue());
+										if (emp.getRfc() == null)
+											emp.setRfc(Row.getCell(9).getStringCellValue());
+										if (emp.getFechaIngreso() == null) {
+											Date fecha = DateUtil
+													.getJavaDate(Row.getCell(11).getNumericCellValue());
+											emp.setFechaIngreso(fecha);
 										}
+										if (emp.getFechaIngresoH() == null) {
+											Date fecha = DateUtil
+													.getJavaDate(Row.getCell(12).getNumericCellValue());
+											emp.setFechaIngresoH(fecha);
+										}
+										if(emp.getServicioEntity()==null) {
+											ServiciosEntity servicio=this.serviciosJPA.findByServicio(Row.getCell(45).getStringCellValue());
+											if(servicio!=null)
+												emp.setServicioEntity(servicio);
+										}
+										if(emp.getPuestosEntity()==null) {
+											PuestosEntity puesto=this.puestosJPA.findByPuesto(Row.getCell(42).getStringCellValue());
+											emp.setPuestosEntity(puesto);
+										}
+										this.empleadosJPA.save(emp);
+										List<AsignacionTurnoEntity> ast = this.asignaTurJPA
+												.findByEmpleado_Id(emp.getId());
+										if (ast == null || ast.isEmpty()) {
+											TurnosEntity turno = this.trunosJPA
+													.findByCodigo(Row.getCell(23).getCellType() == CellType.NUMERIC
+															? Long.toString(
+																	(long) Row.getCell(23).getNumericCellValue())
+															: Row.getCell(23).getStringCellValue());
+											HorariosEntity horario = this.horariosJPA
+													.findByCodigo(Row.getCell(25).getCellType() == CellType.NUMERIC
+															? Long.toString(
+																	(long) Row.getCell(25).getNumericCellValue())
+															: Row.getCell(25).getStringCellValue());
+											AsignacionTurnoEntity asigna = AsignacionTurnoEntity.builder().empleado(emp)
+													.turno(turno).horario(horario).build();
+											this.asignaTurJPA.save(asigna);
+										}
+									}
+								}
+							}
+						}
+						if (tipoCarga.equals("CTUR")) {
+							for (int r = 1; r <= rows; r++) {
+								Row = Sheet.getRow(r);
+								if (Row == null) {
+									break;
+								} else {
+									TurnosEntity tur = TurnosEntity.builder()
+											.codigo(Row.getCell(0).getCellType() == CellType.NUMERIC
+													? Integer.toString((int) Row.getCell(0).getNumericCellValue())
+													: (Row.getCell(0).getStringCellValue()))
+											.turno(Row.getCell(1).getStringCellValue()).build();
+									this.trunosJPA.save(tur);
+								}
+							}
+						}
+						if (tipoCarga.equals("CHOR")) {
+							for (int r = 1; r <= rows; r++) {
+								Row = Sheet.getRow(r);
+								if (Row == null) {
+									break;
+								} else {
+									HorariosEntity hor = HorariosEntity.builder()
+											.codigo(Row.getCell(0).getCellType() == CellType.NUMERIC
+													? Integer.toString((int) Row.getCell(0).getNumericCellValue())
+													: (Row.getCell(0).getStringCellValue()))
+											.horario(Row.getCell(1).getStringCellValue()).build();
+									this.horariosJPA.save(hor);
 								}
 							}
 						}
 						System.gc();
 					}
-					if(tipoCarga.equals("CEXTSINAVID")) {
-						ExtractoSINAVIDFilesEntity exfile = ExtractoSINAVIDFilesEntity.builder().fileName(fileProces.getName())
-						.fechaGen(fechaCarga).fileAlta(Files.readAllBytes(fileProces.toPath())).build();
+					if (tipoCarga.equals("CEXTSINAVID")) {
+						ExtractoSINAVIDFilesEntity exfile = ExtractoSINAVIDFilesEntity.builder()
+								.fileName(fileProces.getName()).fechaGen(fechaCarga)
+								.fileAlta(Files.readAllBytes(fileProces.toPath())).build();
 						this.extraSINAVIDJPA.save(exfile);
 					}
 				}
@@ -1359,8 +1477,8 @@ public class ProcesaFileXLSXThread {
 				throw new Exception(err);
 			} finally {
 				try {
-//				pkg.close();
-					Workbook.close();
+					if (Workbook != null)
+						Workbook.close();
 					fileProces.delete();
 				} catch (Exception ex) {
 					ex.printStackTrace();

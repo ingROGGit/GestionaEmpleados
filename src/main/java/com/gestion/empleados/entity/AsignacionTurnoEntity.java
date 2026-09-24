@@ -1,13 +1,14 @@
 package com.gestion.empleados.entity;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.gestion.empleados.listener.AuditoryTurnosListener;
+import com.gestion.empleados.listener.AuditoryAsignaTurnosListener;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -35,21 +36,32 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "TurnosEntity", catalog = "db_gestion_empleados2", schema = "public")
-@EntityListeners({ AuditingEntityListener.class,AuditoryTurnosListener.class})
-public class TurnosEntity extends AuditableDateEntity implements Serializable {
+@Table(name = "AsignacionTurnoEntity", catalog = "db_gestion_empleados2", schema = "public")
+@EntityListeners({ AuditingEntityListener.class,AuditoryAsignaTurnosListener.class})
+public class AsignacionTurnoEntity extends AuditableDateEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
 	@Column(name = "id")
 	private Long id;
-	@Column(name = "turno")
-    protected String turno;
-	@Column(name = "codigo")
-    protected String codigo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_empleado", nullable = false)
+    private Empleados empleado;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_turno", nullable = false)
+    private TurnosEntity turno;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_horario", nullable = false)
+    private HorariosEntity horario;
+
+    private LocalDate fechaInicio;
+    private LocalDate fechaFin;
 	@Override
 	public String toString() {
-		return "TurnosEntity [id=" + id + ", turno=" + turno  + "]";
+		return "AsignacionTurnoEntity [id=" + id + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + "]";
 	}
+
 }

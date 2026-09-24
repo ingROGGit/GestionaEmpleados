@@ -40,6 +40,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.gestion.empleados.entity.AsignacionTurnoEntity;
 import com.gestion.empleados.entity.DetalleDeduccionesEntiy;
 import com.gestion.empleados.entity.DetallePersepcionesEntity;
 import com.gestion.empleados.entity.Empleados;
@@ -47,6 +49,7 @@ import com.gestion.empleados.entity.QuincenaCatEntity;
 import com.gestion.empleados.entity.QuincenasEntity;
 import com.gestion.empleados.entity.SINAVIDEntity;
 import com.gestion.empleados.entity.VacacionesEntity;
+import com.gestion.empleados.repository.AsignacionTurnosRepositoryJPA;
 import com.gestion.empleados.repository.BancosRepositoryJPA;
 import com.gestion.empleados.repository.CatCPJALRepositoryJPA;
 import com.gestion.empleados.repository.DeduccionesRepositoryJPA;
@@ -58,6 +61,7 @@ import com.gestion.empleados.repository.PuestosRepositoryJPA;
 import com.gestion.empleados.repository.QuincenaRepositoryJPA;
 import com.gestion.empleados.repository.QuincenasCatRepositoryJPA;
 import com.gestion.empleados.repository.ReglasDiasRepository;
+import com.gestion.empleados.repository.SINAVIDRepositoryJPA;
 import com.gestion.empleados.repository.ServiciosRepositoryJPA;
 import com.gestion.empleados.repository.TurnosRepositoryJPA;
 import com.gestion.empleados.repository.VacacionesRepository;
@@ -104,25 +108,34 @@ public class EmpleadoController {
 	private DetalleDeduccionesRepositoryJPA detalleDedJPA;
 	@Autowired
 	private QuincenaRepositoryJPA quincenaJPA;
+	@Autowired
+	private SINAVIDRepositoryJPA sinavidJPA;
+	@Autowired
+	private AsignacionTurnosRepositoryJPA asignaTurJPA;
 	private final ProcesaFileXLSXThread thread;
-	 public EmpleadoController(ProcesaFileXLSXThread procesaFileXLSXThread) {
-	        this.thread = procesaFileXLSXThread;
-	    }
+
+	public EmpleadoController(ProcesaFileXLSXThread procesaFileXLSXThread) {
+		this.thread = procesaFileXLSXThread;
+	}
+
 	@GetMapping({ "/", "/start", "" })
 	public String menu(Model model) {
 		model.addAttribute("titulo", "Inicio");
 		return "start";
 	}
-	@GetMapping({ "/contacto"})
+
+	@GetMapping({ "/contacto" })
 	public String contacto(Model model) {
 		model.addAttribute("titulo", "Contacto");
 		return "contacto";
 	}
-	@GetMapping({"/quien"})
+
+	@GetMapping({ "/quien" })
 	public String quien(Model model) {
 		model.addAttribute("titulo", "Quienes Somos");
 		return "quien";
 	}
+
 	@GetMapping("empleados/listarEmpleados")
 	public String listarEmpleados(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
 		Pageable pageRequest = PageRequest.of(page, 5000);
@@ -130,41 +143,43 @@ public class EmpleadoController {
 		PageRender<Empleados> pageRender = new PageRender<>("/empleados/listarEmpleados", empleados);
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String fa = df.format(new Date());
-		File file=new File("Empleados_" + fa + ".xlsx");
-		boolean fileExDownload=false,filefull=false;
-		if(file.exists() )
-		{
-			if(file.canWrite()) {
-				fileExDownload=true;
-				filefull=true;
-			}
-			else
-				filefull=false;
-				
+		File dirUsu = new File(SecurityContextHolder.getContext().getAuthentication().getName());
+		File file = new File(dirUsu + "\\Empleados_" + fa + ".xlsx");
+		boolean fileExDownload = false, filefull = false;
+		if (file.exists()) {
+			if (file.canWrite()) {
+				fileExDownload = true;
+				filefull = true;
+			} else
+				filefull = false;
+
 		}
 		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
 		String quincenasCat = this.quincenasCatJPA.findQNAACT(fechaSqlHoy);
 		List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
-		model.addAttribute("fileExDownload",fileExDownload);
-		model.addAttribute("filefull",filefull);
+		model.addAttribute("fileExDownload", fileExDownload);
+		model.addAttribute("filefull", filefull);
 		model.addAttribute("titulo", "Listado Empleados");
 		model.addAttribute("empleados", empleados);
 		model.addAttribute("registros", empleados.getSize());
 		model.addAttribute("page", pageRender);
-		model.addAttribute("addNew","SI");
+		model.addAttribute("addNew", "SI");
 		model.addAttribute("quinCatSelectGet", quincenasCat);
 		model.addAttribute("LquincenasCat", LquincenasCat);
 		return "empleados/listarEmpleados";
 	}
 
 	@GetMapping("empleados/verEmpleado/{id}")
-	public String verDetallesEmpleado(@PathVariable(value = "id") Long id,@RequestParam(value = "quincena") String idQNA, Map<String, Object> modelo,
-			RedirectAttributes flash) {
+	public String verDetallesEmpleado(@PathVariable(value = "id") Long id,
+			@RequestParam(value = "quincena") String idQNA, Map<String, Object> modelo, RedirectAttributes flash) {
 //		Empleados empleado = empleadoService.findOne(id);
 		Empleados empleado = this.empleadosJPA.findById(id);
-		QuincenasEntity quincena = this.empleadosJPA.findQuincenaByEmpleadoAndCatId(id,idQNA);
-		List<DetallePersepcionesEntity> detalleper=this.detallePerJPA.findByEmpleadoPerAndQuincenaCatDP_IdQNA(empleado,idQNA);
-		List<DetalleDeduccionesEntiy> detalleded=this.detalleDedJPA.findByEmpleadoDDAndQuincenaCatDD_IdQNA(empleado,idQNA);
+		QuincenasEntity quincena = this.empleadosJPA.findQuincenaByEmpleadoAndCatId(id, idQNA);
+		List<DetallePersepcionesEntity> detalleper = this.detallePerJPA
+				.findByEmpleadoPerAndQuincenaCatDP_IdQNA(empleado, idQNA);
+		List<DetalleDeduccionesEntiy> detalleded = this.detalleDedJPA.findByEmpleadoDDAndQuincenaCatDD_IdQNA(empleado,
+				idQNA);
+		List<AsignacionTurnoEntity> asignacionTH=this.asignaTurJPA.findByEmpleado_Id(id);
 		LocalDate hoy = LocalDate.now();
 		LocalDate fechaIngreso = new java.sql.Date(empleado.getFechaIngreso().getTime()).toLocalDate();
 		Period periodo = Period.between(fechaIngreso, hoy);
@@ -177,9 +192,11 @@ public class EmpleadoController {
 		modelo.put("quincena", quincena);
 		modelo.put("detalleper", detalleper);
 		modelo.put("detalleded", detalleded);
+		modelo.put("asignacionTH",asignacionTH);
 		modelo.put("titulo", "Detalles del Empleado " + empleado.getNombre());
 		return "empleados/verEmpleadoModal";
 	}
+
 	@GetMapping("empleados/verDatosEmpleado/{id}")
 	public String verDatosEmpleado(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
 			RedirectAttributes flash) {
@@ -196,6 +213,7 @@ public class EmpleadoController {
 		modelo.put("titulo", "Detalles del Empleado " + empleado.getNombre());
 		return "empleados/verEmpleadoModal";
 	}
+
 	@GetMapping("empleados/formEmpleado")
 	public String formularioRegistroEmpleado(Map<String, Object> modelo) {
 		Empleados empleado = new Empleados();
@@ -211,29 +229,40 @@ public class EmpleadoController {
 			modelo.addAttribute("titulo", "Registro de Empleado");
 			return "empleados/formEmpleadoModal";
 		}
-		Empleados getEmpleado=this.empleadosJPA.findById(empleado.getId());
+		Empleados getEmpleado = this.empleadosJPA.findById(empleado.getId());
 		getEmpleado.setSexo(empleado.getSexo());
 		getEmpleado.setCorreo(empleado.getCorreo());
 		getEmpleado.setTelefono(empleado.getTelefono());
 		getEmpleado.setTelefonoEmer(empleado.getTelefonoEmer());
 		// 1. Obtener la autenticación actual
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
+
 		// 2. Extraer los nombres de los roles
 		Set<String> roles = authentication.getAuthorities().stream()
-		        .map(grantedAuthority -> grantedAuthority.getAuthority())
-		        .collect(Collectors.toSet());
-		boolean grabar=false;
+				.map(grantedAuthority -> grantedAuthority.getAuthority()).collect(Collectors.toSet());
+		boolean grabar = false;
 		for (String rol : roles) {
-		   if(rol.equals("ROLE_ADMIN")||rol.equals("ROLE_OPERADORCUENTAS")||rol.equals("ROLE_OPERADORSINAVID"))
-			   grabar=true;
+			if (rol.equals("ROLE_ADMIN") || rol.equals("ROLE_ADMIN1") || rol.equals("ROLE_OPERADORCUENTAS")
+					|| rol.equals("ROLE_OPERADORSINAVID") || rol.equals("ROLE_OPERADORSINAVID1"))
+				grabar = true;
 		}
-		if(grabar) {
+		if (grabar) {
 			getEmpleado.setFechaIngreso(empleado.getFechaIngreso());
 			getEmpleado.setFechaIngresoH(empleado.getFechaIngresoH());
 			getEmpleado.setTipoContrato(empleado.getTipoContrato());
 			getEmpleado.setCurp(empleado.getCurp());
 			getEmpleado.setRfc(empleado.getRfc());
+			getEmpleado.setNombre(empleado.getNombre());
+			getEmpleado.setApellidop(empleado.getApellidop());
+			getEmpleado.setApellidom(empleado.getApellidom());
+			getEmpleado.setNombreCompleto(empleado.getApellidop()+" "+empleado.getApellidom()+" "+empleado.getNombre());
+			SINAVIDEntity sinavid = getEmpleado.getSinavid();
+			if (sinavid != null) {
+				sinavid.setEstatus("CORREGIDO");
+				sinavid.setError(null);
+				sinavid.setFechaRespuesta(null);
+				this.sinavidJPA.save(sinavid);
+			}
 		}
 		String mensaje = (empleado.getId() != null) ? "Empleado Actualizado con Exito"
 				: "Empleado Registrado con Exito";
@@ -295,61 +324,63 @@ public class EmpleadoController {
 		List<Empleados> lempeados = this.empleadosJPA.findAll();
 		ExportExcel exexcel = new ExportExcel();
 		exexcel.ExportExcel(lempeados);
-		exexcel.exportarExcel(respons,"Empleados");
+		exexcel.exportarExcel(respons, "Empleados");
 	}
+
 	@GetMapping("/empleados/exportarExcelThread")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void exportEmpleadosExcelThread(@RequestParam("quinCatSelectGet") String quinCatSelectGet) throws DocumentException, IOException {
+	public void exportEmpleadosExcelThread(@RequestParam("quinCatSelectGet") String quinCatSelectGet)
+			throws DocumentException, IOException {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String fa = df.format(new Date());
-		File dirUsu=new File(SecurityContextHolder.getContext().getAuthentication().getName());
-		if(!dirUsu.exists())
+		File dirUsu = new File(SecurityContextHolder.getContext().getAuthentication().getName());
+		if (!dirUsu.exists())
 			dirUsu.mkdirs();
-		File file=new File(dirUsu+"\\Empleados_" + fa + ".xlsx");
+		File file = new File(dirUsu + "\\Empleados_" + fa + ".xlsx");
 		List<Empleados> lempeados = this.empleadosJPA.findByEMpleadosXQuincena(quinCatSelectGet);
 		for (Empleados e : lempeados) {
-			if(e.getPuestosEntity()!=null)
+			if (e.getPuestosEntity() != null)
 				e.getPuestosEntity().getPuesto();
-			if(e.getServicioEntity()!=null)
+			if (e.getServicioEntity() != null)
 				e.getServicioEntity().getServicio();
 		}
-		ExportExcelThread exexcel = new ExportExcelThread(file.getName(), "Empleados", null, null, lempeados);
+		ExportExcelThread exexcel = new ExportExcelThread(file.getAbsolutePath(), "Empleados", null, null, lempeados);
 		exexcel.setName("Export-Empleados");
 		exexcel.setPriority(Thread.MAX_PRIORITY);
 		exexcel.start();
 	}
+
 	@GetMapping("/empleados/FileExcel")
 	public String FileExcel(HttpServletResponse respons) throws DocumentException, IOException {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String fa = df.format(new Date());
-		File dirUsu=new File(SecurityContextHolder.getContext().getAuthentication().getName());
-		File file=new File(dirUsu+"\\Empleados_" + fa + ".xlsx");
-		if(file.exists() &&file.canWrite())
-		{
-		respons.setContentType("application/octet-stream");
-		String cabecera = "Content-Disposition";
-		String valor = "attachment; filename=Empleados_" + fa + ".xlsx";
-		respons.setHeader(cabecera, valor);
-		try (InputStream inputStream = new FileInputStream(file);
-	             ServletOutputStream outputStream = respons.getOutputStream()) {
-	            IOUtils.copy(inputStream, outputStream);
-	            respons.flushBuffer();
-	            inputStream.close();
-	            file.delete();
-	            return "redirect:/empleados/listarEmpleados";
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	            throw new RuntimeException("Error writing file to response", e);
-	        }
-		}
-		else {
+		File dirUsu = new File(SecurityContextHolder.getContext().getAuthentication().getName());
+		File file = new File(dirUsu + "\\Empleados_" + fa + ".xlsx");
+		if (file.exists() && file.canWrite()) {
+			respons.setContentType("application/octet-stream");
+			String cabecera = "Content-Disposition";
+			String valor = "attachment; filename=Empleados_" + fa + ".xlsx";
+			respons.setHeader(cabecera, valor);
+			try (InputStream inputStream = new FileInputStream(file);
+					ServletOutputStream outputStream = respons.getOutputStream()) {
+				IOUtils.copy(inputStream, outputStream);
+				respons.flushBuffer();
+				inputStream.close();
+				file.delete();
+				return "redirect:/empleados/listarEmpleados";
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new RuntimeException("Error writing file to response", e);
+			}
+		} else {
 			return "redirect:/empleados/listarEmpleados";
 		}
 	}
+
 	@GetMapping("empleados/AddEXLSX")
-	public String addXLSX(@RequestParam("TIPOCARGA") String TIPOCARGA,Model model) {
+	public String addXLSX(@RequestParam("TIPOCARGA") String TIPOCARGA, Model model) {
 		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
-		String quinCatSelectPost = quincenasCatJPA.findQNAACT(fechaSqlHoy);		
+		String quinCatSelectPost = quincenasCatJPA.findQNAACT(fechaSqlHoy);
 		Map<String, String> CatalogoCarga = new HashMap();
 		List<String> lquincenas = quincenasCatJPA.findByAllIdQNA();
 		CatalogoCarga.put("CEM", "Carga de Empleados");
@@ -368,22 +399,30 @@ public class EmpleadoController {
 		CatalogoCarga.put("CEMTEL", "Carga Telefonos");
 		CatalogoCarga.put("CEMCURP", "Carga CURP RFC");
 		CatalogoCarga.put("CEXTSINAVID", "Carga Extracto");
-		model.addAttribute("titulo", "EXCEL "+CatalogoCarga.get(TIPOCARGA));
+		CatalogoCarga.put("CERRSINAVID", "Carga Errores SINAVID");
+		CatalogoCarga.put("CNOMMT4", "Carga Nomina META4");
+		CatalogoCarga.put("CTUR", "Carga Turnos");
+		CatalogoCarga.put("CHOR", "Carga Horarios");
+		model.addAttribute("titulo", "EXCEL " + CatalogoCarga.get(TIPOCARGA));
 		model.addAttribute("TIPOCARGA", TIPOCARGA);
 		model.addAttribute("quin", "");
 		model.addAttribute("lquincenas", lquincenas);
 		model.addAttribute("CatalogoCarga", CatalogoCarga);
-		model.addAttribute("quinCatSelectPost",quinCatSelectPost);
-		model.addAttribute("fechaExt",new Date());
+		model.addAttribute("quinCatSelectPost", quinCatSelectPost);
+		model.addAttribute("fechaExt", new Date());
 		return "empleados/AddEmpleados";
 	}
+
 	@PostMapping("empleados/addXLSX")
 	public String addEmpleadosXLSX(Model modelo, RedirectAttributes flash, SessionStatus status,
-			@RequestParam("fileXLS") MultipartFile fileXLS,@RequestParam("TIPOCARGA") String TIPOCARGA,@RequestParam("CatalogoCarga") String CatalogoCarga,@RequestParam(required = false) String quinCatSelectPost,@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")  Date fechaExt) {
+			@RequestParam("fileXLS") MultipartFile fileXLS, @RequestParam("TIPOCARGA") String TIPOCARGA,
+			@RequestParam("CatalogoCarga") String CatalogoCarga,
+			@RequestParam(required = false) String quinCatSelectPost,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaExt) {
 		try {
-			if(TIPOCARGA.equals("CPRE")||TIPOCARGA.equals("CNOM")) {
-				if(this.quincenaJPA.countByQuinCat_IdQNA(quinCatSelectPost)>0)
-					throw new Exception("Quincena "+quinCatSelectPost+" ya cargada");
+			if (TIPOCARGA.equals("CPRE") || TIPOCARGA.equals("CNOM")) {
+				if (this.quincenaJPA.countByQuinCat_IdQNA(quinCatSelectPost) > 0)
+					throw new Exception("Quincena " + quinCatSelectPost + " ya cargada");
 			}
 			File filewrite = new File(fileXLS.getOriginalFilename());
 			try (FileOutputStream fos = new FileOutputStream(filewrite)) {
@@ -392,13 +431,11 @@ public class EmpleadoController {
 				e.printStackTrace();
 				throw new Exception(e);
 			}
-//			ProcesaFileXLSXThread thread = new ProcesaFileXLSXThread(empleadosJPA,trunosRJPA,vacacionesRJPA,reglasDiasRJPA,puestosJPA,
-//					serviciosJPA,quincenasCatJPA,persepcionesJPA,deduccionesJPA,bancosJPA,catCPJALRepositoryJPA,detallePerJPA,detalleDedJPA,quincenaJPA);
-			this.thread.run(filewrite,TIPOCARGA,quinCatSelectPost,fechaExt);
+			this.thread.run(filewrite, TIPOCARGA, quinCatSelectPost, fechaExt);
 			modelo.addAttribute("success", "Archivo cargado Satisfactoriamente se prosesaran en segundo plano");
 			status.setComplete();
-	        flash.addFlashAttribute("success", "Archivo procesado con éxito.");
-	        
+			flash.addFlashAttribute("success", "Archivo procesado con éxito.");
+
 		} catch (Exception err) {
 			err.printStackTrace();
 			modelo.addAttribute("error",
@@ -407,7 +444,7 @@ public class EmpleadoController {
 		List<String> lquincenas = quincenasCatJPA.findByAllIdQNA();
 		modelo.addAttribute("TIPOCARGA", TIPOCARGA);
 		modelo.addAttribute("lquincenas", lquincenas);
-		modelo.addAttribute("quinCatSelectPost",quinCatSelectPost);
+		modelo.addAttribute("quinCatSelectPost", quinCatSelectPost);
 		return "empleados/AddEmpleados";
 	}
 }

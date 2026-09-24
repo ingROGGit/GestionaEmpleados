@@ -75,7 +75,7 @@
 						</div>
 					</div>
 					<div class="card-body" style="display: none;">
-						<table id="tableQuincena" class="table table-hover w-auto text-nowrap" data-toggle="table"
+						<table id="tablePersepciones" class="table table-hover w-auto text-nowrap" data-toggle="table"
 							data-filter-control="true">
 							<thead class="thead-light">
 								<tr>
@@ -106,7 +106,7 @@
 						</div>
 					</div>
 					<div class="card-body" style="display: none;">
-						<table id="tableQuincena" class="table table-hover w-auto text-nowrap" data-toggle="table"
+						<table id="tableDeducciones" class="table table-hover w-auto text-nowrap" data-toggle="table"
 							data-filter-control="true">
 							<thead class="thead-light">
 								<tr>
@@ -246,7 +246,7 @@
 		</div>
 		<div class="card card-default collapsed-card">
 			<div class="card-header">
-				<h3 class="card-title">Vacaciones</h3>
+				<h3 class="card-title">Turnos</h3>
 				<div class="card-tools">
 					<button type="button" class="btn btn-tool" data-card-widget="collapse">
 						<i class="fas fa-minus"></i>
@@ -254,21 +254,30 @@
 				</div>
 			</div>
 			<div class="card-body" style="display: none;">
-				<th:block th:if="${empleado.EmpleadoV != null}">
+				<th:block th:if="${asignacionTH != null}">
 					<div class="row">
-						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-							Dias Correspondientes: <li class="list-group-item"
-								th:text="${empleado.EmpleadoV.diasVacaciones}">
-							</li>
-						</div>
-						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-							Dias Disfrutados: <li class="list-group-item"
-								th:text="${empleado.EmpleadoV.diasDisfrutados}"></li>
-						</div>
-						<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-							Dias Restantes: <li class="list-group-item" th:text="${empleado.EmpleadoV.diasRestantes}">
-							</li>
-						</div>
+						<table id="tableTurnos" class="table table-hover w-auto text-nowrap" data-toggle="table"
+							data-filter-control="true">
+							<thead class="thead-light">
+								<tr>
+									<th data-filter-control="select">Codigo Turno</th>
+									<th data-filter-control="select">Turno</th>
+									<th data-filter-control="select">Codigo Horario</th>
+									<th data-filter-control="select">Horario</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+								<th:block th:each="ded : ${asignacionTH}" th:if="${ded != null}">
+									<tr>
+										<td>[[${ded.turno.codigo}]]</td>
+										<td>[[${ded.turno.turno}]]</td>
+										<td>[[${ded.horario.codigo}]]</td>
+										<td>[[${ded.horario.horario}]]</td>
+									<tr>
+								</th:block>
+							</tbody>
+						</table>
 					</div>
 				</th:block>
 			</div>

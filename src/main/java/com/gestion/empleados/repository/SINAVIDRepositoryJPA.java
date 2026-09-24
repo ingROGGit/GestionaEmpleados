@@ -12,6 +12,7 @@ public interface SINAVIDRepositoryJPA extends JpaRepository<SINAVIDEntity, Seria
 	public SINAVIDEntity findById(Long id);
 	public SINAVIDEntity findByNumISSSTE(String numISSSTE);
 	public SINAVIDEntity findByEmpleado_Id(Long idEmpleado);
+	public SINAVIDEntity findByEmpleado_Curp(String curp);
 	public Long countByFechaAltaBetweenAndEstatus(Date fechain, Date fechafin,String estatus);
 	public Long countByFechaAltaBetweenAndEstatusIsNull(Date fechain, Date fechafin);
 	public Long countByFechaAltaBeforeAndEstatus(Date fechaActual,String estatus);

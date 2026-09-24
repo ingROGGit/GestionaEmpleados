@@ -46,6 +46,9 @@ public class SINAVIDEntity extends AuditableDateEntity implements Serializable {
 	@Size(max = 250)
 	@Column(name = "estatus")
 	private String estatus;
+	@Size(max = 550)
+	@Column(name = "error")
+	private String error;
 	@Column(name = "nss")
 	protected String nss;
 	@Column(name = "numISSSTE")

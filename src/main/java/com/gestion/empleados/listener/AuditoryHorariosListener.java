@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.gestion.empleados.entity.AuditoryEntity;
-import com.gestion.empleados.entity.TurnosEntity;
+import com.gestion.empleados.entity.HorariosEntity;
 import com.gestion.empleados.repository.AuditoryRepository;
 
 import jakarta.persistence.PrePersist;
@@ -17,28 +17,28 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Lazy))
-public class AuditoryTurnosListener {
+public class AuditoryHorariosListener {
 	private final AuditoryRepository auditoryRepository;
 
 	@PrePersist
-	private void prePersist(TurnosEntity auditory) {
+	private void prePersist(HorariosEntity auditory) {
 		AuditoryEntity auditoryEntity = this.getAuditory("INSERT", auditory);
 		this.auditoryRepository.save(auditoryEntity);
 	}
 
 	@PreUpdate
-	private void preUpdate(TurnosEntity auditory) {
+	private void preUpdate(HorariosEntity auditory) {
 		AuditoryEntity auditoryEntity = this.getAuditory("UPDATE", auditory);
 		this.auditoryRepository.save(auditoryEntity);
 	}
 
 	@PreRemove
-	private void preRemove(TurnosEntity auditory) {
+	private void preRemove(HorariosEntity auditory) {
 		AuditoryEntity auditoryEntity = this.getAuditory("DELETE", auditory);
 		this.auditoryRepository.save(auditoryEntity);
 	}
 
-	private AuditoryEntity getAuditory(String operacion, TurnosEntity auditory) {
+	private AuditoryEntity getAuditory(String operacion, HorariosEntity auditory) {
 		AuditoryEntity auditoryEntity = new AuditoryEntity();
 		String usuLoguin;
 		try {

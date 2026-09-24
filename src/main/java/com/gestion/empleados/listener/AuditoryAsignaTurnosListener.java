@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.gestion.empleados.entity.AsignacionTurnoEntity;
 import com.gestion.empleados.entity.AuditoryEntity;
-import com.gestion.empleados.entity.TurnosEntity;
 import com.gestion.empleados.repository.AuditoryRepository;
 
 import jakarta.persistence.PrePersist;
@@ -17,28 +17,28 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Lazy))
-public class AuditoryTurnosListener {
+public class AuditoryAsignaTurnosListener {
 	private final AuditoryRepository auditoryRepository;
 
 	@PrePersist
-	private void prePersist(TurnosEntity auditory) {
+	private void prePersist(AsignacionTurnoEntity auditory) {
 		AuditoryEntity auditoryEntity = this.getAuditory("INSERT", auditory);
 		this.auditoryRepository.save(auditoryEntity);
 	}
 
 	@PreUpdate
-	private void preUpdate(TurnosEntity auditory) {
+	private void preUpdate(AsignacionTurnoEntity auditory) {
 		AuditoryEntity auditoryEntity = this.getAuditory("UPDATE", auditory);
 		this.auditoryRepository.save(auditoryEntity);
 	}
 
 	@PreRemove
-	private void preRemove(TurnosEntity auditory) {
+	private void preRemove(AsignacionTurnoEntity auditory) {
 		AuditoryEntity auditoryEntity = this.getAuditory("DELETE", auditory);
 		this.auditoryRepository.save(auditoryEntity);
 	}
 
-	private AuditoryEntity getAuditory(String operacion, TurnosEntity auditory) {
+	private AuditoryEntity getAuditory(String operacion, AsignacionTurnoEntity auditory) {
 		AuditoryEntity auditoryEntity = new AuditoryEntity();
 		String usuLoguin;
 		try {
@@ -48,9 +48,9 @@ public class AuditoryTurnosListener {
 		}
 		auditoryEntity.setOperation(operacion);
 		auditoryEntity.setFecha(LocalDateTime.now());
-		auditoryEntity.setName(auditory.getId()==null?auditory.getCodigo():auditory.getId().toString());
+		auditoryEntity.setName("Empleado:"+auditory.getEmpleado().getId().toString()+" Turno:"+auditory.getTurno().getCodigo()+" Hor:"+auditory.getHorario().getCodigo());
 		auditoryEntity.setUsu(usuLoguin);
-		auditoryEntity.setDetalle(auditory.toString());
+		auditoryEntity.setDetalle(auditory.toString().length()>500?auditory.toString().substring(0,500):auditory.toString());
 		return auditoryEntity;
 	}
 }

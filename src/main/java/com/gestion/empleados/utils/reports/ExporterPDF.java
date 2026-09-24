@@ -66,7 +66,7 @@ public class ExporterPDF {
 		}
 	}
 	public void exportarPDF(HttpServletResponse response) throws DocumentException, IOException {
-		Document documento=new Document(PageSize.A4.rotate());
+		Document documento=new Document(PageSize.LEGAL.rotate());
 		PdfWriter.getInstance(documento, response.getOutputStream());
 		documento.open();
 		Font fuente= FontFactory.getFont(FontFactory.HELVETICA);
@@ -78,8 +78,8 @@ public class ExporterPDF {
 		PdfPTable table = new PdfPTable(10);
 		table.setWidthPercentage(100);
 		table.setSpacingBefore(15);
-		table.setWidths(new float[] {1f,2.3f,2.3f,2.3f,2f,2.3f,2.3f,3.5f,2.2f,2.2f});
-		table.setWidthPercentage(110);
+		table.setWidths(new float[] {1.3f,3.8f,3.3f,3.3f,4.1f,2.9f,1.5f,1.4f,2.1f,2f});
+		table.setWidthPercentage(100);
 		writeCabeceraTabla(table);
 		writeDetalleTabla(table);
 		documento.add(table);

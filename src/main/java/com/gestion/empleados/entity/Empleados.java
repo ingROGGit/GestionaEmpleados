@@ -118,8 +118,8 @@ public class Empleados extends AuditableDateEntity implements Serializable {
 	@Size(max = 14)
 	@Column(name = "rfc")
 	private String rfc;
-	@OneToMany(mappedBy = "empleado", fetch = FetchType.LAZY)
-	private List<TurnosEntity> turnosEm = new ArrayList<>();
+//	@OneToMany(mappedBy = "empleado", fetch = FetchType.LAZY)
+//	private List<TurnosEntity> turnosEm = new ArrayList<>();
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_puesto")
 	private PuestosEntity puestosEntity;

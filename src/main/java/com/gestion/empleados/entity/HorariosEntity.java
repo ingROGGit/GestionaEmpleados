@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.gestion.empleados.listener.AuditoryTurnosListener;
+import com.gestion.empleados.listener.AuditoryHorariosListener;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -35,21 +35,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "TurnosEntity", catalog = "db_gestion_empleados2", schema = "public")
-@EntityListeners({ AuditingEntityListener.class,AuditoryTurnosListener.class})
-public class TurnosEntity extends AuditableDateEntity implements Serializable {
+@Table(name = "HorariosEntity", catalog = "db_gestion_empleados2", schema = "public")
+@EntityListeners({ AuditingEntityListener.class,AuditoryHorariosListener.class})
+public class HorariosEntity extends AuditableDateEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
 	@Column(name = "id")
 	private Long id;
-	@Column(name = "turno")
-    protected String turno;
+	@Column(name = "horario")
+    protected String horario;
 	@Column(name = "codigo")
     protected String codigo;
 	@Override
 	public String toString() {
-		return "TurnosEntity [id=" + id + ", turno=" + turno  + "]";
+		return "TurnosEntity [id=" + id + ", turno=" + horario  + "]";
 	}
 }

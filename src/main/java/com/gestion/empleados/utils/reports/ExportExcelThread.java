@@ -110,20 +110,24 @@ public class ExportExcelThread extends Thread  {
 		celda.setCellStyle(estilo);
 
 		celda = row.createCell(8);
-		celda.setCellValue("Salario");
+		celda.setCellValue("Sueldo Pre");
 		celda.setCellStyle(estilo);
 		
 		celda = row.createCell(9);
+		celda.setCellValue("Sueldo Neto");
+		celda.setCellStyle(estilo);		
+		
+		celda = row.createCell(10);
 		celda.setCellValue("Fecha Ingreso");
 		celda.setCellStyle(estilo);
 
-		celda = row.createCell(10);
+		celda = row.createCell(11);
 		celda.setCellValue("Telefono");
 		celda.setCellStyle(estilo);
-		celda = row.createCell(11);
+		celda = row.createCell(12);
 		celda.setCellValue("Puesto");
 		celda.setCellStyle(estilo);
-		celda = row.createCell(12);
+		celda = row.createCell(13);
 		celda.setCellValue("Servicio");
 		
 	}
@@ -231,28 +235,33 @@ public class ExportExcelThread extends Thread  {
 			celda.setCellStyle(estilo);
 
 			celda = row.createCell(8);
-			celda.setCellValue(empleado.getQuincenas().get(0).getSueldoNeto()!=null?empleado.getQuincenas().get(0).getSueldoNeto().toString():"");
+			celda.setCellValue(empleado.getQuincenas().get(0).getSueldoPre()!=null?empleado.getQuincenas().get(0).getSueldoPre().toString():"");
 			this.sheet.autoSizeColumn(8);
 			celda.setCellStyle(estiloF);
-
-			celda = row.createCell(9);
-			celda.setCellValue(empleado.getFechaIngreso());
-			this.sheet.autoSizeColumn(9);
-			celda.setCellStyle(estilo);
 			
+			celda = row.createCell(9);
+			celda.setCellValue(empleado.getQuincenas().get(0).getSueldoNeto()!=null?empleado.getQuincenas().get(0).getSueldoNeto().toString():"");
+			this.sheet.autoSizeColumn(9);
+			celda.setCellStyle(estiloF);
+
 			celda = row.createCell(10);
-			celda.setCellValue(empleado.getTelefono());
+			celda.setCellValue(empleado.getFechaIngreso());
 			this.sheet.autoSizeColumn(10);
 			celda.setCellStyle(estilo);
 			
 			celda = row.createCell(11);
-			celda.setCellValue(empleado.getPuestosEntity()!=null?empleado.getPuestosEntity().getPuesto():"");
+			celda.setCellValue(empleado.getTelefono());
 			this.sheet.autoSizeColumn(11);
 			celda.setCellStyle(estilo);
 			
 			celda = row.createCell(12);
-			celda.setCellValue(empleado.getServicioEntity()!=null?empleado.getServicioEntity().getServicio():"");
+			celda.setCellValue(empleado.getPuestosEntity()!=null?empleado.getPuestosEntity().getPuesto():"");
 			this.sheet.autoSizeColumn(12);
+			celda.setCellStyle(estilo);
+			
+			celda = row.createCell(13);
+			celda.setCellValue(empleado.getServicioEntity()!=null?empleado.getServicioEntity().getServicio():"");
+			this.sheet.autoSizeColumn(13);
 			celda.setCellStyle(estilo);
 		}
 	}
