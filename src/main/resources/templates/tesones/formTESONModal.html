@@ -1,0 +1,118 @@
+<style>
+	/* Opcional: Elimina los márgenes predeterminados del body para un verdadero ancho completo */
+	body {
+		margin: 0;
+		padding: 0;
+		font-family: sans-serif;
+	}
+
+	form {
+		width: 100%;
+		box-sizing: border-box;
+		/* Asegura que el padding y el border se incluyan en el 100% */
+		padding: 20px;
+		/* Ejemplo de padding */
+		border: 1px solid #ccc;
+		/* Ejemplo de borde */
+		background-color: #f9f9f9;
+		/* Puedes añadir un max-width si no quieres que sea demasiado ancho en pantallas muy grandes */
+		/* max-width: 1200px; */
+		margin: 0 auto;
+		/* Centra el formulario si usas max-width */
+	}
+
+	input[type="text"],
+	input[type="submit"] {
+		width: 100%;
+		box-sizing: border-box;
+		padding: 10px;
+		margin-bottom: 10px;
+	}
+</style>
+<!-- 1. CSS base de Select2 -->
+<link rel="stylesheet" th:href="@{/distV32/plugins/select2/css/select2.min.css}">
+
+<!-- 2. CSS del tema Bootstrap 4 para AdminLTE 3 -->
+<link rel="stylesheet" th:href="@{/distV32/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+
+<div class="card bg-light">
+	<div class="card-header" th:text="${titulo}">
+	</div>
+	<div class="card-body">
+		<div class="row">
+			<form th:action="@{/tesones/saveUPDatos}" th:object="${teson}" method="post">
+				<input type="hidden" th:field="*{id}" th:value="${teson.id}" />
+				<input type="hidden" th:field="*{empleado.id}" />
+				<div class="row">
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+						Empleado: <li class="list-group-item"
+							th:text="${teson.empleado.id} +' '+${teson.empleado.nombreCompleto}"></li>
+					</div>
+				</div>
+					<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+						<label>MOTIVO: </label>
+						<select class="form-control" id="motivo" name="motivo" th:field="*{motivoTESONEntity}" required>
+							<option value="">-- Seleccionar --</option>
+							<!-- Iteramos sobre la lista de bancos (LBancos) -->
+							<option th:each="mot : ${lmotivos}" th:value="${mot.id}" th:text="${mot.codigo}+'|'+${mot.motivo}">
+							</option>
+						</select>
+					</div>
+					<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+						<label>TIPO NOMINA : </label>
+						<select class="form-control" id="tipoN" name="tipoN" th:field="*{tipoNomTESONEntity}" required>
+							<option value="">-- Seleccionar --</option>
+							<!-- Iteramos sobre la lista de bancos (LBancos) -->
+							<option th:each="tn : ${ltipoNom}" th:value="${tn.id}" th:text="${tn.tipo}">
+							</option>
+						</select>
+						</li>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+						<h4></h4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<h4>
+							<p></p>
+						</h4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="box-footer">
+							<input type="submit" value="Guardar" class="btn btn-primary">
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div><!-- /.container-fluid -->
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
+<script src="../../distV32/plugins/select2/js/select2.full.min.js"></script>
+<script th:src="@{/distV32/plugins/select2/js/select2.full.min.js}"></script>
+<script th:src="@{/distV32/js/pages/dashboard.js}"></script>
+
+<!-- 2. Inicialización del componente -->
+<script>
+	$(document).ready(function () {
+		$('#colonias').select2({
+			theme: 'bootstrap4',
+			placeholder: 'select Colonia',
+			allowClear: true,
+			dropdownParent: $('#colonias').closest('.modal') 
+		});
+		document.getElementById("colonias").focus();
+	});
+</script>

@@ -26,9 +26,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "ModSalSINAVIDFilesEntity", catalog = "db_gestion_empleados2", schema = "public")
+@Table(name = "TESONFilesEntity", catalog = "db_gestion_empleados2", schema = "public")
 @EntityListeners({ AuditingEntityListener.class })
-public class ModSalSINAVIDFilesEntity extends AuditableDateEntity implements Serializable {
+public class TESONFilesEntity extends AuditableDateEntity implements Serializable {
 		private static final long serialVersionUID = 1L;
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +43,4 @@ public class ModSalSINAVIDFilesEntity extends AuditableDateEntity implements Ser
 		@Temporal(TemporalType.DATE)
 		@DateTimeFormat(pattern = "yyyy-MM-dd")
 		private Date fechaAlta;
-		@Column(name = "folio")
-		private String folio;
 }

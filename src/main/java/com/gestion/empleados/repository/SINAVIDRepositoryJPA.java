@@ -17,4 +17,5 @@ public interface SINAVIDRepositoryJPA extends JpaRepository<SINAVIDEntity, Seria
 	public Long countByFechaAltaBetweenAndEstatusIsNull(Date fechain, Date fechafin);
 	public Long countByFechaAltaBeforeAndEstatus(Date fechaActual,String estatus);
 	public Long countByFechaAltaBeforeAndEstatusIsNull(Date fechaActual);
+	public Long countByEstatus(String estatus);
 }

@@ -43,4 +43,6 @@ public class AltaSINAVIDFilesEntity extends AuditableDateEntity implements Seria
 		@Temporal(TemporalType.DATE)
 		@DateTimeFormat(pattern = "yyyy-MM-dd")
 		private Date fechaAlta;
+		@Column(name = "folio")
+		private String folio;
 }

@@ -40,6 +40,7 @@ public class AuditoryUsuariosListener {
 		auditoryEntity.setOperation(operacion);
 		auditoryEntity.setFecha(LocalDateTime.now());
 		auditoryEntity.setName(usuario.getUsername());
+		auditoryEntity.setTablaM(usuario.getClass().getName());
 		auditoryEntity.setUsu(SecurityContextHolder.getContext().getAuthentication().getName());
 		auditoryEntity.setDetalle(usuario.toString());
 		return 	auditoryEntity;	

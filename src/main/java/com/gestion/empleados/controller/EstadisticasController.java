@@ -91,7 +91,7 @@ public class EstadisticasController {
         // 1. Datos simulados (pueden venir de un Repository/Base de datos)
         List<String> navegadores = Arrays.asList( "VALIDACION", "ALTA","FALTA ALTA","YA ALTA");
         
-        List<Long> visitas = Arrays.asList(this.sinavidJPA.countByFechaAltaBeforeAndEstatus(quinCat.getFechaFin(),"VALIDACION"),
+        List<Long> visitas = Arrays.asList(this.sinavidJPA.countByEstatus("VALIDACION"),
         		this.sinavidJPA.countByFechaAltaBeforeAndEstatus(quinCat.getFechaFin(),"ALTA"),
         		this.sinavidJPA.countByFechaAltaBeforeAndEstatusIsNull(quinCat.getFechaFin())+this.empleadosJPA.countBySinavidIsNull(),
         		this.sinavidJPA.countByFechaAltaBeforeAndEstatus(quinCat.getFechaFin(),"YA ALTA"));
@@ -117,7 +117,7 @@ public class EstadisticasController {
         // 1. Datos simulados (pueden venir de un Repository/Base de datos)
         List<String> navegadores = Arrays.asList( "VALIDACION", "ALTA","FALTA ALTA","YA ALTA");
         
-        List<Long> visitas = Arrays.asList(this.sinavidJPA.countByFechaAltaBeforeAndEstatus(quinCat.getFechaFin(),"VALIDACION"),
+        List<Long> visitas = Arrays.asList(this.sinavidJPA.countByEstatus("VALIDACION"),
         		this.sinavidJPA.countByFechaAltaBeforeAndEstatus(quinCat.getFechaFin(),"ALTA"),
         		this.sinavidJPA.countByFechaAltaBeforeAndEstatusIsNull(quinCat.getFechaFin())+this.empleadosJPA.countBySinavidIsNull(),
         		this.sinavidJPA.countByFechaAltaBeforeAndEstatus(quinCat.getFechaFin(),"YA ALTA"));

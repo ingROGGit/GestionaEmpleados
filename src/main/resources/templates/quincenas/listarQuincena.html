@@ -265,9 +265,11 @@
 													th:href="@{/quincenas/desbloqueoQuincena/} + ${quin.id}">Desbloqueo
 													de
 													Pago</a>
+													<a th:if="${quin.teson == false}" class="btn btn-success btn-sm"
+													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
+													th:href="@{/quincenas/activaTESON/} + ${quin.id}">GEN TESON</a>
 											</td>
 										</tr>
-										<!--										</tr>-->
 									</th:block>
 								</tbody>
 							</table>

@@ -349,7 +349,7 @@ public class GestionSINAVIDController {
 		String fa = df.format(new Date());
 		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
 		String quincenasCat = quincenasCatJPA.findQNAACT(fechaSqlHoy);
-		List<Empleados> empleados = this.empleadosJPA.findByModificacionSalario(quincenasCat);
+		List<Empleados> empleados = this.empleadosJPA.findByModificacionSalario(quincenasCat,"MODIFICACION S");
 		List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
 		model.addAttribute("empleados", empleados);
 		model.addAttribute("page", null);
@@ -368,7 +368,7 @@ public class GestionSINAVIDController {
 			throws Exception {
 		try {
 			if ("layout1".equals(accion)) {
-				List<Empleados> empleados = this.empleadosJPA.findByModificacionSalario(quinCatSelect);
+				List<Empleados> empleados = this.empleadosJPA.findByModificacionSalario(quinCatSelect,"MODIFICACION S");
 				List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
 				model.addAttribute("empleados", empleados);
 				model.addAttribute("page", null);
@@ -383,7 +383,7 @@ public class GestionSINAVIDController {
 			if ("layout2".equals(accion)) {
 				File file = new File(alta + ".txt");
 				QuincenaCatEntity quincenaCat=this.quincenasCatJPA.findByIdQNA(quinCatSelect);
-				List<Empleados> lEmpleadosCuentas =this.empleadosJPA.findByModificacionSalario(quinCatSelect);
+				List<Empleados> lEmpleadosCuentas =this.empleadosJPA.findByModificacionSalario(quinCatSelect,"MODIFICACION S");
 				ExporterTXTSINAVID altaSINAVID = new ExporterTXTSINAVID(file.getName(), lEmpleadosCuentas,
 						quinCatSelect);
 				altaSINAVID.runModSalario(quincenaCat.getFechaInicio());

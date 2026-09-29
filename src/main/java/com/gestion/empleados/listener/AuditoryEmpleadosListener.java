@@ -52,6 +52,7 @@ public class AuditoryEmpleadosListener {
 		auditoryEntity.setFecha(LocalDateTime.now());
 		auditoryEntity.setName(empleados.getNombre());
 		auditoryEntity.setUsu(usuLoguin);
+		auditoryEntity.setTablaM(empleados.getClass().getName());
 		auditoryEntity.setDetalle(empleados.toString());
 		return auditoryEntity;
 	}

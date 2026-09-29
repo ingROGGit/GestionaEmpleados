@@ -50,7 +50,7 @@ public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Seriali
    public List<Empleados> findByLisCuentas_Estatus(@Param("estatus") String estatus);
    public Page<Empleados> findByDomiciliosIsNotNull(Pageable pageable);
    public List<Empleados> findByDomiciliosIsNotNull();
-   public Page<Empleados> findByTelefonoIsNull(Pageable pageable);
+   public Page<Empleados> findByTelefonoIsNullOrTelefono(String telefono,Pageable pageable);
    public Empleados findByCurp(String curp);
    public Page<Empleados> findBySinavid_Estatus(Pageable page,String estatus);
    public List<Empleados> findBySinavid_Estatus(String estatus);
@@ -60,12 +60,13 @@ public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Seriali
 	       "JOIN FETCH e.quincenas q " +
 	       "JOIN q.quinCat cat " +
 	       "JOIN e.sinavid s " +
-	       "WHERE cat.idQNA = :idQNA AND q.sueldoBase > s.sueldoSINAVID")
-   public List<Empleados> findByModificacionSalario(@Param("idQNA") String idQNA);
+	       "WHERE cat.idQNA = :idQNA AND q.sueldoBase > s.sueldoSINAVID AND s.estatus<>:estatus")
+   public List<Empleados> findByModificacionSalario(@Param("idQNA") String idQNA,@Param("estatus") String estatus);
    @Query("SELECT e FROM Empleados e " +
 	       "JOIN FETCH e.quincenas q " +
 	       "JOIN q.quinCat cat " +
 	       "JOIN e.sinavid s " +
 	       "WHERE cat.idQNA = :idQNA ")
    public List<Empleados> findByEMpleadosXQuincena(@Param("idQNA") String idQNA);
+   public Page<Empleados> findByQuincenas_TesonTrue(Pageable pageRequest);
 }

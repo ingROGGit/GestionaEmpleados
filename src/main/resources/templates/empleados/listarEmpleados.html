@@ -92,7 +92,7 @@
 											<td class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
 												<a class="btn btn-info btn-sm link-detail"
 													th:href="@{/empleados/verDatosEmpleado/} + ${empleado.id}">Detalles</a>
-												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR','ROLE_OPERADORCUENTAS','ROLE_OPERADOR1')"
+												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR','ROLE_OPERADORCUENTAS','ROLE_OPERADOR1','ROLE_OPERADORSINAVID1','ROLE_OPERADORSINAVID')"
 													class="btn btn-warning btn-sm link-EmpleadoEdit"
 													th:href="@{/empleados/formEmpleadoEdit/} + ${empleado.id}">Editar</a>
 												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORCUENTAS')"
@@ -104,14 +104,14 @@
 													th:href="@{/empleados/baja/} + ${empleado.id}"
 													onclick="return confirm('Esta seguro de Baja el Empleado');">Baja</a>
 												<a th:if="${empleado.sinavid!=null}"
-													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN','ROLE_OPERADORSINAVID')"
+													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')"
 													class="btn btn-danger btn-sm"
 													th:href="@{/empleados/bajaSINAVID/} + ${empleado.id}"
 													onclick="return confirm('Esta seguro Baja de Empleado');">Baja
 													SINAVID</a>
-												<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger btn-sm"
-													th:href="@{/empleados/eliminar/} + ${empleado.id}"
-													onclick="return confirm('Esta seguro de Eliminar el Empleado');">Eliminar</a>
+<!--												<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger btn-sm"-->
+<!--													th:href="@{/empleados/eliminar/} + ${empleado.id}"-->
+<!--													onclick="return confirm('Esta seguro de Eliminar el Empleado');">Eliminar</a>-->
 											</td>
 										</tr>
 									</tbody>

@@ -52,6 +52,7 @@ import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.ExtractoSINAVIDFilesEntity;
 import com.gestion.empleados.entity.HistoricoExtSINAVIDEntity;
 import com.gestion.empleados.entity.HorariosEntity;
+import com.gestion.empleados.entity.MotivoTESONEntity;
 import com.gestion.empleados.entity.PersepcionesEntity;
 import com.gestion.empleados.entity.PuestosEntity;
 import com.gestion.empleados.entity.QuincenaCatEntity;
@@ -59,6 +60,7 @@ import com.gestion.empleados.entity.QuincenasEntity;
 import com.gestion.empleados.entity.ReglasDiasEntity;
 import com.gestion.empleados.entity.SINAVIDEntity;
 import com.gestion.empleados.entity.ServiciosEntity;
+import com.gestion.empleados.entity.TESONFilesEntity;
 import com.gestion.empleados.entity.TurnosEntity;
 import com.gestion.empleados.entity.VacacionesEntity;
 import com.gestion.empleados.repository.AltaCuentasFileRepository;
@@ -76,6 +78,7 @@ import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
 import com.gestion.empleados.repository.ExtractoSINAVIDFilesRepository;
 import com.gestion.empleados.repository.HistoricoExtSINAVIDRepository;
 import com.gestion.empleados.repository.HorariosRepositoryJPA;
+import com.gestion.empleados.repository.MotivoTESONRepository;
 import com.gestion.empleados.repository.PersepcionesRepositoryJPA;
 import com.gestion.empleados.repository.PuestosRepositoryJPA;
 import com.gestion.empleados.repository.QuincenaRepositoryJPA;
@@ -83,6 +86,7 @@ import com.gestion.empleados.repository.QuincenasCatRepositoryJPA;
 import com.gestion.empleados.repository.ReglasDiasRepository;
 import com.gestion.empleados.repository.SINAVIDRepositoryJPA;
 import com.gestion.empleados.repository.ServiciosRepositoryJPA;
+import com.gestion.empleados.repository.TESONFileRepository;
 import com.gestion.empleados.repository.TurnosRepositoryJPA;
 import com.gestion.empleados.repository.VacacionesRepository;
 import com.gestion.empleados.service.EmpleadoService;
@@ -142,6 +146,10 @@ public class ProcesaFileXLSXThread {
 	private HorariosRepositoryJPA horariosJPA;
 	@Autowired
 	private AsignacionTurnosRepositoryJPA asignaTurJPA;
+	@Autowired
+	private MotivoTESONRepository motivoTesonJPA;
+	@Autowired
+	private TESONFileRepository tesonFileJPA;
 
 	@Async
 	public void run(File fileProces, String tipoCarga, String quinString, Date fechaCarga) {
@@ -160,6 +168,10 @@ public class ProcesaFileXLSXThread {
 					AltaSINAVIDFilesEntity alsinfile = AltaSINAVIDFilesEntity.builder().alta(fileProces.getName())
 							.fechaAlta(new Date()).fileAlta(Files.readAllBytes(fileProces.toPath())).build();
 					this.alsinfileJPA.save(alsinfile);
+				} else if (tipoCarga.equals("CTESON")) {
+					TESONFilesEntity tfile = TESONFilesEntity.builder().alta(fileProces.getName()).fechaAlta(new Date())
+							.fileAlta(Files.readAllBytes(fileProces.toPath())).build();
+					this.tesonFileJPA.save(tfile);
 				} else if (tipoCarga.equals("CERRSINAVID")) {
 					try (BufferedReader br = new BufferedReader(new FileReader(fileProces))) {
 						String linea;
@@ -1209,12 +1221,16 @@ public class ProcesaFileXLSXThread {
 													? (long) Row.getCell(0).getNumericCellValue()
 													: Long.valueOf(Row.getCell(0).getStringCellValue()));
 									if (emp != null) {
-										emp.setTelefono(Row.getCell(1).getCellType() == CellType.NUMERIC
-												? Long.toString((long) Row.getCell(1).getNumericCellValue())
-												: Row.getCell(1).getStringCellValue());
-										emp.setTelefonoEmer(Row.getCell(2).getCellType() == CellType.NUMERIC
-												? Long.toString((long) Row.getCell(2).getNumericCellValue())
-												: Row.getCell(2).getStringCellValue());
+										if (emp.getTelefono() == null && emp.getTelefono().isEmpty()) {
+											emp.setTelefono(Row.getCell(1).getCellType() == CellType.NUMERIC
+													? Long.toString((long) Row.getCell(1).getNumericCellValue())
+													: Row.getCell(1).getStringCellValue());
+										}
+										if (Row.getCell(2).getCellType() != null) {
+											emp.setTelefonoEmer(Row.getCell(2).getCellType() == CellType.NUMERIC
+													? Long.toString((long) Row.getCell(2).getNumericCellValue())
+													: Row.getCell(2).getStringCellValue());
+										}
 										if (emp.getTelefono().length() > 10)
 											emp.setTelefono(emp.getTelefono().substring(0, 10));
 										if (emp.getTelefonoEmer().length() > 10)
@@ -1284,6 +1300,7 @@ public class ProcesaFileXLSXThread {
 								if (Row == null) {
 									break;
 								} else {
+									System.out.println(Row.getCell(3).getStringCellValue());
 									Empleados emp = this.empleadosJPA.findByCurp(Row.getCell(3).getStringCellValue());
 									if (emp != null) {
 										HistoricoExtSINAVIDEntity hisExt = this.historicoExtJPA
@@ -1310,10 +1327,10 @@ public class ProcesaFileXLSXThread {
 															.setScale(2, RoundingMode.HALF_UP))
 													.remTotal(BigDecimal.valueOf(Row.getCell(18).getNumericCellValue())
 															.setScale(2, RoundingMode.HALF_UP))
-													.claveCobro(Row.getCell(16).getCellType() == CellType.NUMERIC
+													.claveCobro(Row.getCell(15).getCellType() == CellType.NUMERIC
 															? String.valueOf(
-																	(long) Row.getCell(16).getNumericCellValue())
-															: Row.getCell(16).getStringCellValue())
+																	(long) Row.getCell(15).getNumericCellValue())
+															: Row.getCell(15).getStringCellValue())
 													.nss(Row.getCell(6) != null
 															? Row.getCell(6).getCellType() == CellType.NUMERIC
 																	? String.valueOf(
@@ -1349,7 +1366,7 @@ public class ProcesaFileXLSXThread {
 										}
 										sinavid.setPagaduria(
 												String.valueOf((int) Row.getCell(2).getNumericCellValue()));
-										sinavid.setEstatus("ALTA");
+										sinavid.setEstatus(sinavid.getEstatus()==null?"YA ALTA":sinavid.getEstatus());
 										sinavid.setAlta(sinavid.getAlta() == null ? "YA ALTA" : sinavid.getAlta());
 										sinavid.setFechaRegistro(sinavid.getFechaRegistro() == null ? new Date()
 												: sinavid.getFechaRegistro());
@@ -1371,6 +1388,13 @@ public class ProcesaFileXLSXThread {
 										sinavid.setRemTotal(BigDecimal.valueOf(Row.getCell(18).getNumericCellValue())
 												.setScale(2, RoundingMode.HALF_UP));
 										sinavid.setEmpleado(emp);
+										if (emp.getSinavid() != null) {
+											sinavid.setFechaAlta(emp.getSinavid().getFechaAlta()!=null?emp.getSinavid().getFechaAlta():
+												DateUtil.getJavaDate(Row.getCell(12).getNumericCellValue()));
+										} else {
+											sinavid.setFechaAlta(
+													DateUtil.getJavaDate(Row.getCell(12).getNumericCellValue()));
+										}
 										this.sinavidJPA.save(sinavid);
 									}
 								}
@@ -1393,22 +1417,22 @@ public class ProcesaFileXLSXThread {
 										if (emp.getRfc() == null)
 											emp.setRfc(Row.getCell(9).getStringCellValue());
 										if (emp.getFechaIngreso() == null) {
-											Date fecha = DateUtil
-													.getJavaDate(Row.getCell(11).getNumericCellValue());
+											Date fecha = DateUtil.getJavaDate(Row.getCell(11).getNumericCellValue());
 											emp.setFechaIngreso(fecha);
 										}
 										if (emp.getFechaIngresoH() == null) {
-											Date fecha = DateUtil
-													.getJavaDate(Row.getCell(12).getNumericCellValue());
+											Date fecha = DateUtil.getJavaDate(Row.getCell(12).getNumericCellValue());
 											emp.setFechaIngresoH(fecha);
 										}
-										if(emp.getServicioEntity()==null) {
-											ServiciosEntity servicio=this.serviciosJPA.findByServicio(Row.getCell(45).getStringCellValue());
-											if(servicio!=null)
+										if (emp.getServicioEntity() == null) {
+											ServiciosEntity servicio = this.serviciosJPA
+													.findByServicio(Row.getCell(45).getStringCellValue());
+											if (servicio != null)
 												emp.setServicioEntity(servicio);
 										}
-										if(emp.getPuestosEntity()==null) {
-											PuestosEntity puesto=this.puestosJPA.findByPuesto(Row.getCell(42).getStringCellValue());
+										if (emp.getPuestosEntity() == null) {
+											PuestosEntity puesto = this.puestosJPA
+													.findByPuesto(Row.getCell(42).getStringCellValue());
 											emp.setPuestosEntity(puesto);
 										}
 										this.empleadosJPA.save(emp);
@@ -1460,6 +1484,21 @@ public class ProcesaFileXLSXThread {
 													: (Row.getCell(0).getStringCellValue()))
 											.horario(Row.getCell(1).getStringCellValue()).build();
 									this.horariosJPA.save(hor);
+								}
+							}
+						}
+						if (tipoCarga.equals("CMTESON")) {
+							for (int r = 1; r <= rows; r++) {
+								Row = Sheet.getRow(r);
+								if (Row == null) {
+									break;
+								} else {
+									MotivoTESONEntity mot = MotivoTESONEntity.builder()
+											.codigo(Row.getCell(0).getCellType() == CellType.NUMERIC
+													? Integer.toString((int) Row.getCell(0).getNumericCellValue())
+													: (Row.getCell(0).getStringCellValue()))
+											.motivo(Row.getCell(1).getStringCellValue()).build();
+									this.motivoTesonJPA.save(mot);
 								}
 							}
 						}

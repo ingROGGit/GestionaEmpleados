@@ -58,6 +58,8 @@ public class QuincenasEntity extends AuditableDateEntity implements Serializable
 	private boolean quinquenio;
 	@Column(name = "baja")
 	private boolean baja;
+	@Column(name = "teson")
+	private boolean teson;
 	@Column(name = "sueldoPre")
 	private BigDecimal sueldoPre;
 	@Size(max = 12)

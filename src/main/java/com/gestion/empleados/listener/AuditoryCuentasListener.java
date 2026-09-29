@@ -50,6 +50,7 @@ public class AuditoryCuentasListener {
 		auditoryEntity.setFecha(LocalDateTime.now());
 		auditoryEntity.setName(auditory.getEstatus());
 		auditoryEntity.setUsu(usuLoguin);
+		auditoryEntity.setTablaM(auditory.getClass().getName());
 		auditoryEntity.setDetalle(auditory.toString());
 		return auditoryEntity;
 	}

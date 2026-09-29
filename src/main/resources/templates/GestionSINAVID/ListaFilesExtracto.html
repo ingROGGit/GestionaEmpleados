@@ -53,12 +53,12 @@
 											<td class="col-lg-5 col-md-5 col-sm-5 col-xs-12" th:text="${file.fileName}">
 											</td>
 											<td th:text="${file.fechaGen}"></td>
-											<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID')"
+											<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')"
 												class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
 												<!--												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORCUENTAS')"-->
 												<!--													class="btn btn-warning btn-sm link-EmpleadoEdit"-->
 												<!--													th:href="@{/cuentasBancarias/verFile/} + ${file.id}">Ver Archivo</a>-->
-												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID')"
+												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')"
 													class="btn btn-warning btn-sm"
 													th:href="@{/GestionSINAVID/downloadExtractos/} + ${file.id}">Descargar</a>
 											</td>

@@ -403,6 +403,8 @@ public class EmpleadoController {
 		CatalogoCarga.put("CNOMMT4", "Carga Nomina META4");
 		CatalogoCarga.put("CTUR", "Carga Turnos");
 		CatalogoCarga.put("CHOR", "Carga Horarios");
+		CatalogoCarga.put("CMTESON", "Carga Motivos TESON");
+		CatalogoCarga.put("CTESON", "Carga TESON");
 		model.addAttribute("titulo", "EXCEL " + CatalogoCarga.get(TIPOCARGA));
 		model.addAttribute("TIPOCARGA", TIPOCARGA);
 		model.addAttribute("quin", "");
@@ -421,7 +423,7 @@ public class EmpleadoController {
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaExt) {
 		try {
 			if (TIPOCARGA.equals("CPRE") || TIPOCARGA.equals("CNOM")) {
-				if (this.quincenaJPA.countByQuinCat_IdQNA(quinCatSelectPost) > 0)
+				if (this.quincenaJPA.countByQuinCat_IdQNAAndSueldoNetoIsNotNull(quinCatSelectPost) > 0)
 					throw new Exception("Quincena " + quinCatSelectPost + " ya cargada");
 			}
 			File filewrite = new File(fileXLS.getOriginalFilename());

@@ -5,6 +5,11 @@
 <head th:replace="headAll :: html_head" />
 
 <body th:replace="menu :: menuAll" onload="validaModal()" />
+<!-- 1. CSS base de Select2 -->
+<link rel="stylesheet" th:href="@{/distV32/plugins/select2/css/select2.min.css}">
+
+<!-- 2. CSS del tema Bootstrap 4 para AdminLTE 3 -->
+<link rel="stylesheet" th:href="@{/distV32/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -45,19 +50,64 @@
 					<div class="carf bg-light">
 						<div class="card-body col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-							<h4 class="card-title">
-								<a th:href="@{/WORK}" class="btn btn-secondary">Exportar a
-									PDF</a>
-								<a th:href="@{/WORK}" class="btn btn-secondary">Exportar a
-									Excel</a>
-								<a th:if="${fileExDownload}" th:href="@{/cuentasBancarias/FileExcel}"
-									class="btn btn-success">Descargar Reporte</a>
+							<form th:action="@{/tesones/UPTESON}" method="post">
+								<div class="row">
+									<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label>Quincena: </label>
+										<select class="form-control select2" id="quinCatSelect" name="quinCatSelect"
+											style="width: 100%;" required>
+											<option value="">select QNA</option>
+											<option th:each="qna : ${LquincenasCat}" th:value="${qna}" th:text="${qna}"
+												th:selected="${qna == quinCatSelect}">
+											</option>
+										</select>
+									</div>
 
-								<h2>
-									<input class="form-control" id="search" type="text" placeholder="Buscar..">Total
-									Registros:<a class="btn btn-info" th:text="${registros}"></a>
-								</h2>
-							</h4>
+									<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+										<label>TIPO: </label>
+										<select class="form-control select2" id="tipoSelect" name="tipoSelect"
+											style="width: 100%;" onchange="tipoSelectChange(this.options[this.selectedIndex].text)" required>
+											<option value="">select</option>
+											<option th:each="tipo : ${ltipoNomGen}" th:value="${tipo.id}"
+												th:text="${tipo.tipo}" th:selected="${tipo == tipoSelect}">
+											</option>
+										</select>
+										<script>
+											function tipoSelectChange(valor) {
+												const inNombreT= document.getElementById('nombreT');
+												inNombreT.value= inNombreT.value + valor;
+											}
+										</script>
+									</div>
+									<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										Nombre Teson: <input id="nombreT" name="nombreT" class="form-control"
+											th:value="${nombreT}"></input>
+									</div>
+
+								</div>
+								<div class="row">
+									<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+										<h4>
+											<p></p>
+										</h4>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										<h2>
+											<!--									<input class="form-control" id="search" type="text" placeholder="Buscar..">-->
+											Total Registros:<a class="btn btn-info" th:text="${registros}"></a>
+										</h2>
+									</div>
+									<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+										<div class="box-footer">
+											<input type="submit" value="Generar Layout" class="btn btn-primary">
+										</div>
+									</div>
+									<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+									</div>
+								</div>
+							</form>
 							<div class="contenedor-tabla">
 								<table id="EmTable" class="table table-striped">
 									<!--							<table id="EmTable"	class="table table-striped table-bordered" style="width:100%">-->
@@ -66,32 +116,30 @@
 											<th>Numero</th>
 											<th>Nombre</th>
 											<th>CURP</th>
-											<th>Telefono</th>
-											<th class="col-lg-2 col-md-2 col-sm-2 col-xs-6">Fecha Ingreso</th>
+											<th>RFC</th>
+											<th>Folio</th>
+											<th>Importe</th>
+											<th>Clave</th>
+											<th>Descripcion</th>
+											<th>Tipo</th>
 											<th>Acciones</th>
 										</tr>
 									</thead>
 									<tbody>
-										<tr th:each="empleado : ${empleados}">
-											<td th:text="${empleado.id}"></td>
-											<td class="col-lg-5 col-md-5 col-sm-5 col-xs-12"
-												th:text="${empleado.nombreCompleto}"></td>
-											<td th:text="${empleado.curp}"></td>
-											<td th:text="${empleado.telefono}"></td>
-											<td class="col-lg-2 col-md-2 col-sm-2 col-xs-6"
-												th:text="${empleado.fechaIngreso}"></td>
-											<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')"
-												class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
-												<a th:if="${empleado.domicilios==null}"
-													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')"
-													class="btn btn-warning btn-sm link-EmpleadoEdit"
-													th:href="@{/GestionSINAVID/formDomi/} + ${empleado.id}">Agregar
-													Domicilio</a>
-												<a th:if="${empleado.curp==null and empleado.rfc==null}"
-													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')"
-													class="btn btn-warning btn-sm link-EmpleadoEdit"
-													th:href="@{/empleados/formEmpleadoEdit/} + ${empleado.id}">Agregar
-													CUR y RFC</a>
+										<tr th:each="teson : ${lTesones}">
+											<td th:text="${teson.empleado.id}"></td>
+											<td th:text="${teson.empleado.nombreCompleto}"></td>
+											<td th:text="${teson.empleado.curp}"></td>
+											<td th:text="${teson.empleado.rfc}"></td>
+											<td th:text="${teson.quincena.folioQuin}"></td>
+											<td th:text="${teson.quincena.sueldoNeto}"></td>
+											<td th:text="${teson.motivoTESONEntity.codigo}"></td>
+											<td th:text="${teson.motivoTESONEntity.motivo}"></td>
+											<td th:text="${teson.tipoNomTESONEntity.tipo}"></td>
+											<td>
+												<a class="btn btn-info btn-sm link-detail"
+													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
+													th:href="@{/tesones/UPDatos/} + ${teson.id}">Asignar Datos</a>
 											</td>
 										</tr>
 									</tbody>
@@ -108,7 +156,20 @@
 						</div>
 					</div>
 				</div>
+				<!-- 1. Carga de librerías (Asegúrate de que jQuery se cargue ANTES de esto) -->
+				<script th:src="@{/distV32/plugins/select2/js/select2.full.min.js}"></script>
+				<script th:src="@{/distV32/js/pages/dashboard.js}"></script>
 
+				<!-- 2. Inicialización del componente -->
+				<script>
+					$(document).ready(function () {
+						$('#quinCatSelect').select2({
+							theme: 'bootstrap4',
+							placeholder: 'select QNA',
+							allowClear: true
+						});
+					});
+				</script>
 				<script>
 					$(document).ready(function () {
 

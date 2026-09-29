@@ -29,6 +29,7 @@ public class AuditoryEntity {
 	private String detalle;
 	private String usu;
 	private LocalDateTime fecha;
+	private String tablaM;
 	
 }
  

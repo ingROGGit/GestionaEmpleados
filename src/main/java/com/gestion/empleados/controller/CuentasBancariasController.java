@@ -76,7 +76,7 @@ public class CuentasBancariasController {
 	@GetMapping("cuentasBancarias/listarEmpleadosSinTel")
 	public String listarEmpleadosSinTel(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
 		Pageable pageRequest = PageRequest.of(page, 5000);
-		Page<Empleados> empleados = empleadosJPA.findByTelefonoIsNull(pageRequest);
+		Page<Empleados> empleados = empleadosJPA.findByTelefonoIsNullOrTelefono("Falta",pageRequest);
 		PageRender<Empleados> pageRender = new PageRender<>("/cuentasBancarias/listarEmpleadosSinTel", empleados);
 		boolean fileExDownload=false;
 		model.addAttribute("fileExDownload",fileExDownload);

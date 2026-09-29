@@ -50,6 +50,7 @@ public class AuditoryAsignaTurnosListener {
 		auditoryEntity.setFecha(LocalDateTime.now());
 		auditoryEntity.setName("Empleado:"+auditory.getEmpleado().getId().toString()+" Turno:"+auditory.getTurno().getCodigo()+" Hor:"+auditory.getHorario().getCodigo());
 		auditoryEntity.setUsu(usuLoguin);
+		auditoryEntity.setTablaM(auditory.getClass().getName());
 		auditoryEntity.setDetalle(auditory.toString().length()>500?auditory.toString().substring(0,500):auditory.toString());
 		return auditoryEntity;
 	}

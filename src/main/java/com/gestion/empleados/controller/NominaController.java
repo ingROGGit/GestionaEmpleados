@@ -3,6 +3,7 @@ package com.gestion.empleados.controller;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -26,17 +27,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gestion.empleados.entity.Empleados;
+import com.gestion.empleados.entity.MotivoTESONEntity;
 import com.gestion.empleados.entity.PuestosEntity;
 import com.gestion.empleados.entity.QuincenaCatEntity;
 import com.gestion.empleados.entity.QuincenasEntity;
 import com.gestion.empleados.entity.ServiciosEntity;
+import com.gestion.empleados.entity.TESONESEntity;
+import com.gestion.empleados.entity.TipoNomTESONEntity;
 import com.gestion.empleados.entity.UsuariosEntity;
 import com.gestion.empleados.entity.filtrosConsultaDTO;
 import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
+import com.gestion.empleados.repository.MotivoTESONRepository;
 import com.gestion.empleados.repository.PuestosRepositoryJPA;
 import com.gestion.empleados.repository.QuincenaRepositoryJPA;
 import com.gestion.empleados.repository.QuincenasCatRepositoryJPA;
 import com.gestion.empleados.repository.ServiciosRepositoryJPA;
+import com.gestion.empleados.repository.TESONRepository;
+import com.gestion.empleados.repository.TipoNomTESONRepository;
 import com.gestion.empleados.utils.PageRender;
 
 import jakarta.persistence.criteria.Join;
@@ -54,7 +61,12 @@ public class NominaController {
 	private ServiciosRepositoryJPA serviciosJPA;
 	@Autowired
 	private EmpleadosRepositoryJPA empleadoRJPA;
-
+	@Autowired
+	private TESONRepository tesonJPA;
+	@Autowired
+	private MotivoTESONRepository motivoJPA;
+	@Autowired
+	private TipoNomTESONRepository tipoNomJPA;
 	@GetMapping("quincenas/listarQuincena")
 	public String listarQNA(Model model, @RequestParam(required = false) String keyword,
 			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "7000") int size,
@@ -220,6 +232,24 @@ public class NominaController {
 			quin.setBloqueoPago(false);
 			this.quincenaJPA.save(quin);
 			flash.addFlashAttribute("success", "Pago Activo");
+		}
+		return "redirect:/quincenas/listarQuincena";
+	}
+	@GetMapping("/quincenas/activaTESON/{id}")
+	public String activaTESON(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+		if (id > 0) {
+			QuincenasEntity quin=this.quincenaJPA.findById(id);
+			quin.setTeson(true);
+			Empleados emp=this.empleadoRJPA.findById(quin.getEmpleadoQN().get(0).getId());
+			QuincenaCatEntity quinCat=this.quincenasCatJPA.findByIdQNA(quin.getQuinCat().iterator().next().getIdQNA());
+			MotivoTESONEntity motivo=this.motivoJPA.findByCodigo("0");
+			TipoNomTESONEntity tipoN=this.tipoNomJPA.getById(0);
+			TESONESEntity teson=TESONESEntity.builder().empleado(emp).quinCat(quinCat).quincena(quin)
+					.fechaRegistro(LocalDate.now()).motivoTESONEntity(motivo).tipoNomTESONEntity(tipoN)
+					.estatus("POR GENERAR").build();
+			this.tesonJPA.save(teson);
+			this.quincenaJPA.save(quin);
+			flash.addFlashAttribute("success", "Empleado:"+emp.getId()+" Marcado para TESON ");
 		}
 		return "redirect:/quincenas/listarQuincena";
 	}

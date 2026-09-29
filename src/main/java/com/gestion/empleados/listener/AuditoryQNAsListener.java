@@ -50,6 +50,7 @@ public class AuditoryQNAsListener {
 		auditoryEntity.setFecha(LocalDateTime.now());
 		auditoryEntity.setName(auditory.getId()==null?"New": auditory.getId().toString());
 		auditoryEntity.setUsu(usuLoguin);
+		auditoryEntity.setTablaM(auditory.getClass().getName());
 		auditoryEntity.setDetalle(auditory.toString());
 		return auditoryEntity;
 	}
