@@ -484,7 +484,7 @@ public class GestionSINAVIDController {
 	@GetMapping({ "/GestionSINAVID/ListaErrorSINAVID" })
 	public String listaErroresSINAVID(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
 		Pageable pageRequest = PageRequest.of(page, 300);
-		Page<Empleados> empleados = this.empleadosJPA.findBySinavid_Estatus(pageRequest,"ERROR");
+		Page<Empleados> empleados = this.empleadosJPA.findBySinavid_EstatusOrSinavid_ErrorIsNotNull(pageRequest,"ERROR");
 		PageRender<Empleados> pageRender = new PageRender<>("/GestionSINAVID/ListaErrorSINAVID", empleados);
 		model.addAttribute("empleados", empleados);
 		model.addAttribute("page", pageRender);

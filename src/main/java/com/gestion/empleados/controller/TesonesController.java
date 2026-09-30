@@ -32,18 +32,22 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gestion.empleados.entity.Empleados;
+import com.gestion.empleados.entity.JefesEntity;
 import com.gestion.empleados.entity.MotivoTESONEntity;
 import com.gestion.empleados.entity.QuincenaCatEntity;
+import com.gestion.empleados.entity.QuincenasEntity;
 import com.gestion.empleados.entity.SINAVIDEntity;
 import com.gestion.empleados.entity.TESONESEntity;
 import com.gestion.empleados.entity.TESONFilesEntity;
 import com.gestion.empleados.entity.TipoNomTESONEntity;
 import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
 import com.gestion.empleados.repository.MotivoTESONRepository;
+import com.gestion.empleados.repository.QuincenaRepositoryJPA;
 import com.gestion.empleados.repository.QuincenasCatRepositoryJPA;
 import com.gestion.empleados.repository.TESONFileRepository;
 import com.gestion.empleados.repository.TESONRepository;
 import com.gestion.empleados.repository.TipoNomTESONRepository;
+import com.gestion.empleados.repository.jefesRepositoryJPA;
 import com.gestion.empleados.utils.PageRender;
 import com.gestion.empleados.utils.reports.ExportTESONES;
 import com.lowagie.text.DocumentException;
@@ -66,6 +70,10 @@ public class TesonesController {
 	private MotivoTESONRepository motivoTJPA;
 	@Autowired
 	private TipoNomTESONRepository tipoNomJPA;
+	@Autowired
+	private jefesRepositoryJPA jefesJPA;
+	@Autowired
+	private QuincenaRepositoryJPA quincenasJPA;
 	@GetMapping("/tesones/UPTESON")
 	public String UPTESON(@RequestParam(name = "page", defaultValue = "0") int page, Model model)
 			throws DocumentException, IOException {
@@ -78,6 +86,7 @@ public class TesonesController {
 		PageRender<TESONESEntity> pageRender = new PageRender<>("/tesones/UPTESON", lTesones);
 		List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
 		List<TipoNomTESONEntity> ltipoNom=this.tipoNomJPA.findAll();
+		List<JefesEntity> ljefes=this.jefesJPA.findAll();
 		model.addAttribute("lTesones", lTesones);
 		model.addAttribute("ltipoNomGen", ltipoNom);
 		model.addAttribute("tipoSelect", "");
@@ -88,6 +97,7 @@ public class TesonesController {
 		model.addAttribute("quinCatSelect", quincenasCat);
 		model.addAttribute("LquincenasCat", LquincenasCat);
 		model.addAttribute("registros", lTesones.getTotalElements());
+		model.addAttribute("ljefes",ljefes);
 		return "tesones/UPTESON";
 	}
 	
@@ -121,14 +131,19 @@ public class TesonesController {
 	}
 	@PostMapping("/tesones/UPTESON")
 	public void WritMODSAL(Model model,HttpServletResponse respons, @RequestParam("nombreT") String nombreT,
-			@RequestParam("quinCatSelect") String quinCatSelect,@RequestParam("tipoSelect") String tipoSelect)
+			@RequestParam("quinCatSelect") String quinCatSelect,@RequestParam("tipoSelect") String tipoSelect,@RequestParam("jefeSelect") int jefeSelect)
 			throws Exception {
 		try {
 				File file = new File(nombreT + ".xlsx");
 				QuincenaCatEntity quincenaCat=this.quincenasCatJPA.findByIdQNA(quinCatSelect);
 				List<TESONESEntity> ltesones=this.tesonJPA.findByEstatusAndTipoNomTESONEntity_Id("POR GENERAR",Long.valueOf(tipoSelect));
 				TipoNomTESONEntity tipN=this.tipoNomJPA.getById(Long.valueOf(tipoSelect));
-				ExportTESONES theadTeson = new ExportTESONES(file.getName(), ltesones,quincenaCat,tipN.getTipo());
+				JefesEntity jefe=this.jefesJPA.getById(jefeSelect);
+				List<String> lfolisChequesString=this.quincenasJPA.findByFolisLong(quincenaCat.getIdQNA(),"Cheque");
+				List<Long> listaLongCheques = lfolisChequesString.stream()
+					    .map(Long::parseLong) // o Long::valueOf
+					    .collect(Collectors.toList());
+				ExportTESONES theadTeson = new ExportTESONES(file.getName(), ltesones,quincenaCat,tipN.getTipo(),jefe,listaLongCheques);
 				theadTeson.run();
 				if (file.exists() && file.canWrite()) {
 					TESONFilesEntity acfile;
@@ -188,5 +203,18 @@ public class TesonesController {
 			e.printStackTrace();
 			throw new RuntimeException("Error writing file to response", e);
 		}
+	}
+	
+	@GetMapping("/tesones/eliminarTESON/{id}")
+	public String eliminarTESON(@PathVariable(value = "id") Long id, Model modelo,
+			RedirectAttributes flash, SessionStatus status)
+			throws DocumentException, IOException {
+		TESONESEntity teson=this.tesonJPA.findById(id);
+		QuincenasEntity quin=this.quincenasJPA.findById(teson.getQuincena().getId());
+		quin.setTeson(false);
+		this.quincenasJPA.save(quin);
+		this.tesonJPA.delete(teson);
+		flash.addFlashAttribute("success", "Empleado Eliminado de TESON"+teson.getEmpleado().getId()+" "+teson.getEmpleado().getNombre());
+		return "redirect:/tesones/UPTESON";
 	}
 }

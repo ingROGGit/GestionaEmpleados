@@ -180,21 +180,23 @@ public class ProcesaFileXLSXThread {
 							if (!valores[0].contains("archivoid")) {
 								DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 								SINAVIDEntity sinavid = this.sinavidJPA.findByEmpleado_Curp(valores[3]);
-								if (sinavid != null && !valores[10].contains("VIGENTE")) {
-									if (sinavid.getPagaduria() == null) {
+								if (sinavid != null) {
+									sinavid.setFechaRespuesta(df.parse(valores[8]));
+									if (sinavid.getPagaduria() == null&&!valores[10].contains("VIGENTE")) {
 										sinavid.setEstatus("ERROR");
-										sinavid.setFechaRespuesta(df.parse(valores[8]));
 										sinavid.setError(valores[10]);
-										this.sinavidJPA.save(sinavid);
+									}else {
+										sinavid.setError(valores[10]);
+										sinavid.setEstatus("ALTA");
 									}
 								} else {
 									Empleados empleado = this.empleadosJPA.findByCurp(valores[3]);
 									if (empleado != null) {
 										sinavid = SINAVIDEntity.builder().fechaRespuesta(df.parse(valores[8]))
 												.empleado(empleado).estatus("ERROR").error(valores[10]).build();
-										this.sinavidJPA.save(sinavid);
 									}
 								}
+								this.sinavidJPA.save(sinavid);
 							}
 						}
 					} catch (Exception e) {

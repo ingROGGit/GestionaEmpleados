@@ -136,4 +136,50 @@ public class EstadisticasController {
 		model.addAttribute("titulo","SI");
 		return "/estadisticas/chartsSINAVID";
 	}
+	@GetMapping("/estadisticas/chartsEmpleados")
+	public String chartschartsEmpleados(Model model) throws JsonProcessingException{
+		
+        // 1. Datos simulados (pueden venir de un Repository/Base de datos)
+        List<String> navegadores = Arrays.asList( "NUEVOS", "EVENTUAL","BAJAS","BASE");
+        
+        List<Long> visitas = Arrays.asList(this.empleadosJPA.countByTipoContrato("NUEVOS"),
+        		this.empleadosJPA.countByTipoContrato("EVENTUAL"),
+        		this.empleadosJPA.countByTipoContrato("BAJAS"),
+        		this.empleadosJPA.countByTipoContrato("BASE"));
+
+        // 2. Convertir las listas de Java a formato JSON (String)
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonLabels = mapper.writeValueAsString(navegadores);
+        String jsonValues = mapper.writeValueAsString(visitas);
+
+        // 3. Pasar los JSON al modelo de Thymeleaf
+        model.addAttribute("graficaLabels", jsonLabels);
+        model.addAttribute("graficaValues", jsonValues);
+        model.addAttribute("funLista", "estadisticas/chartsEmpleados");
+		model.addAttribute("titulo","SI");
+		return "/estadisticas/chartsSINAVID";
+	}
+//	@PostMapping("/estadisticas/chartsEmpleados")
+//	public String chartschartsEmpleadosPost(Model model,@RequestParam("quinCatSelectPost") String quinCatSelect) throws JsonProcessingException{
+//        // 1. Datos simulados (pueden venir de un Repository/Base de datos)
+//        List<String> navegadores = Arrays.asList( "NUEVOS", "EVENTUAL","BAJAS","BASE");
+//        
+//        List<Long> visitas = Arrays.asList(this.empleadosJPA.countByTipoContrato("NUEVOS"),
+//        		this.empleadosJPA.countByTipoContrato("EVENTUAL"),
+//        		this.empleadosJPA.countByTipoContrato("BAJAS"),
+//        		this.empleadosJPA.countByTipoContrato("BASE"));
+//
+//        // 2. Convertir las listas de Java a formato JSON (String)
+//        ObjectMapper mapper = new ObjectMapper();
+//        String jsonLabels = mapper.writeValueAsString(navegadores);
+//        String jsonValues = mapper.writeValueAsString(visitas);
+//
+//        // 3. Pasar los JSON al modelo de Thymeleaf
+//        model.addAttribute("graficaLabels", jsonLabels);
+//        model.addAttribute("graficaValues", jsonValues);
+//        model.addAttribute("quinCatSelectPost", quinCatSelect);
+//        model.addAttribute("funLista", "estadisticas/chartsEmpleados");
+//		model.addAttribute("titulo","SI");
+//		return "/estadisticas/chartsEmpleados";
+//	}
 }

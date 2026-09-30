@@ -53,7 +53,8 @@ public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Seriali
    public Page<Empleados> findByTelefonoIsNullOrTelefono(String telefono,Pageable pageable);
    public Empleados findByCurp(String curp);
    public Page<Empleados> findBySinavid_Estatus(Pageable page,String estatus);
-   public List<Empleados> findBySinavid_Estatus(String estatus);
+   public Page<Empleados> findBySinavid_EstatusOrSinavid_ErrorIsNotNull(Pageable page,String estatus);
+   public List<Empleados> findBySinavid_EstatusOrSinavid_ErrorIsNotNull(String estatus);
    public List<Empleados> findBySinavid_EstatusAndSinavid_FechaBajaIsNotNull(String estatus);
    public Long countBySinavidIsNull();
    @Query("SELECT e FROM Empleados e " +
@@ -69,4 +70,5 @@ public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Seriali
 	       "WHERE cat.idQNA = :idQNA ")
    public List<Empleados> findByEMpleadosXQuincena(@Param("idQNA") String idQNA);
    public Page<Empleados> findByQuincenas_TesonTrue(Pageable pageRequest);
+   public Long countByTipoContrato(String tipoContrato);
 }

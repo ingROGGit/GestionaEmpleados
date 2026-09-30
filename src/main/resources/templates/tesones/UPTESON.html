@@ -53,6 +53,15 @@
 							<form th:action="@{/tesones/UPTESON}" method="post">
 								<div class="row">
 									<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label>JEFE Autoriza: </label>
+										<select class="form-control select2" id="jefeSelect" name="jefeSelect"
+											style="width: 100%;" required>
+											<option value="">select </option>
+											<option th:each="jefe : ${ljefes}" th:value="${jefe.id}" th:text="${jefe.nombre}">
+											</option>
+										</select>
+									</div>
+									<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label>Quincena: </label>
 										<select class="form-control select2" id="quinCatSelect" name="quinCatSelect"
 											style="width: 100%;" required>
@@ -74,8 +83,10 @@
 										</select>
 										<script>
 											function tipoSelectChange(valor) {
+												const hoy = new Date().toISOString().split('T')[0];
+												
 												const inNombreT= document.getElementById('nombreT');
-												inNombreT.value= inNombreT.value + valor;
+												inNombreT.value= hoy +"-"+ valor;
 											}
 										</script>
 									</div>
@@ -140,6 +151,9 @@
 												<a class="btn btn-info btn-sm link-detail"
 													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
 													th:href="@{/tesones/UPDatos/} + ${teson.id}">Asignar Datos</a>
+												<a class="btn btn-success btn-sm"
+													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
+													th:href="@{/tesones/eliminarTESON/} + ${teson.id}">Quitar de TESON</a>
 											</td>
 										</tr>
 									</tbody>
@@ -164,6 +178,11 @@
 				<script>
 					$(document).ready(function () {
 						$('#quinCatSelect').select2({
+							theme: 'bootstrap4',
+							placeholder: 'select QNA',
+							allowClear: true
+						});
+						$('#jefeSelect').select2({
 							theme: 'bootstrap4',
 							placeholder: 'select QNA',
 							allowClear: true

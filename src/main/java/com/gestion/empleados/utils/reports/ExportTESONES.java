@@ -22,6 +22,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.gestion.empleados.entity.CuentasEntity;
 import com.gestion.empleados.entity.Empleados;
+import com.gestion.empleados.entity.JefesEntity;
 import com.gestion.empleados.entity.QuincenaCatEntity;
 import com.gestion.empleados.entity.TESONESEntity;
 import com.gestion.empleados.repository.TESONRepository;
@@ -32,22 +33,22 @@ public class ExportTESONES{
 	private QuincenaCatEntity quincenaCat;
 	private List<TESONESEntity> ltesones;
 	private String tipoNom;
-	public ExportTESONES(String nameFile ,List<TESONESEntity> ltesones,QuincenaCatEntity quincenaCat,String tipoNom) {
+	private JefesEntity jefe;
+	private List<Long> lfolisCheques;
+	public ExportTESONES(String nameFile ,List<TESONESEntity> ltesones,QuincenaCatEntity quincenaCat,String tipoNom,JefesEntity jefe,List<Long> lfolisCheques) {
 		this.libro = new XSSFWorkbook();
 		this.ltesones=ltesones;
 		this.nameFile=nameFile;
 		this.quincenaCat=quincenaCat;
 		this.tipoNom=tipoNom;
+		this.jefe=jefe;
+		this.lfolisCheques=lfolisCheques;
 	}
 	public void run() throws Exception{
 		try {
-				ArrayList<Integer> folios=new ArrayList<>();
-				for(TESONESEntity teson:this.ltesones) {
-					folios.add(Integer.valueOf(teson.getQuincena().getFolioQuin()!=null?teson.getQuincena().getFolioQuin():"0"));
-				}
-				int DEL,AL;
-				DEL=Collections.min(folios);
-				AL=Collections.max(folios);
+				Long DEL,AL;
+				DEL=Collections.min(this.lfolisCheques);
+				AL=Collections.max(this.lfolisCheques);
 				LocalDate hoy=LocalDate.now();
 				// Define el formato "MMMM" (nombre completo del mes) en español
 		        DateTimeFormatter formateador = DateTimeFormatter.ofPattern("MMMM", new Locale("es", "ES"));
@@ -56,6 +57,10 @@ public class ExportTESONES{
 	            Sheet sheet = workbook.createSheet("TESON");
 
 	         // --- ESTILOS DE CELDAS ---
+	         // 1. Crear una nueva fuente y definir el tamaño (ej. 14 puntos)
+	            Font fuente = workbook.createFont();
+	            fuente.setFontHeightInPoints((short) 10);
+	            
 	         // --- 1. DEFINICIÓN DE ESTILOS ---
 	            // Estilo de Texto Negrita Centrado
 	            CellStyle boldCenterStyle = workbook.createCellStyle();
@@ -139,9 +144,11 @@ public class ExportTESONES{
 	            Picture pict = drawing.createPicture(anchor, pictureIdx);
 
 	            // 7. Auto-ajustar la imagen a su tamaño original
-	            pict.resize();
+	            pict.resize(1.0);
+	         
 	            CellStyle style = workbook.createCellStyle();
-	            style.setWrapText(true); 	            
+	            style.setWrapText(true); 
+	            style.setFont(fuente);
 	            Row row1 = sheet.createRow(1);
 	            region = new CellRangeAddress(1, 4, 1, 3);
 	            sheet.addMergedRegion(region);
@@ -190,8 +197,8 @@ public class ExportTESONES{
 	            region = new CellRangeAddress(5, 5, 3, 8);
 	            sheet.addMergedRegion(region);
 	            celborder=row5.createCell(3);
-	            celborder.setCellValue("FECHA DE EMISION "+this.quincenaCat.getFechaFin().getDay()+" DE "+Month.of(this.quincenaCat.getFechaFin().getMonth())
-                .getDisplayName(TextStyle.FULL, new Locale("es", "ES")) +  " DEL "+ this.quincenaCat.getFechaFin().getYear());
+	            celborder.setCellValue("FECHA DE EMISION "+this.quincenaCat.getFechaFin().toLocalDate().getDayOfMonth()+" DE "+this.quincenaCat.getFechaFin().toLocalDate().getMonth().getDisplayName(TextStyle.FULL, new Locale("es", "ES"))
+	                    .toUpperCase() +  " DEL "+ this.quincenaCat.getFechaFin().toLocalDate().getYear());
 	            celborder.setCellStyle(headerStyle);
 	            agregaMargenRegion(region,sheet);
 	            Row row6 = sheet.createRow(6);
@@ -295,7 +302,7 @@ public class ExportTESONES{
 	                celborder.setCellStyle(detalleTabla);
 	                agregaMargenRegionDetalleTable(region,sheet);
 	                celborder=row.createCell(4);
-	                celborder.setCellValue((Integer) Integer.valueOf(teson.getQuincena().getFolioQuin()!=null?teson.getQuincena().getFolioQuin():"0"));
+	                celborder.setCellValue((String) (teson.getQuincena().getFolioQuin()!=null?teson.getQuincena().getFolioQuin():"0"));
 	                celborder.setCellStyle(detalleTabla);
 	                // Formato numérico para el importe
 	                Cell cellImporte = row.createCell(5);
@@ -326,14 +333,14 @@ public class ExportTESONES{
 	            // --- SECCIÓN DE FIRMAS Y DECLARACIÓN BAJO PROTESTA ---
 	            Row rowDeclara1 = sheet.createRow(currentR);
 	            rowDeclara1.createCell(0).setCellValue("DECLARO BAJO PROTESTA DE DECIR LA VERDAD, QUE");
-	            region = new CellRangeAddress(currentR, currentR, 4, 5);
+	            region = new CellRangeAddress(currentR, currentR, 3, 4);
 	            sheet.addMergedRegion(region);
-	            rowDeclara1.createCell(4).setCellValue("RESPONSABLE DEL AREA");
-	            region = new CellRangeAddress(currentR, currentR, 7, 8);
+	            rowDeclara1.createCell(3).setCellValue("RESPONSABLE DEL AREA");
+	            region = new CellRangeAddress(currentR, currentR, 6, 8);
 	            sheet.addMergedRegion(region);
-	            rowDeclara1.createCell(7).setCellValue("PAGADOR HABILITADO");
-	            rowDeclara1.getCell(4).setCellStyle(boldCenterStyle);
-	            rowDeclara1.getCell(7).setCellStyle(boldCenterStyle);
+	            rowDeclara1.createCell(6).setCellValue("PAGADOR HABILITADO");
+//	            rowDeclara1.getCell(4).setCellStyle(boldCenterStyle);
+//	            rowDeclara1.getCell(7).setCellStyle(boldCenterStyle);
 
 	            Row rowDeclara2 = sheet.createRow(++currentR);
 	            rowDeclara2.createCell(0).setCellValue("LOS DATOS Y FIRMAS CONTENIDAS EN ESTE FORMATO");
@@ -343,30 +350,32 @@ public class ExportTESONES{
 
 	            Row rowDeclara4 = sheet.createRow(++currentR);
 	            rowDeclara4.createCell(0).setCellValue("LAS SANCIONES QUE SE APLICARAN EN CASO CONTRARIO");
-	            region = new CellRangeAddress(currentR, currentR, 4, 5);
+	            region = new CellRangeAddress(currentR, currentR, 3, 4);
 	            sheet.addMergedRegion(region);
-	            celFirma=rowDeclara4.createCell(4);
-	            celFirma.setCellValue("Mtro. FRANCISCO JAVIER GÓMEZ ZERMEÑO");
+	            celFirma=rowDeclara4.createCell(3);
+	            celFirma.setCellValue(this.jefe.getNombre());
+	            boldCenterStyle.setFont(fuente); 
 	            celFirma.setCellStyle(boldCenterStyle);
 	            bordeFirma(region,sheet);
-	            region = new CellRangeAddress(currentR, currentR, 7, 8);
+	            region = new CellRangeAddress(currentR, currentR, 6, 8);
 	            sheet.addMergedRegion(region);
-	            celFirma=rowDeclara4.createCell(7);
-	            celFirma.setCellValue("Mtro. FRANCISCO JAVIER GÓMEZ ZERMEÑO");
+	            celFirma=rowDeclara4.createCell(6);
+	            boldCenterStyle.setFont(fuente); 
+	            celFirma.setCellValue(this.jefe.getNombre());
 	            celFirma.setCellStyle(boldCenterStyle);
 	            bordeFirma(region,sheet);
-	            rowDeclara4.getCell(4).setCellStyle(centerStyle);
-	            rowDeclara4.getCell(7).setCellStyle(centerStyle);
+//	            rowDeclara4.getCell(4).setCellStyle(centerStyle);
+//	            rowDeclara4.getCell(7).setCellStyle(centerStyle);
 
 	            Row rowDeclara5 = sheet.createRow(++currentR);
-	            region = new CellRangeAddress(currentR, currentR, 4, 5);
+	            region = new CellRangeAddress(currentR, currentR, 3, 4);
 	            sheet.addMergedRegion(region);
-	            rowDeclara5.createCell(4).setCellValue("COORDINADOR DE RECURSOS HUMANOS");
-	            region = new CellRangeAddress(currentR, currentR, 7, 8);
+	            rowDeclara5.createCell(3).setCellValue(this.jefe.getPuesto());
+	            region = new CellRangeAddress(currentR, currentR, 6, 8);
 	            sheet.addMergedRegion(region);
-	            rowDeclara5.createCell(7).setCellValue("COORDINADOR DE RECURSOS HUMANOS");
-	            rowDeclara5.getCell(4).setCellStyle(centerStyle);
-	            rowDeclara5.getCell(7).setCellStyle(centerStyle);
+	            rowDeclara5.createCell(6).setCellValue(this.jefe.getPuesto());
+//	            rowDeclara5.getCell(4).setCellStyle(centerStyle);
+//	            rowDeclara5.getCell(7).setCellStyle(centerStyle);
 
 	            // Estilos para el texto declaratorio de la izquierda
 	            for (int i = currentR - 4; i <= currentR - 1; i++) {
