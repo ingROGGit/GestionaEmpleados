@@ -40,38 +40,33 @@
 					<a>
 						<h2><span th:text="${titulo}"></span></h2>
 					</a>
-				</div>
-				<form th:action="@{/cuentasBancarias/formFile}" th:object="${cuantasFile}" method="post">
-					<input type="hidden" th:field="*{id}" />
-					<input type="hidden" th:field="*{fileAlta}" />
-					<input type="hidden" th:field="*{filePDF}" />
-					<div class="row">
-						<!-- Campo de información fija -->
+				</div>		
+					<form id="addFilePDF" enctype="multipart/form-data" th:action="@{/tesones/formFilePDF}"
+							method="post">
+							<input type="hidden" id="iDTesonFile" name="iDTesonFile" th:value="${iDTesonFile}">
+							<div class="row">
+								<!-- Campo de información fija -->
 						<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
 							<div class="form-group">
 								<label>Alta:</label>
-								<input type="text" class="form-control" th:field="${cuantasFile.alta}" readonly />
+								<input id="alta" name="alta" type="text" class="form-control" th:value="${alta}" readonly />
 							</div>
 						</div>
-
-						<!-- Date picker AdminLTE 3 -->
-						<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-							<div class="form-group">
-								<label for="reservationdate">Fecha de Alta:</label>
-								<div class="input-group date" id="reservationdate" data-target-input="nearest">
-									<input type="date" th:field="*{fechaAlta}" class="form-control"
-										data-target="#reservationdate" placeholder="Seleccione una fecha" />
+								<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+								</div>
+								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">
+									<label for="formFileLg" class="form-label" th:text="${titulo}"></label>
+									<input class="form-control form-control-lg" id="fileXLS" type="file" name="filePDF"
+										required autocomplete="off" accept=".pdf">
 								</div>
 							</div>
-						</div>
-					</div>
-					<!-- Fila de botones -->
-					<div class="row mt-3">
-						<div class="col-lg-12 text-center">
-							<input type="submit" value="Guardar" class="btn btn-primary px-5">
-						</div>
-					</div>
-				</form>
+							<div class="row"></div>
+							<div class="row">
+								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">
+									<input type="submit" value="Guardar" class="btn btn-primary" on>
+								</div>
+							</div>
+						</form>
 			</div>
 		</div>
 	</div>

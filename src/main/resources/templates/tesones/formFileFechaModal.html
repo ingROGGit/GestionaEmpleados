@@ -41,7 +41,7 @@
 						<h2><span th:text="${titulo}"></span></h2>
 					</a>
 				</div>
-				<form th:action="@{/cuentasBancarias/formFile}" th:object="${cuantasFile}" method="post">
+				<form th:action="@{/tesones/formFechaTESONFile}" th:object="${tesonFile}" method="post">
 					<input type="hidden" th:field="*{id}" />
 					<input type="hidden" th:field="*{fileAlta}" />
 					<input type="hidden" th:field="*{filePDF}" />
@@ -50,7 +50,7 @@
 						<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
 							<div class="form-group">
 								<label>Alta:</label>
-								<input type="text" class="form-control" th:field="${cuantasFile.alta}" readonly />
+								<input type="text" class="form-control" th:field="${tesonFile.alta}" readonly />
 							</div>
 						</div>
 

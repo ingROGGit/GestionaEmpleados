@@ -315,10 +315,8 @@ public class CuentasBancariasController {
 		return "cuentasBancarias/formFilePDFModal";
 	}
 	@PostMapping("cuentasBancarias/formFilePDF")
-	public String addEmpleadosXLSX(Model modelo, RedirectAttributes flash, SessionStatus status,
+	public String addPDFCuentas(Model modelo, RedirectAttributes flash, SessionStatus status,
 			@RequestParam("filePDF") MultipartFile filePDF,@RequestParam("iDcuantasFile") Long iDcuantasFile) throws Exception{
-		
-		
 		AltaCuentasFilesEntity fileDB=this.acfileJPA.getById(iDcuantasFile);
 		String mensaje = "PDF Cargado Correctamente "+fileDB.getAlta();
 		fileDB.setFilePDF(filePDF.getBytes());
@@ -327,5 +325,4 @@ public class CuentasBancariasController {
 		flash.addFlashAttribute("success", mensaje);
 		return "redirect:/cuentasBancarias/ListaFilesCuenta";
 	}
-	
 }

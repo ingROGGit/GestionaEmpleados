@@ -52,11 +52,21 @@
 											<td class="col-lg-5 col-md-5 col-sm-5 col-xs-12" th:text="${file.alta}">
 											</td>
 											<td th:text="${file.fechaAlta}"></td>
-											<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')"
+											<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
 												class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
-												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')"
+												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
 													class="btn btn-warning btn-sm"
-													th:href="@{/tesones/downloadFileTeson/} + ${file.id}">Descargar</a>
+													th:href="@{/tesones/downloadExcel/} + ${file.id}">Excel</a>
+													<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
+													class="btn btn-warning btn-sm"
+													th:href="@{/tesones/downloadPDF/} + ${file.id}">PDF</a>
+												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
+													class="btn btn-warning btn-sm link-EmpleadoEdit"
+													th:href="@{/tesones/formFechaTeson/} + ${file.id}">Registra
+													Fecha</a>
+													<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
+													class="btn btn-warning btn-sm link-EmpleadoEdit"
+													th:href="@{/tesones/formFilePDF/} + ${file.id}">Carga PDF</a>
 											</td>
 										</tr>
 									</tbody>

@@ -80,7 +80,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr th:each="empleado : ${empleados}">
+										<tr th:each="empleado : ${empleados}" th:style="${empleado.activo ==false} ? 'background-color: #ffcccc;' : ''">
 											<td th:text="${empleado.id}"></td>
 											<td th:text="${empleado.nombre}"></td>
 											<td class="col-lg-3 col-md-3 col-sm-6 col-xs-12"
@@ -99,19 +99,31 @@
 													class="btn btn-warning btn-sm link-EmpleadoEdit"
 													th:href="@{/cuentasBancarias/formCuenta/{id}(id=${empleado.id}, addNew=${addNew})}">Agregar
 													Cuenta</a>
-												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1')"
+												<a th:if="${empleado.activo==true}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1')"
 													class="btn btn-danger btn-sm"
 													th:href="@{/empleados/baja/} + ${empleado.id}"
 													onclick="return confirm('Esta seguro de Baja el Empleado');">Baja</a>
-												<a th:if="${empleado.sinavid!=null}"
+												<th:block th:if="${empleado.sinavid!=null}">	
+												<a th:if="${empleado.sinavid.estatus!='PARA BAJA'}"
+													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')"
+													class="btn btn-warning btn-sm"
+													th:href="@{/empleados/bajaSINAVID/} + ${empleado.id}"
+													onclick="return confirm('Esta seguro Baja de Empleado en SINAVID');">Para Baja
+													SINAVID</a>
+												<a th:if="${empleado.sinavid.estatus!='ALTA'}"
+													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1','ROLE_OPERADORCUENTAS')"
+													class="btn btn-success btn-sm"
+													th:href="@{/empleados/altaSINAVID/} + ${empleado.id}"
+													onclick="return confirm('Esta seguro del Alta en SINAVID');">Marcar Alta</a>
+													<a th:if="${empleado.sinavid.activo==true}"
 													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')"
 													class="btn btn-danger btn-sm"
-													th:href="@{/empleados/bajaSINAVID/} + ${empleado.id}"
-													onclick="return confirm('Esta seguro Baja de Empleado');">Baja
-													SINAVID</a>
+													th:href="@{/empleados/bajaDefSINAVID/} + ${empleado.id}"
+													onclick="return confirm('Esta seguro de la Baja en SINAVID');">Baja Definitiva SINAVID</a>
 <!--												<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-danger btn-sm"-->
 <!--													th:href="@{/empleados/eliminar/} + ${empleado.id}"-->
 <!--													onclick="return confirm('Esta seguro de Eliminar el Empleado');">Eliminar</a>-->
+												</th:block>
 											</td>
 										</tr>
 									</tbody>

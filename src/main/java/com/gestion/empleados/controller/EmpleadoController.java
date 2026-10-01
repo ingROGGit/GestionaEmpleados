@@ -144,7 +144,8 @@ public class EmpleadoController {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String fa = df.format(new Date());
 		File dirUsu = new File(SecurityContextHolder.getContext().getAuthentication().getName());
-		File file = new File(dirUsu + "\\Empleados_" + fa + ".xlsx");
+		File file = new File(dirUsu.getAbsolutePath()+ "\\Empleados_" + fa + ".xlsx");
+		System.out.println(file.getAbsolutePath());
 		boolean fileExDownload = false, filefull = false;
 		if (file.exists()) {
 			if (file.canWrite()) {
@@ -291,11 +292,13 @@ public class EmpleadoController {
 		return "empleados/formEmpleadoModal";
 	}
 
-	@GetMapping("/empleados/eliminar/{id}")
-	public String eliminarEmpleado(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+	@GetMapping("/empleados/baja/{id}")
+	public String BajaEmpleado(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 		if (id > 0) {
-			this.empleadosJPA.delete(this.empleadosJPA.findById(id));
-			flash.addFlashAttribute("success", "Empleado Eliminado con Exito");
+			Empleados emp=this.empleadosJPA.findById(id);
+			emp.setActivo(false);
+			this.empleadosJPA.save(emp);
+			flash.addFlashAttribute("success", "Empleado Dado de Baja "+emp.getId()+" "+emp.getNombre());
 		}
 		return "redirect:/empleados/listarEmpleados";
 	}
@@ -336,7 +339,7 @@ public class EmpleadoController {
 		File dirUsu = new File(SecurityContextHolder.getContext().getAuthentication().getName());
 		if (!dirUsu.exists())
 			dirUsu.mkdirs();
-		File file = new File(dirUsu + "\\Empleados_" + fa + ".xlsx");
+		File file = new File(dirUsu.getAbsolutePath() + "\\Empleados_" + fa + ".xlsx");
 		List<Empleados> lempeados = this.empleadosJPA.findByEMpleadosXQuincena(quinCatSelectGet);
 		for (Empleados e : lempeados) {
 			if (e.getPuestosEntity() != null)

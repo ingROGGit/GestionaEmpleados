@@ -90,6 +90,8 @@ public class SINAVIDEntity extends AuditableDateEntity implements Serializable {
 	private String alta;
 	@Column(name = "idBaja", columnDefinition = "int default 30")
 	private int idBaja;
+	@Column(name = "activo")
+	private boolean activo;
 	@Column(name = "fechaBaja")
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")

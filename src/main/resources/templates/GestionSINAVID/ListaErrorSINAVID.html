@@ -88,6 +88,9 @@
 												<a	sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID','ROLE_ADMIN1','ROLE_OPERADORSINAVID1')"
 													class="btn btn-warning btn-sm link-EmpleadoEdit"
 													th:href="@{/empleados/formEmpleadoEdit/} + ${empleado.id}">Corregir Datos</a>
+												<a	sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORSINAVID','ROLE_ADMIN1')"
+													class="btn btn-success btn-sm"
+													th:href="@{/GestionSINAVID/eliminaError/} + ${empleado.id}">Eliminar Error</a>
 											</td>
 										</tr>
 									</tbody>

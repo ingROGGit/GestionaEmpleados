@@ -253,13 +253,39 @@ public class GestionSINAVIDController {
 		}
 	}
 	@GetMapping("/empleados/bajaSINAVID/{id}")
-	public String desbloqueoQuincena(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+	public String marcarbaja(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 		if (id > 0) {
 			Empleados emp=this.empleadosJPA.getById(id);
 			SINAVIDEntity sinavid=emp.getSinavid();
 			sinavid.setEstatus("PARA BAJA");
 			this.sinavidJPA.save(sinavid);
 			flash.addFlashAttribute("error", "Empleado para Baja SINAVID "+emp.getId()+" "+emp.getNombreCompleto());
+		}
+		return "redirect:/empleados/listarEmpleados";
+	}
+	@GetMapping("/empleados/bajaDefSINAVID/{id}")
+	public String bajaDefinitiva(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+		if (id > 0) {
+			Empleados emp=this.empleadosJPA.getById(id);
+			SINAVIDEntity sinavid=emp.getSinavid();
+			sinavid.setEstatus("BAJA");
+			sinavid.setActivo(false);
+			this.sinavidJPA.save(sinavid);
+			flash.addFlashAttribute("error", "Empleado Baja SINAVID "+emp.getId()+" "+emp.getNombreCompleto());
+		}
+		return "redirect:/empleados/listarEmpleados";
+	}
+	@GetMapping("/empleados/altaSINAVID/{id}")
+	public String marcaAltaSINAVID(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+		if (id > 0) {
+			Empleados emp=this.empleadosJPA.getById(id);
+			SINAVIDEntity sinavid=emp.getSinavid();
+			sinavid.setEstatus("ALTA");
+			sinavid.setActivo(true);
+			if(sinavid.getFechaAlta()==null)
+				sinavid.setFechaAlta(sinavid.getFechaRegistro()!=null?sinavid.getFechaRegistro():new Date());
+			this.sinavidJPA.save(sinavid);
+			flash.addFlashAttribute("success", "Empleado Alta SINAVID "+emp.getId()+" "+emp.getNombreCompleto());
 		}
 		return "redirect:/empleados/listarEmpleados";
 	}
@@ -480,7 +506,6 @@ public class GestionSINAVIDController {
 			throw new RuntimeException("Error writing file to response", e);
 		}
 	}
-	
 	@GetMapping({ "/GestionSINAVID/ListaErrorSINAVID" })
 	public String listaErroresSINAVID(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
 		Pageable pageRequest = PageRequest.of(page, 300);
@@ -491,5 +516,18 @@ public class GestionSINAVIDController {
 		model.addAttribute("titulo", "Errores en SINAVID");
 		model.addAttribute("registros", empleados.getTotalElements());
 		return "GestionSINAVID/ListaErrorSINAVID";
+	}
+	
+	@GetMapping("/GestionSINAVID/eliminaError/{id}")
+	public String cleanError(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+		if (id > 0) {
+			Empleados emp=this.empleadosJPA.getById(id);
+			SINAVIDEntity sinavid=emp.getSinavid();
+			sinavid.setError(null);
+			sinavid.setActivo(true);
+			this.sinavidJPA.save(sinavid);
+			flash.addFlashAttribute("success", "Empleado se elimina error SINAVID "+emp.getId()+" "+emp.getNombreCompleto());
+		}
+		return "redirect:/GestionSINAVID/ListaErrorSINAVID";
 	}
 }

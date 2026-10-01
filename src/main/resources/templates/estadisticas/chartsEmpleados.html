@@ -19,43 +19,14 @@
 	<!-- Main content -->
 	<main class="app-main"> <!--begin::App Content Header-->
 		<section class="content">
-			<div class="card card-default">
-<!--						<div class="card-header">-->
-<!--							<h3 class="card-title">QUINCENA</h3>-->
-<!--							<div class="card-tools">-->
-<!--								<button type="button" class="btn btn-tool" data-card-widget="collapse">-->
-<!--									<i class="fas fa-minus"></i>-->
-<!--								</button>-->
-<!--							</div>-->
-<!--						</div>-->
-<!--						<div class="card-body">-->
-<!--							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
-<!--								<form th:action="@{'/'+${funLista}}" id="searchForm2"-->
-<!--									method="post">-->
-<!--									<div class="row">-->
-<!--										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">-->
-<!--											<label>Quincena: </label>-->
-<!--											<select class="form-control" id="quinCatSelectPost" name="quinCatSelectPost">-->
-<!--												<option value="">select QNA</option>-->
-<!--												<option th:each="qna : ${LquincenasCat}" th:value="${qna}"-->
-<!--													th:text="${qna}" th:selected="${qna == quinCatSelectPost}"></option>-->
-<!--											</select>-->
-<!--										</div>-->
-<!--									</div>-->
-<!--									<div class="row" style="float: right;">-->
-<!--										<br>-->
-<!--										<button type="submit" class="btn btn-primary pull-right">Generar Grafica</button>-->
-<!--									</div>-->
-<!--								</form>-->
-<!--							</div>-->
-
-<!--						</div>-->
-			</div>
 			<!-- Marco o Tarjeta de AdminLTE para el Gráfico -->
 			<div class="card card-default">
 				<div class="card-header">
-					<h3 class="card-title" th:text="'Estadisticas de '+${quinCatSelectPost}">Estadisticas </h3>
-
+					<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card text-center">
+						<a>
+							<h2><span th:text="${titulo}"></span></h2>
+						</a>
+					</div>
 					<div class="card-tools">
 						<button type="button" class="btn btn-tool" data-card-widget="collapse">
 							<i class="fas fa-minus"></i>

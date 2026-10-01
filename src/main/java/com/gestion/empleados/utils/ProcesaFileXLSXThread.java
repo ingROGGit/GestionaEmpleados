@@ -182,7 +182,7 @@ public class ProcesaFileXLSXThread {
 								SINAVIDEntity sinavid = this.sinavidJPA.findByEmpleado_Curp(valores[3]);
 								if (sinavid != null) {
 									sinavid.setFechaRespuesta(df.parse(valores[8]));
-									if (sinavid.getPagaduria() == null&&!valores[10].contains("VIGENTE")) {
+									if (sinavid.getPagaduria() == null&&!valores[10].contains("VIGENTE EN LA MISMA")) {
 										sinavid.setEstatus("ERROR");
 										sinavid.setError(valores[10]);
 									}else {
@@ -735,6 +735,21 @@ public class ProcesaFileXLSXThread {
 														new BigDecimal(valor
 																.substring(valor.indexOf("D S7") + 4,
 																		valor.indexOf("D S7") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D D2")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("D2");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D D2") + 4,
+																		valor.indexOf("D D2") + 16)
 																.trim().replace(",", ""))
 																.setScale(2, RoundingMode.HALF_UP));
 												detded.setDeducciones(ded);

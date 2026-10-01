@@ -29,8 +29,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.gestion.empleados.entity.AltaCuentasFilesEntity;
 import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.JefesEntity;
 import com.gestion.empleados.entity.MotivoTESONEntity;
@@ -186,8 +188,8 @@ public class TesonesController {
 		return "tesones/ListaFilesTesones";
 	}
 
-	@GetMapping("/tesones/downloadFileTeson/{id}")
-	public void downloadFileTeson(HttpServletResponse respons, @PathVariable(value = "id") Long id)
+	@GetMapping("/tesones/downloadExcel/{id}")
+	public void downloadFileTesonExcel(HttpServletResponse respons, @PathVariable(value = "id") Long id)
 			throws DocumentException, IOException {
 		TESONFilesEntity fileCuenta = this.tesonFileJPA.getById(id);
 		respons.setContentType("application/octet-stream");
@@ -204,7 +206,24 @@ public class TesonesController {
 			throw new RuntimeException("Error writing file to response", e);
 		}
 	}
-	
+	@GetMapping("/tesones/downloadPDF/{id}")
+	public void downloadFileTesonPDF(HttpServletResponse respons, @PathVariable(value = "id") Long id)
+			throws DocumentException, IOException {
+		TESONFilesEntity fileCuenta = this.tesonFileJPA.getById(id);
+		respons.setContentType("application/octet-stream");
+		String cabecera = "Content-Disposition";
+		String valor = "attachment; filename=" + fileCuenta.getAlta()+".pdf";
+		respons.setHeader(cabecera, valor);
+		try (InputStream inputStream = new ByteArrayInputStream(fileCuenta.getFilePDF());
+				ServletOutputStream outputStream = respons.getOutputStream()) {
+			IOUtils.copy(inputStream, outputStream);
+			respons.flushBuffer();
+			inputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Error writing file to response", e);
+		}
+	}
 	@GetMapping("/tesones/eliminarTESON/{id}")
 	public String eliminarTESON(@PathVariable(value = "id") Long id, Model modelo,
 			RedirectAttributes flash, SessionStatus status)
@@ -216,5 +235,46 @@ public class TesonesController {
 		this.tesonJPA.delete(teson);
 		flash.addFlashAttribute("success", "Empleado Eliminado de TESON"+teson.getEmpleado().getId()+" "+teson.getEmpleado().getNombre());
 		return "redirect:/tesones/UPTESON";
+	}
+	@GetMapping("/tesones/formFechaTeson/{id}")
+	public String upFileFechaTeson(@PathVariable(value = "id") Long id,@RequestParam(required = false) String addNew, Map<String, Object> modelo,
+			RedirectAttributes flash) {
+		TESONFilesEntity tesonFile=this.tesonFileJPA.findById(id);
+		modelo.put("tesonFile", tesonFile);
+		modelo.put("titulo", "Registrar Fecha en TESON");
+		return "tesones/formFileFechaModal";
+	}
+	@PostMapping("tesones/formFechaTESONFile")
+	public String upFechaFilePost(@Valid TESONFilesEntity tesonFile, BindingResult result, Model modelo,
+			RedirectAttributes flash, SessionStatus status) {
+		if (result.hasErrors()) {
+			flash.addFlashAttribute("error", result);
+			return "redirect:/tesones/ListaTesones";
+		}
+		String mensaje = "Fecha Registrada "+tesonFile.getAlta();
+		this.tesonFileJPA.save(tesonFile);
+		status.setComplete();
+		flash.addFlashAttribute("success", mensaje);
+		return "redirect:/tesones/ListaTesones";
+	}
+	@GetMapping("/tesones/formFilePDF/{id}")
+	public String upFilePDF(@PathVariable(value = "id") Long id,@RequestParam(required = false) String addNew, Map<String, Object> modelo,
+			RedirectAttributes flash) {
+		TESONFilesEntity tesonFile=this.tesonFileJPA.findById(id);
+		modelo.put("iDTesonFile", tesonFile.getId());
+		modelo.put("alta", tesonFile.getAlta());
+		modelo.put("titulo", "Carga PDF de TESON");
+		return "tesones/formFilePDFModal";
+	}
+	@PostMapping("tesones/formFilePDF")
+	public String addTESONPDF(Model modelo, RedirectAttributes flash, SessionStatus status,
+			@RequestParam("filePDF") MultipartFile filePDF,@RequestParam("iDTesonFile") Long iDTesonFile) throws Exception{
+		TESONFilesEntity fileDB=this.tesonFileJPA.getById(iDTesonFile);
+		String mensaje = "PDF Cargado Correctamente "+fileDB.getAlta();
+		fileDB.setFilePDF(filePDF.getBytes());
+		this.tesonFileJPA.save(fileDB);
+		status.setComplete();
+		flash.addFlashAttribute("success", mensaje);
+		return "redirect:/tesones/ListaTesones";
 	}
 }

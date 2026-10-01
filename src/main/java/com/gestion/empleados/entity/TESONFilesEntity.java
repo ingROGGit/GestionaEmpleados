@@ -36,6 +36,8 @@ public class TESONFilesEntity extends AuditableDateEntity implements Serializabl
 		private Long id;
 		@Column(name = "fileAlta", length = Integer.MAX_VALUE)
 		private byte[] fileAlta;
+		@Column(name = "filePDF", length = Integer.MAX_VALUE)
+		private byte[] filePDF;
 		@Column(name = "alta")
 		private String alta;
 		@Basic(optional = true)
