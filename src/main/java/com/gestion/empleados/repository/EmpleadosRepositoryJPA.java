@@ -71,4 +71,5 @@ public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Seriali
    public List<Empleados> findByEMpleadosXQuincena(@Param("idQNA") String idQNA);
    public Page<Empleados> findByQuincenas_TesonTrue(Pageable pageRequest);
    public Long countByTipoContrato(String tipoContrato);
+   public Long countByActivo(boolean estatus);
 }

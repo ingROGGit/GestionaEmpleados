@@ -174,8 +174,15 @@ public class GestionSINAVIDController {
 					this.altaSINAVIDJPA.save(acfile);
 					file.delete();
 					for (Empleados emp : lEmpleadosCuentas) {
-						SINAVIDEntity sinavid = SINAVIDEntity.builder().estatus("VALIDACION").alta(alta)
-								.fechaRegistro(new Date()).empleado(emp).build();
+						SINAVIDEntity sinavid=null;
+						if(emp.getSinavid()!=null) {
+							sinavid=emp.getSinavid();
+							sinavid.setEstatus("VALIDACION");
+						}
+						else {
+							sinavid = SINAVIDEntity.builder().estatus("VALIDACION").alta(alta)
+									.fechaRegistro(new Date()).empleado(emp).build();
+						}
 						this.sinavidJPA.save(sinavid);
 					}
 				} catch (IOException e) {

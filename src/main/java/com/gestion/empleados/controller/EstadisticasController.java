@@ -155,7 +155,7 @@ public class EstadisticasController {
 		List<String> navegadores = Arrays.asList("RESIDENTES", "EVENTUAL", "BAJAS", "BASE");
 
 		List<Long> visitas = Arrays.asList(this.empleadosJPA.countByTipoContrato("RESIDENTES"),
-				this.empleadosJPA.countByTipoContrato("EVENTUAL"), this.empleadosJPA.countByTipoContrato("BAJAS"),
+				this.empleadosJPA.countByTipoContrato("EVENTUAL"), this.empleadosJPA.countByActivo(false),
 				this.empleadosJPA.countByTipoContrato("BASE"));
 
 		// 2. Convertir las listas de Java a formato JSON (String)

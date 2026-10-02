@@ -1,0 +1,115 @@
+<style>
+	/* Opcional: Elimina los márgenes predeterminados del body para un verdadero ancho completo */
+	body {
+		margin: 0;
+		padding: 0;
+		font-family: sans-serif;
+	}
+
+	form {
+		width: 100%;
+		box-sizing: border-box;
+		/* Asegura que el padding y el border se incluyan en el 100% */
+		padding: 20px;
+		/* Ejemplo de padding */
+		border: 1px solid #ccc;
+		/* Ejemplo de borde */
+		background-color: #f9f9f9;
+		/* Puedes añadir un max-width si no quieres que sea demasiado ancho en pantallas muy grandes */
+		/* max-width: 1200px; */
+		margin: 0 auto;
+		/* Centra el formulario si usas max-width */
+	}
+
+	input[type="text"],
+	input[type="submit"] {
+		width: 100%;
+		box-sizing: border-box;
+		padding: 10px;
+		margin-bottom: 10px;
+	}
+</style>
+<div class="card bg-light">
+	<div class="card-header" th:text="${titulo}">
+	</div>
+	<div class="card-body">
+		<div class="row">
+			<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card text-center">
+				<a>
+					<h2><span th:text="${titulo}"></span></h2>
+				</a>
+			</div>
+			<!--								<h1 class="text-center" th:text="${titulo}"></h1>-->
+			<form th:action="@{/empleados/formEmpleadoBajaSave}" th:object="${addBaja}" method="post">
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+						<label>Numero Empleado: </label>
+						<input type="number" th:field="*{empleado.id}" class="form-control"
+							th:errorClass="'form-control alert-danger'" readonly />
+						<th:block sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR','ROLE_OPERADORCUENTAS')">
+							<label>Fecha Baja: </label>
+							<input type="date" th:field="*{fechaBaja}" class="form-control"
+								th:errorClass="'form-control alert-danger'" />
+							<small class="form-text text-danger" th:if="${#fields.hasErrors('fechaBaja')}"
+								th:errors="*{fechaBaja}"></small>
+							
+						</th:block>
+					</div>
+					<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+						<label>Nombre: </label>
+						<input type="text" th:field="*{empleado.nombreCompleto}" class="form-control"
+							th:errorClass="'form-control alert-danger'" readonly />
+							<label>Motivo: </label>
+							<th:block sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADOR','ROLE_OPERADORCUENTAS')">
+							<select class="form-control" id="motivoBaja" th:field="${addBaja.catBajasEntity}">
+								<option value="">select Baja</option>
+								<option th:each="bj : ${lcatBajas}" th:value="${bj.id}"
+									th:text="${bj.clave} + ' '+ ${bj.descipcion}"></option>
+							</select>
+							</th:block>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+						<h4></h4>
+					</div>
+				</div>
+				<div class="row">
+
+
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<h4>
+							<p></p>
+						</h4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+						<div class="box-footer">
+							<input type="submit" value="Guardar" class="btn btn-primary">
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div><!-- /.container-fluid -->
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>

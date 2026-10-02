@@ -100,7 +100,7 @@
 													th:href="@{/cuentasBancarias/formCuenta/{id}(id=${empleado.id}, addNew=${addNew})}">Agregar
 													Cuenta</a>
 												<a th:if="${empleado.activo==true}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1')"
-													class="btn btn-danger btn-sm"
+													class="btn btn-danger btn-sm link-EmpleadoEdit"
 													th:href="@{/empleados/baja/} + ${empleado.id}"
 													onclick="return confirm('Esta seguro de Baja el Empleado');">Baja</a>
 												<th:block th:if="${empleado.sinavid!=null}">	

@@ -41,7 +41,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.gestion.empleados.entity.AddBajaEntity;
 import com.gestion.empleados.entity.AsignacionTurnoEntity;
+import com.gestion.empleados.entity.CatBajasEntity;
 import com.gestion.empleados.entity.DetalleDeduccionesEntiy;
 import com.gestion.empleados.entity.DetallePersepcionesEntity;
 import com.gestion.empleados.entity.Empleados;
@@ -49,8 +51,11 @@ import com.gestion.empleados.entity.QuincenaCatEntity;
 import com.gestion.empleados.entity.QuincenasEntity;
 import com.gestion.empleados.entity.SINAVIDEntity;
 import com.gestion.empleados.entity.VacacionesEntity;
+import com.gestion.empleados.repository.AddBajasRepository;
 import com.gestion.empleados.repository.AsignacionTurnosRepositoryJPA;
+import com.gestion.empleados.repository.BajasSINAVIDFileRepository;
 import com.gestion.empleados.repository.BancosRepositoryJPA;
+import com.gestion.empleados.repository.CatBajasRepository;
 import com.gestion.empleados.repository.CatCPJALRepositoryJPA;
 import com.gestion.empleados.repository.DeduccionesRepositoryJPA;
 import com.gestion.empleados.repository.DetalleDeduccionesRepositoryJPA;
@@ -112,6 +117,10 @@ public class EmpleadoController {
 	private SINAVIDRepositoryJPA sinavidJPA;
 	@Autowired
 	private AsignacionTurnosRepositoryJPA asignaTurJPA;
+	@Autowired
+	private CatBajasRepository bajasRepoJPA;
+	@Autowired
+	private AddBajasRepository addBajaRepoJPA;
 	private final ProcesaFileXLSXThread thread;
 
 	public EmpleadoController(ProcesaFileXLSXThread procesaFileXLSXThread) {
@@ -209,8 +218,10 @@ public class EmpleadoController {
 			flash.addFlashAttribute("error", "El empleado no Existe");
 			return "redirect:/empleados/listarEmpleados";
 		}
+		AddBajaEntity bajaEm=this.addBajaRepoJPA.findByEmpleado_Id(empleado.getId());
 		modelo.put("periodo", periodo);
 		modelo.put("empleado", empleado);
+		modelo.put("bajaEm", bajaEm);
 		modelo.put("titulo", "Detalles del Empleado " + empleado.getNombre());
 		return "empleados/verEmpleadoModal";
 	}
@@ -272,7 +283,23 @@ public class EmpleadoController {
 		flash.addFlashAttribute("success", mensaje);
 		return "redirect:/empleados/listarEmpleados";
 	}
-
+	
+	@PostMapping("empleados/formEmpleadoBajaSave")
+	public String addBajaEmpleado(@Valid AddBajaEntity addBaja, BindingResult result, Model modelo,
+			RedirectAttributes flash, SessionStatus status) throws Exception{
+		if (result.hasErrors()) {
+			throw new Exception(result.toString());
+		}
+		Empleados getEmpleado = this.empleadosJPA.findById(addBaja.getEmpleado().getId());
+		getEmpleado.setActivo(false);
+		this.empleadosJPA.save(getEmpleado);
+		this.addBajaRepoJPA.save(addBaja);
+		String mensaje = "Baja de Empleado "+getEmpleado.getId()+" "+getEmpleado.getNombre()+" Aplicada";
+		this.empleadosJPA.save(getEmpleado);
+		status.setComplete();
+		flash.addFlashAttribute("error", mensaje);
+		return "redirect:/empleados/listarEmpleados";
+	}
 	@GetMapping("/empleados/formEmpleadoEdit/{id}")
 	public String editarEmpleado(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
 			RedirectAttributes flash) {
@@ -293,14 +320,17 @@ public class EmpleadoController {
 	}
 
 	@GetMapping("/empleados/baja/{id}")
-	public String BajaEmpleado(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+	public String BajaEmpleado(@PathVariable(value = "id") Long id,Map<String, Object> modelo, RedirectAttributes flash) {
 		if (id > 0) {
 			Empleados emp=this.empleadosJPA.findById(id);
-			emp.setActivo(false);
-			this.empleadosJPA.save(emp);
-			flash.addFlashAttribute("success", "Empleado Dado de Baja "+emp.getId()+" "+emp.getNombre());
+			List<CatBajasEntity> lcatBajas=this.bajasRepoJPA.findAll();
+			AddBajaEntity addBaja=new AddBajaEntity();
+			addBaja.setEmpleado(emp);
+			modelo.put("lcatBajas", lcatBajas);
+			modelo.put("addBaja", addBaja);
+			modelo.put("titulo", "Baja de "+emp.getId()+" "+emp.getNombre());
 		}
-		return "redirect:/empleados/listarEmpleados";
+		return "empleados/formEmpleadoBajaModal";
 	}
 
 	@GetMapping("/empleados/exportarPDF")

@@ -29,6 +29,36 @@
 				Puesto:<li class="list-group-item" th:text="${empleado?.puestosEntity?.puesto}"></li>
 			</div>
 		</div>
+		<th:block th:if="${empleado.activo==false}">
+			<div class="card card-default collapsed-card" th:style="'background-color: #ffcccc;'">
+				<div class="card-header">
+					<h3 class="card-title">BAJA</h3>
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-minus"></i>
+						</button>
+					</div>
+				</div>
+
+				<th:block th:if="${bajaEm!=null}">
+					<div class="card-body" style="display: none; background-color: #ffcccc">
+						<div class="row">
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Fecha Baja: <li class="list-group-item" th:text="${bajaEm.fechaBaja}"></li>
+
+								</li>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Codigo:<li class="list-group-item" th:text="${bajaEm.catBajasEntity.clave}"></li>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Motivo:<li class="list-group-item" th:text="${bajaEm.catBajasEntity.descipcion}"></li>
+							</div>
+						</div>
+					</div>
+				</th:block>
+			</div>
+		</th:block>
 		<div class="card card-default collapsed-card">
 			<div class="card-header">
 				<h3 class="card-title">Quincena</h3>
@@ -159,10 +189,8 @@
 								Sueldo Total: <li class="list-group-item" th:text="${empleado.sinavid.remTotal}"></li>
 							</div>
 							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-								Numero ISSSTE: <li class="list-group-item" th:text="${empleado.sinavid.numISSSTE}">
-									NSS:
-								<li class="list-group-item" th:text="${empleado.sinavid.nss}">
-								</li>
+								Numero ISSSTE: <li class="list-group-item" th:text="${empleado.sinavid.numISSSTE}"></li>
+								NSS:<li class="list-group-item" th:text="${empleado.sinavid.nss}"></li>
 							</div>
 						</div>
 						<th:block th:if="${empleado.domicilios != null}">
@@ -264,7 +292,7 @@
 									<th data-filter-control="select">Turno</th>
 									<th data-filter-control="select">Codigo Horario</th>
 									<th data-filter-control="select">Horario</th>
-									
+
 								</tr>
 							</thead>
 							<tbody>
