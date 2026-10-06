@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.PersepcionesEntity;
 
 public interface PersepcionesRepositoryJPA extends JpaRepository<PersepcionesEntity, Serializable>{

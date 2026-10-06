@@ -26,8 +26,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.gestion.empleados.entity.DeduccionesEntity;
 import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.MotivoTESONEntity;
+import com.gestion.empleados.entity.PersepcionesEntity;
 import com.gestion.empleados.entity.PuestosEntity;
 import com.gestion.empleados.entity.QuincenaCatEntity;
 import com.gestion.empleados.entity.QuincenasEntity;
@@ -36,8 +38,10 @@ import com.gestion.empleados.entity.TESONESEntity;
 import com.gestion.empleados.entity.TipoNomTESONEntity;
 import com.gestion.empleados.entity.UsuariosEntity;
 import com.gestion.empleados.entity.filtrosConsultaDTO;
+import com.gestion.empleados.repository.DeduccionesRepositoryJPA;
 import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
 import com.gestion.empleados.repository.MotivoTESONRepository;
+import com.gestion.empleados.repository.PersepcionesRepositoryJPA;
 import com.gestion.empleados.repository.PuestosRepositoryJPA;
 import com.gestion.empleados.repository.QuincenaRepositoryJPA;
 import com.gestion.empleados.repository.QuincenasCatRepositoryJPA;
@@ -67,6 +71,10 @@ public class NominaController {
 	private MotivoTESONRepository motivoJPA;
 	@Autowired
 	private TipoNomTESONRepository tipoNomJPA;
+	@Autowired
+	private PersepcionesRepositoryJPA persepcionesJPA;
+	@Autowired
+	private DeduccionesRepositoryJPA deducionesJPA;
 	@GetMapping("quincenas/listarQuincena")
 	public String listarQNA(Model model, @RequestParam(required = false) String keyword,
 			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "7000") int size,
@@ -85,6 +93,8 @@ public class NominaController {
 		List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
 		List<String> lpuesto = this.puestosJPA.findByAllPuesto();
 		List<String> lservicio = this.serviciosJPA.findByAllServicio();
+		List<PersepcionesEntity> lPercepciones=this.persepcionesJPA.findAll();
+		List<DeduccionesEntity> lDeducciones=this.deducionesJPA.findAll();
 		String sortField = sort[0];
 		String sortDirection = sort[1];
 		Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
@@ -140,6 +150,8 @@ public class NominaController {
 		model.addAttribute("funStatus", "statusXMLRec");
 		model.addAttribute("quinCatSelectGet", quinCatSelectGet);
 		model.addAttribute("registros",quincena.getTotalElements());
+		model.addAttribute("lPercepciones", lPercepciones);		
+		model.addAttribute("lDeducciones", lDeducciones);
 		return "quincenas/listarQuincena";
 	}
 
@@ -150,6 +162,8 @@ public class NominaController {
 		List<String> LquincenasCat = quincenasCatJPA.findByAllIdQNA();
 		List<String> lpuesto = puestosJPA.findByAllPuesto();
 		List<String> lservicio = serviciosJPA.findByAllServicio();
+		List<PersepcionesEntity> lPercepciones=this.persepcionesJPA.findAll();
+		List<DeduccionesEntity> lDeducciones=this.deducionesJPA.findAll();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String fa = df.format(new Date());
 		File file = new File("QUINCENA" + fa + ".xlsx");
@@ -189,6 +203,14 @@ public class NominaController {
 				quincena = quincenaJPA.findByQuinCatAndTipoPago(quinShearch,filtrosSet.getTipoPago(),pageRequest);
 		}else if(filtrosSet.isBloqueado()) {
 			quincena = quincenaJPA.findByBloqueoPago(true, pageRequest);
+		}else if(filtrosSet.getIdPersepcion()>0) {
+			PersepcionesEntity per=this.persepcionesJPA.findById(filtrosSet.getIdPersepcion());
+			Direction directionp = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+			Order orderp = new Order(directionp, "e1_0.empleadoqn_id");
+			Pageable pageRequestp = PageRequest.of(page - 1, size, Sort.by(orderp));
+			quincena = quincenaJPA.findByQuincenasPorClavePersepcion(quinShearch.getIdQNA(),per.getClave(),pageRequestp);
+		}else if(filtrosSet.getIdDeduccion()>0) {
+			quincena = quincenaJPA.findByQuinCat(quinShearch,pageRequest);
 		}else
 			quincena = quincenaJPA.findByQuinCat(quinShearch,pageRequest);
 		PageRender<QuincenasEntity> pageRender = new PageRender<>("/quincenas/listarQuincena", quincena);
@@ -213,6 +235,8 @@ public class NominaController {
 		model.addAttribute("funStatus", "statusXMLRec");
 		model.addAttribute("registros",quincena.getTotalElements());
 		model.addAttribute("quinCatSelectGet", filtrosSet.getQna());
+		model.addAttribute("lPercepciones", lPercepciones);		
+		model.addAttribute("lDeducciones", lDeducciones);
 		return "quincenas/listarQuincena";
 	}
 	@GetMapping("/quincenas/bloqueoQuincena/{id}")

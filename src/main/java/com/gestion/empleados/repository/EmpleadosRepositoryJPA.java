@@ -66,7 +66,6 @@ public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Seriali
    @Query("SELECT e FROM Empleados e " +
 	       "JOIN FETCH e.quincenas q " +
 	       "JOIN q.quinCat cat " +
-	       "JOIN e.sinavid s " +
 	       "WHERE cat.idQNA = :idQNA ")
    public List<Empleados> findByEMpleadosXQuincena(@Param("idQNA") String idQNA);
    public Page<Empleados> findByQuincenas_TesonTrue(Pageable pageRequest);

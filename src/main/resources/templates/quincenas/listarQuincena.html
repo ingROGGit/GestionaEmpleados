@@ -145,6 +145,24 @@
 												<option th:value="false">No Bloqueado</option>
 											</select>
 										</div>
+										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<label>Persepcion: </label>
+											<select class="form-control" id="persepcionSelect"
+												th:field="${filtros.idPersepcion}">
+												<option value="">select </option>
+												<option th:each="p : ${lPercepciones}" th:value="${p.id}"
+													th:text="${p.clave} + '|' +  ${p.descripcion}"></option>
+											</select>
+										</div>
+										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<label>Deduccion: </label>
+											<select class="form-control" id="deduccionSelect"
+												th:field="${filtros.idDeduccion}">
+												<option value="">select QNA</option>
+												<option th:each="d : ${lDeducciones}" th:value="${d.id}"
+													th:text="${d.clave} + '|' +  ${d.descripcion}"></option>
+											</select>
+										</div>
 									</div>
 									<div class="row" style="float: right;">
 										<br>
@@ -390,6 +408,16 @@
 		$('#quinCatSelectGet').select2({
 			theme: 'bootstrap4',
 			placeholder: 'select QNA',
+			allowClear: true
+		});
+		$('#persepcionSelect').select2({
+			theme: 'bootstrap4',
+			placeholder: 'select',
+			allowClear: true
+		});
+		$('#deduccionSelect').select2({
+			theme: 'bootstrap4',
+			placeholder: 'select',
 			allowClear: true
 		});
 	});

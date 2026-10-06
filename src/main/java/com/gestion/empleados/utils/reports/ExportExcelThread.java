@@ -14,6 +14,8 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.gestion.empleados.entity.DetalleDeduccionesEntiy;
+import com.gestion.empleados.entity.DetallePersepcionesEntity;
 import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.ReglasDiasEntity;
 import com.gestion.empleados.entity.UsuariosEntity;
@@ -27,13 +29,15 @@ public class ExportExcelThread extends Thread  {
 	private List<UsuariosEntity> lusuarios;
 	private List<ReglasDiasEntity> lreglas;
 	private String nameFile;
-	public ExportExcelThread(String nameFile ,String tipo,List<UsuariosEntity> lusuarios,List<ReglasDiasRepository> lReglas,List<Empleados> lempleados) {
+	private String quinCatSelectGet;
+	public ExportExcelThread(String nameFile ,String tipo,List<UsuariosEntity> lusuarios,List<ReglasDiasRepository> lReglas,List<Empleados> lempleados,String quinCatSelectGet) {
 		this.libro = new XSSFWorkbook();
 		this.lusuarios = lusuarios;
 		this.lreglas = lreglas;
 		this.lempleados = lempleados;
 		this.nameFile=nameFile;
 		this.tipo=tipo;
+		this.quinCatSelectGet=quinCatSelectGet;
 	}
 	@Override
 	public void run() {
@@ -42,6 +46,7 @@ public class ExportExcelThread extends Thread  {
 				this.sheet = this.libro.createSheet("Empleados");
 				writeCabTable();
 				writeDetalleTabla();
+				
 			}
 //			if (this.tipo == "Reglas") {
 //				this.sheet = this.libro.createSheet("Reglas");
@@ -115,21 +120,42 @@ public class ExportExcelThread extends Thread  {
 		
 		celda = row.createCell(9);
 		celda.setCellValue("Sueldo Neto");
-		celda.setCellStyle(estilo);		
+		celda.setCellStyle(estilo);	
 		
 		celda = row.createCell(10);
+		celda.setCellValue("Tipo Pago");
+		celda.setCellStyle(estilo);
+		
+		celda = row.createCell(11);
+		celda.setCellValue("Folio Pre");
+		celda.setCellStyle(estilo);
+		
+		celda = row.createCell(12);
+		celda.setCellValue("Folio Quincena");
+		celda.setCellStyle(estilo);	
+		
+		celda = row.createCell(13);
 		celda.setCellValue("Fecha Ingreso");
 		celda.setCellStyle(estilo);
 
-		celda = row.createCell(11);
+		celda = row.createCell(14);
 		celda.setCellValue("Telefono");
 		celda.setCellStyle(estilo);
-		celda = row.createCell(12);
+		celda = row.createCell(15);
 		celda.setCellValue("Puesto");
 		celda.setCellStyle(estilo);
-		celda = row.createCell(13);
+		celda = row.createCell(16);
 		celda.setCellValue("Servicio");
-		
+		celda.setCellStyle(estilo);
+		celda = row.createCell(17);
+		celda.setCellValue("P 04");
+		celda.setCellStyle(estilo);
+		celda = row.createCell(18);
+		celda.setCellValue("D 50");
+		celda.setCellStyle(estilo);
+		celda = row.createCell(19);
+		celda.setCellValue("D D2");
+		celda.setCellStyle(estilo);
 	}
 
 	private void writeCabTableUsuarios() {
@@ -245,23 +271,65 @@ public class ExportExcelThread extends Thread  {
 			celda.setCellStyle(estiloF);
 
 			celda = row.createCell(10);
-			celda.setCellValue(empleado.getFechaIngreso());
+			celda.setCellValue(empleado.getQuincenas().get(0).getTipoPago()!=null?empleado.getQuincenas().get(0).getTipoPago().toString():"");
 			this.sheet.autoSizeColumn(10);
-			celda.setCellStyle(estilo);
+			celda.setCellStyle(estiloF);
 			
 			celda = row.createCell(11);
-			celda.setCellValue(empleado.getTelefono());
+			celda.setCellValue(empleado.getQuincenas().get(0).getFolioPre()!=null?empleado.getQuincenas().get(0).getFolioPre().toString():"");
 			this.sheet.autoSizeColumn(11);
-			celda.setCellStyle(estilo);
+			celda.setCellStyle(estiloF);
 			
 			celda = row.createCell(12);
-			celda.setCellValue(empleado.getPuestosEntity()!=null?empleado.getPuestosEntity().getPuesto():"");
+			celda.setCellValue(empleado.getQuincenas().get(0).getFolioQuin()!=null?empleado.getQuincenas().get(0).getFolioQuin().toString():"");
 			this.sheet.autoSizeColumn(12);
-			celda.setCellStyle(estilo);
+			celda.setCellStyle(estiloF);
 			
 			celda = row.createCell(13);
-			celda.setCellValue(empleado.getServicioEntity()!=null?empleado.getServicioEntity().getServicio():"");
+			celda.setCellValue(empleado.getFechaIngreso());
 			this.sheet.autoSizeColumn(13);
+			celda.setCellStyle(estilo);
+			
+			celda = row.createCell(14);
+			celda.setCellValue(empleado.getTelefono());
+			this.sheet.autoSizeColumn(14);
+			celda.setCellStyle(estilo);
+			
+			celda = row.createCell(15);
+			celda.setCellValue(empleado.getPuestosEntity()!=null?empleado.getPuestosEntity().getPuesto():"");
+			this.sheet.autoSizeColumn(15);
+			celda.setCellStyle(estilo);
+			
+			celda = row.createCell(16);
+			celda.setCellValue(empleado.getServicioEntity()!=null?empleado.getServicioEntity().getServicio():"");
+			this.sheet.autoSizeColumn(16);
+			celda.setCellStyle(estilo);
+			
+			celda = row.createCell(17);
+			DetallePersepcionesEntity priesgo = empleado.getDetallePercepcione().stream()
+				    .filter(detalle -> "04".equals(detalle.getPersepciones().getClave()))
+				    .findFirst()
+				    .orElse(null);
+			celda.setCellValue(priesgo!=null?priesgo.getImporte().toString():"0.00");
+			this.sheet.autoSizeColumn(17);
+			celda.setCellStyle(estilo);
+			
+			celda = row.createCell(18);
+			DetalleDeduccionesEntiy dIncapacidad = empleado.getDetalleDeducciones().stream()
+				    .filter(detalle -> "50".equals(detalle.getDeducciones().getClave()))
+				    .findFirst()
+				    .orElse(null);
+			celda.setCellValue(dIncapacidad!=null?dIncapacidad.getImporte().toString():"0.00");
+			this.sheet.autoSizeColumn(18);
+			celda.setCellStyle(estilo);
+			
+			celda = row.createCell(19);
+			DetalleDeduccionesEntiy dD2 = empleado.getDetalleDeducciones().stream()
+				    .filter(detalle -> "D2".equals(detalle.getDeducciones().getClave()))
+				    .findFirst()
+				    .orElse(null);
+			celda.setCellValue(dD2!=null?dD2.getImporte().toString():"0.00");
+			this.sheet.autoSizeColumn(19);
 			celda.setCellStyle(estilo);
 		}
 	}

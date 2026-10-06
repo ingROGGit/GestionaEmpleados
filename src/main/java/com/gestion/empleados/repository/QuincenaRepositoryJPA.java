@@ -29,4 +29,20 @@ public interface QuincenaRepositoryJPA extends JpaRepository<QuincenasEntity, Se
 			 "JOIN q.quinCat cat " +
 			"WHERE cat.idQNA = :idQNA AND q.tipoPago = :tipoPago ")
     public List<String> findByFolisLong(@Param("idQNA") String idQNA,@Param("tipoPago") String tipoPago);
+	@Query(value = "select q1_0.id,q1_0.baja,q1_0.bloqueo_pago,q1_0.created_date,q1_0.fecha_registro,q1_0.folio_pre,q1_0.folio_quin,\r\n"
+			+ "q1_0.modified_date,q1_0.quinquenio,q1_0.salario_an,q1_0.salario_men,q1_0.salarioqn,\r\n"
+			+ "q1_0.sueldo_base,q1_0.sueldo_neto,q1_0.sueldo_pre,q1_0.teson,q1_0.tipo_pago from quincenas q1_0  "
+			+ " join (quincenas_qncat q2_0 join public.quincena_cat q2_1 on q2_1.idqna=q2_0.qna_cat_id) on q1_0.id=q2_0.quincena_id "
+			+ " join quincenas_empleadoqn e1_0 on q1_0.id=e1_0.quincenas_id "
+			+ " join public.detalle_persepciones_entity d1_0 on q2_1.idqna=d1_0.quincena_cat_id and d1_0.empleado_id=e1_0.empleadoqn_id "
+			+ " join percepciones p1_0 on p1_0.id=d1_0.persepcion_id " +
+			"where q2_0.qna_cat_id=:idQNA and p1_0.clave=:clavePer ",
+			 countQuery ="select count(*) from public.quincenas q1_0  "
+						+ " join (quincenas_qncat q2_0 join public.quincena_cat q2_1 on q2_1.idqna=q2_0.qna_cat_id) on q1_0.id=q2_0.quincena_id "
+						+ " join quincenas_empleadoqn e1_0 on q1_0.id=e1_0.quincenas_id "
+						+ " join public.detalle_persepciones_entity d1_0 on q2_1.idqna=d1_0.quincena_cat_id and d1_0.empleado_id=e1_0.empleadoqn_id "
+						+ " join public.percepciones p1_0 on p1_0.id=d1_0.persepcion_id " +
+						"where q2_0.qna_cat_id=:idQNA and p1_0.clave=:clavePer "
+			,nativeQuery = true)
+	public Page<QuincenasEntity> findByQuincenasPorClavePersepcion(@Param("idQNA") String idQNA,@Param("clavePer") String clavePer, Pageable pageable);
 }

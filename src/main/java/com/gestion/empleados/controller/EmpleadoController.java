@@ -376,8 +376,12 @@ public class EmpleadoController {
 				e.getPuestosEntity().getPuesto();
 			if (e.getServicioEntity() != null)
 				e.getServicioEntity().getServicio();
+			if(e.getDetallePercepcione()!=null)
+				e.getDetallePercepcione().get(0);
+			if(e.getDetalleDeducciones()!=null)
+				e.getDetalleDeducciones().get(0);
 		}
-		ExportExcelThread exexcel = new ExportExcelThread(file.getAbsolutePath(), "Empleados", null, null, lempeados);
+		ExportExcelThread exexcel = new ExportExcelThread(file.getAbsolutePath(), "Empleados", null, null, lempeados,quinCatSelectGet);
 		exexcel.setName("Export-Empleados");
 		exexcel.setPriority(Thread.MAX_PRIORITY);
 		exexcel.start();
