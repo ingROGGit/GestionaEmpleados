@@ -134,7 +134,7 @@ public class GestionSINAVIDController {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String fa = df.format(new Date());
 		Pageable pageRequest = PageRequest.of(page, 200);
-		Page<Empleados> empleados = this.empleadosJPA.findByDomiciliosIsNotNullAndSinavidIsNullOrSinavid_Estatus(pageRequest,"CORREGIDO");
+		Page<Empleados> empleados = this.empleadosJPA.findByDomiciliosIsNotNullAndSinavidIsNullOrSinavid_EstatusAndSinavid_NumISSSTEIsNull(pageRequest,"CORREGIDO");
 		PageRender<Empleados> pageRender = new PageRender<>("/cuentasBancarias/ListaEmpSinCuenta", empleados);
 		List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
 		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
@@ -155,7 +155,7 @@ public class GestionSINAVIDController {
 			@RequestParam("quinCatSelect") String quinCatSelect) throws Exception {
 		try {
 			File file = new File(alta + ".txt");
-			List<Empleados> lEmpleadosCuentas = this.empleadosJPA.findByDomiciliosIsNotNullAndSinavidIsNullOrSinavid_Estatus("CORREGIDO");
+			List<Empleados> lEmpleadosCuentas = this.empleadosJPA.findByDomiciliosIsNotNullAndSinavidIsNullOrSinavid_EstatusAndSinavid_NumISSSTEIsNull("CORREGIDO");
 			ExporterTXTSINAVID altaSINAVID = new ExporterTXTSINAVID(file.getName(), lEmpleadosCuentas, quinCatSelect);
 			altaSINAVID.runAltaCuentas();
 			if (file.exists() && file.canWrite()) {
@@ -536,5 +536,30 @@ public class GestionSINAVIDController {
 			flash.addFlashAttribute("success", "Empleado se elimina error SINAVID "+emp.getId()+" "+emp.getNombreCompleto());
 		}
 		return "redirect:/GestionSINAVID/ListaErrorSINAVID";
+	}
+	
+	@GetMapping("/GestionSINAVID/addFolio/{id}")
+	public String addFolio(@PathVariable(value = "id") Long id, @RequestParam(required = false) String addNew,
+				Map<String, Object> modelo, RedirectAttributes flash) {
+			AltaSINAVIDFilesEntity file= this.altaSINAVIDJPA.findById(id);
+			modelo.put("file", file);
+			modelo.put("titulo", "Registrar Filio de SINAVID");
+			return "GestionSINAVID/formAddFolio";
+		}
+	
+	@PostMapping("GestionSINAVID/addFolioSINAVID")
+	public String addFolioSINAVID(@Valid AltaSINAVIDFilesEntity file, BindingResult result, Model modelo,
+			RedirectAttributes flash, SessionStatus status) {
+		if (result.hasErrors()) {
+			modelo.addAttribute("titulo", "Registro de Cuenta");
+			return "GestionSINAVID/formAddFolio";
+		}
+		AltaSINAVIDFilesEntity fileDB=this.altaSINAVIDJPA.findById(file.getId());
+		fileDB.setFolio(file.getFolio());
+		this.altaSINAVIDJPA.save(fileDB);
+		String mensaje = "Folio Registrado con Exito";
+		status.setComplete();
+		flash.addFlashAttribute("success", mensaje);
+		return "redirect:/GestionSINAVID/ListaAltas";
 	}
 }

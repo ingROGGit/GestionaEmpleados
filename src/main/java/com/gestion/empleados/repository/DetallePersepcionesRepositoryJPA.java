@@ -14,4 +14,5 @@ import com.gestion.empleados.entity.QuincenaCatEntity;
 public interface DetallePersepcionesRepositoryJPA extends JpaRepository<DetallePersepcionesEntity, Serializable> {
 	public List<DetallePersepcionesEntity> findByEmpleadoPerAndQuincenaCatDP(Empleados empleado, QuincenaCatEntity quinCat);
 	public List<DetallePersepcionesEntity> findByEmpleadoPerAndQuincenaCatDP_IdQNA(Empleados empleado, String idQNA);
+	public DetallePersepcionesEntity findByPersepciones_IdAndEmpleadoPer_IdAndQuincenaCatDP_IdQNA(Long idPer,Long idEm,String idQNA);
 }

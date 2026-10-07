@@ -165,8 +165,9 @@
 										</div>
 									</div>
 									<div class="row" style="float: right;">
+										<button type="submit" name="accion" class="btn btn-primary pull-right" value="excel">Exportar Excel</button>
 										<br>
-										<button type="submit" class="btn btn-primary pull-right">Buscar</button>
+										<button type="submit" name="accion" class="btn btn-primary pull-right" value="search">Buscar</button>
 									</div>
 								</form>
 							</div>
@@ -215,24 +216,16 @@
 												<button id="btnClear" class="btn btn-info">Clear</button>
 												<label class="input-group-text" for="pageSize">Total Registros:</label>
 												<a class="btn btn-info" th:text="${registros}"></a>
+												<!--												<button id="btnExportarExcel" class="btn btn-success">-->
+												<!--													<i class="fa fa-file-excel-o"></i> Excel-->
+												<!--												</button>-->
 											</div>
 										</div>
 										<!--										<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" style="float: right;">-->
 										<!--											<h4 class="card-title">-->
+
 										<!--											</h4>-->
 										<!--										</div>-->
-										<!--										<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">-->
-										<!--											<div class="input-group-prepend">-->
-										<!--												<label class="input-group-text" for="pageSize">Total Registros:</label>-->
-										<!--												<a class="btn btn-info" th:value="${registros}"></a>-->
-										<!--												<a th:href="@{/quincena/exportarPDF}" class="btn btn-info">PDF</a>-->
-										<!--												<a th:href="@{/quincena/exportarExcel}" class="btn btn-info">Excel</a>-->
-										<!--											</div>-->
-										<!--										</div>-->
-										<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" style="float: right;">
-											<h4 class="card-title">
-											</h4>
-										</div>
 									</div>
 								</form>
 							</div>
@@ -241,9 +234,9 @@
 							<link rel="stylesheet"
 								href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 							<link rel="stylesheet" href="https://unpkg.com">
-							<!--							<table class="table table-hover table-responsive-xl" data-toggle="table" data-filter-control="true">-->
 							<table id="tableQuincena" class="table table-hover w-auto text-nowrap" data-toggle="table"
-								data-filter-control="true">
+								data-filter-control="true" data-show-export="true" data-show-toggle="true"
+								data-export-types="['excel', 'csv', 'pdf']">
 								<thead class="thead-light">
 									<tr>
 										<th data-field="id" data-filter-control="input">ID</th>
@@ -283,7 +276,7 @@
 													th:href="@{/quincenas/desbloqueoQuincena/} + ${quin.id}">Desbloqueo
 													de
 													Pago</a>
-													<a th:if="${quin.teson == false}" class="btn btn-success btn-sm"
+												<a th:if="${quin.teson == false}" class="btn btn-success btn-sm"
 													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
 													th:href="@{/quincenas/activaTESON/} + ${quin.id}">GEN TESON</a>
 											</td>
@@ -304,6 +297,7 @@
 										$element.find('.select-renglon').prop('disabled', false);
 									});
 								});
+
 							</script>
 							<nav aria-label="Pagination" th:if="${totalPages > 0}">
 								<ul class="pagination justify-content-center">

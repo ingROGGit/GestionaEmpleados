@@ -42,8 +42,8 @@ public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Seriali
    public Page<Empleados> findByDomiciliosIsEmpty(Pageable page);
    public Page<Empleados> findBySinavidIsNull(Pageable page);
    public Page<Empleados> findByDomiciliosIsNullAndSinavidIsNull(Pageable page);
-   public Page<Empleados> findByDomiciliosIsNotNullAndSinavidIsNullOrSinavid_Estatus(Pageable page,String estatus);
-   public List<Empleados> findByDomiciliosIsNotNullAndSinavidIsNullOrSinavid_Estatus(String estatus);
+   public Page<Empleados> findByDomiciliosIsNotNullAndSinavidIsNullOrSinavid_EstatusAndSinavid_NumISSSTEIsNull(Pageable page,String estatus);
+   public List<Empleados> findByDomiciliosIsNotNullAndSinavidIsNullOrSinavid_EstatusAndSinavid_NumISSSTEIsNull(String estatus);
    @Query("SELECT e FROM Empleados e JOIN FETCH e.lisCuentas c WHERE c.estatus = :estatus")
    public Page<Empleados> findByLisCuentasEstatus(@Param("estatus") String estatus, Pageable pageable);
    @Query("SELECT e FROM Empleados e JOIN FETCH e.lisCuentas c WHERE c.estatus = :estatus")

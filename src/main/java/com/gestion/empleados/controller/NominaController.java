@@ -1,6 +1,10 @@
 package com.gestion.empleados.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -10,6 +14,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,17 +34,21 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gestion.empleados.entity.DeduccionesEntity;
 import com.gestion.empleados.entity.Empleados;
+import com.gestion.empleados.entity.ModSalSINAVIDFilesEntity;
 import com.gestion.empleados.entity.MotivoTESONEntity;
 import com.gestion.empleados.entity.PersepcionesEntity;
 import com.gestion.empleados.entity.PuestosEntity;
 import com.gestion.empleados.entity.QuincenaCatEntity;
 import com.gestion.empleados.entity.QuincenasEntity;
+import com.gestion.empleados.entity.SINAVIDEntity;
 import com.gestion.empleados.entity.ServiciosEntity;
 import com.gestion.empleados.entity.TESONESEntity;
 import com.gestion.empleados.entity.TipoNomTESONEntity;
 import com.gestion.empleados.entity.UsuariosEntity;
 import com.gestion.empleados.entity.filtrosConsultaDTO;
 import com.gestion.empleados.repository.DeduccionesRepositoryJPA;
+import com.gestion.empleados.repository.DetalleDeduccionesRepositoryJPA;
+import com.gestion.empleados.repository.DetallePersepcionesRepositoryJPA;
 import com.gestion.empleados.repository.EmpleadosRepositoryJPA;
 import com.gestion.empleados.repository.MotivoTESONRepository;
 import com.gestion.empleados.repository.PersepcionesRepositoryJPA;
@@ -49,9 +59,13 @@ import com.gestion.empleados.repository.ServiciosRepositoryJPA;
 import com.gestion.empleados.repository.TESONRepository;
 import com.gestion.empleados.repository.TipoNomTESONRepository;
 import com.gestion.empleados.utils.PageRender;
+import com.gestion.empleados.utils.reports.ExportExcelQuincenas;
+import com.gestion.empleados.utils.reports.ExporterTXTSINAVID;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class NominaController {
@@ -75,6 +89,10 @@ public class NominaController {
 	private PersepcionesRepositoryJPA persepcionesJPA;
 	@Autowired
 	private DeduccionesRepositoryJPA deducionesJPA;
+	@Autowired
+	private DetalleDeduccionesRepositoryJPA detalleDeduJPA;
+	@Autowired
+	private DetallePersepcionesRepositoryJPA detallePerJPA;
 	@GetMapping("quincenas/listarQuincena")
 	public String listarQNA(Model model, @RequestParam(required = false) String keyword,
 			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "7000") int size,
@@ -93,8 +111,8 @@ public class NominaController {
 		List<String> LquincenasCat = this.quincenasCatJPA.findByAllIdQNA();
 		List<String> lpuesto = this.puestosJPA.findByAllPuesto();
 		List<String> lservicio = this.serviciosJPA.findByAllServicio();
-		List<PersepcionesEntity> lPercepciones=this.persepcionesJPA.findAll();
-		List<DeduccionesEntity> lDeducciones=this.deducionesJPA.findAll();
+		List<PersepcionesEntity> lPercepciones = this.persepcionesJPA.findAll();
+		List<DeduccionesEntity> lDeducciones = this.deducionesJPA.findAll();
 		String sortField = sort[0];
 		String sortDirection = sort[1];
 		Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
@@ -132,7 +150,7 @@ public class NominaController {
 		filtros.setQna(quincenasCat);
 		model.addAttribute("filtros", filtros);
 		model.addAttribute("fileExDownload", fileExDownload);
-		model.addAttribute("titulo", "Listado QUINCENA "+quinCatSelectGet);
+		model.addAttribute("titulo", "Listado QUINCENA " + quinCatSelectGet);
 		model.addAttribute("LquincenasCat", LquincenasCat);
 		model.addAttribute("lpuesto", lpuesto);
 		model.addAttribute("lservicio", lservicio);
@@ -149,131 +167,213 @@ public class NominaController {
 		model.addAttribute("funVer", "verXMLRec");
 		model.addAttribute("funStatus", "statusXMLRec");
 		model.addAttribute("quinCatSelectGet", quinCatSelectGet);
-		model.addAttribute("registros",quincena.getTotalElements());
-		model.addAttribute("lPercepciones", lPercepciones);		
+		model.addAttribute("registros", quincena.getTotalElements());
+		model.addAttribute("lPercepciones", lPercepciones);
 		model.addAttribute("lDeducciones", lDeducciones);
 		return "quincenas/listarQuincena";
 	}
 
 	@PostMapping("/quincenas/listarQuincena")
-	public String listarQNA(Model model, filtrosConsultaDTO filtrosSet, @RequestParam(defaultValue = "1") int page,
-			@RequestParam(defaultValue = "5000") int size,
-			@RequestParam(defaultValue = "empleadoQN.id,asc") String[] sort) {
-		List<String> LquincenasCat = quincenasCatJPA.findByAllIdQNA();
-		List<String> lpuesto = puestosJPA.findByAllPuesto();
-		List<String> lservicio = serviciosJPA.findByAllServicio();
-		List<PersepcionesEntity> lPercepciones=this.persepcionesJPA.findAll();
-		List<DeduccionesEntity> lDeducciones=this.deducionesJPA.findAll();
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String fa = df.format(new Date());
-		File file = new File("QUINCENA" + fa + ".xlsx");
-		boolean fileExDownload = false;
-		if (file.exists() && file.canWrite()) {
-			fileExDownload = true;
-		}
-		String sortField = sort[0];
-		String sortDirection = sort[1];
-		Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-		Order order = new Order(direction, sortField);
-		Pageable pageRequest = PageRequest.of(page - 1, size, Sort.by(order));
-		Page<QuincenasEntity> quincena = null;
-		QuincenaCatEntity quinShearch=this.quincenasCatJPA.findByIdQNA(filtrosSet.getQna());
-		if(filtrosSet.getTipoContrato()!=null&&!filtrosSet.getTipoContrato().isEmpty()) {
-			Collection<Empleados> collEmpleados = new HashSet<>();
-			collEmpleados = empleadoRJPA.findByTipoContrato(filtrosSet.getTipoContrato());
-			quincena=quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch,collEmpleados,pageRequest);
-		}
-			else if(filtrosSet.getStatus()!=null&&!filtrosSet.getStatus().isEmpty()) {
-				boolean bajaStatus=false;
-				if(filtrosSet.getStatus().equals("Baja"))
-					bajaStatus=true;
-				quincena = quincenaJPA.findByQuinCatAndBaja(quinShearch,bajaStatus,pageRequest);
-			}
-			else if(filtrosSet.getPuesto()!=null&&!filtrosSet.getPuesto().isEmpty()) {
-				 PuestosEntity puesto=puestosJPA.findByPuesto(filtrosSet.getPuesto());
-				 Collection<Empleados> collectionEmp = new ArrayList<Empleados>(puesto.getLEmpleados());
-				 quincena=quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch,collectionEmp,pageRequest);
-			}
-			else if(filtrosSet.getServicio()!=null&&!filtrosSet.getServicio().isEmpty()) {
-				ServiciosEntity servicio=this.serviciosJPA.findByServicio(filtrosSet.getServicio());
+	public Object listarQNA(Model model, HttpServletResponse respons, filtrosConsultaDTO filtrosSet,
+			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5000") int size,
+			@RequestParam(defaultValue = "empleadoQN.id,asc") String[] sort,
+			@RequestParam(name = "accion") String accion) throws Exception {
+		QuincenaCatEntity quinShearch = this.quincenasCatJPA.findByIdQNA(filtrosSet.getQna());
+		if ("search".equals(accion)) {
+			List<String> LquincenasCat = quincenasCatJPA.findByAllIdQNA();
+			List<String> lpuesto = puestosJPA.findByAllPuesto();
+			List<String> lservicio = serviciosJPA.findByAllServicio();
+			List<PersepcionesEntity> lPercepciones = this.persepcionesJPA.findAll();
+			List<DeduccionesEntity> lDeducciones = this.deducionesJPA.findAll();
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			String fa = df.format(new Date());
+			String sortField = sort[0];
+			String sortDirection = sort[1];
+			Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+			Order order = new Order(direction, sortField);
+			Pageable pageRequest = PageRequest.of(page - 1, size, Sort.by(order));
+			Page<QuincenasEntity> quincena = null;
+			if (filtrosSet.getTipoContrato() != null && !filtrosSet.getTipoContrato().isEmpty()) {
+				Collection<Empleados> collEmpleados = new HashSet<>();
+				collEmpleados = empleadoRJPA.findByTipoContrato(filtrosSet.getTipoContrato());
+				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collEmpleados, pageRequest);
+			} else if (filtrosSet.getStatus() != null && !filtrosSet.getStatus().isEmpty()) {
+				boolean bajaStatus = false;
+				if (filtrosSet.getStatus().equals("Baja"))
+					bajaStatus = true;
+				quincena = quincenaJPA.findByQuinCatAndBaja(quinShearch, bajaStatus, pageRequest);
+			} else if (filtrosSet.getPuesto() != null && !filtrosSet.getPuesto().isEmpty()) {
+				PuestosEntity puesto = puestosJPA.findByPuesto(filtrosSet.getPuesto());
+				Collection<Empleados> collectionEmp = new ArrayList<Empleados>(puesto.getLEmpleados());
+				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collectionEmp, pageRequest);
+			} else if (filtrosSet.getServicio() != null && !filtrosSet.getServicio().isEmpty()) {
+				ServiciosEntity servicio = this.serviciosJPA.findByServicio(filtrosSet.getServicio());
 				Collection<Empleados> collectionEmp = new ArrayList<Empleados>(servicio.getLEmpleados());
-				 quincena=quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch,collectionEmp,pageRequest);
+				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collectionEmp, pageRequest);
+			} else if (filtrosSet.getTipoPago() != null && !filtrosSet.getTipoPago().isEmpty()) {
+				quincena = quincenaJPA.findByQuinCatAndTipoPago(quinShearch, filtrosSet.getTipoPago(), pageRequest);
+			} else if (filtrosSet.isBloqueado()) {
+				quincena = quincenaJPA.findByBloqueoPago(true, pageRequest);
+			} else if (filtrosSet.getIdPersepcion()!=null) {
+				PersepcionesEntity per = this.persepcionesJPA.findById(filtrosSet.getIdPersepcion());
+				Direction directionp = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+				Order orderp = new Order(directionp, "e1_0.empleadoqn_id");
+				Pageable pageRequestp = PageRequest.of(page - 1, size, Sort.by(orderp));
+				quincena = quincenaJPA.findByQuincenasPorClavePersepcion(quinShearch.getIdQNA(), per.getClave(),
+						pageRequestp);
+			} else if (filtrosSet.getIdDeduccion()!=null) {
+				DeduccionesEntity ded = this.deducionesJPA.findById(filtrosSet.getIdDeduccion());
+				Direction directionp = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+				Order orderp = new Order(directionp, "e1_0.empleadoqn_id");
+				Pageable pageRequestp = PageRequest.of(page - 1, size, Sort.by(orderp));
+				quincena = quincenaJPA.findByQuincenasPorClaveDeduccion(quinShearch.getIdQNA(), ded.getClave(),
+						pageRequestp);
+			} else
+				quincena = quincenaJPA.findByQuinCat(quinShearch, pageRequest);
+			PageRender<QuincenasEntity> pageRender = new PageRender<>("/quincenas/listarQuincena", quincena);
+			model.addAttribute("lpuesto", lpuesto);
+			model.addAttribute("lservicio", lservicio);
+			model.addAttribute("titulo", "Listado QUINCENA " + filtrosSet.getQna());
+			model.addAttribute("LquincenasCat", LquincenasCat);
+			model.addAttribute("quincena", quincena);
+			model.addAttribute("page", pageRender);
+			model.addAttribute("filtros", filtrosSet);
+			model.addAttribute("page", pageRender);
+			model.addAttribute("pageSize", size);
+			model.addAttribute("sortField", sortField);
+			model.addAttribute("sortDirection", sortDirection);
+			model.addAttribute("currentPage", quincena.getNumber() + 1);
+			model.addAttribute("totalItems", quincena.getTotalElements());
+			model.addAttribute("totalPages", quincena.getTotalPages());
+			model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
+			model.addAttribute("funLista", "quincenas/listarQuincena");
+			model.addAttribute("funVer", "verXMLRec");
+			model.addAttribute("funStatus", "statusXMLRec");
+			model.addAttribute("registros", quincena.getTotalElements());
+			model.addAttribute("quinCatSelectGet", filtrosSet.getQna());
+			model.addAttribute("lPercepciones", lPercepciones);
+			model.addAttribute("lDeducciones", lDeducciones);
+			return "quincenas/listarQuincena";
+		}
+		if ("excel".equals(accion)) {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH mm ss");
+			File dirUsu = new File(SecurityContextHolder.getContext().getAuthentication().getName());
+			if (!dirUsu.exists())
+				dirUsu.mkdirs();
+			File filename = null;
+			List<QuincenasEntity> quincena = null;
+			String fileString = dirUsu.getAbsolutePath() + "//" + quinShearch.getIdQNA() + "-" + df.format(new Date())
+					+ "-";
+			String tipoFiltro="";
+			if (filtrosSet.getTipoContrato() != null && !filtrosSet.getTipoContrato().isEmpty()) {
+				Collection<Empleados> collEmpleados = new HashSet<>();
+				collEmpleados = empleadoRJPA.findByTipoContrato(filtrosSet.getTipoContrato());
+				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collEmpleados);
+				fileString = fileString + filtrosSet.getTipoContrato();
+				tipoFiltro="TipoContrato";
+			} else if (filtrosSet.getStatus() != null && !filtrosSet.getStatus().isEmpty()) {
+				boolean bajaStatus = false;
+				if (filtrosSet.getStatus().equals("Baja"))
+					bajaStatus = true;
+				quincena = quincenaJPA.findByQuinCatAndBaja(quinShearch, bajaStatus);
+				fileString=fileString+filtrosSet.getStatus();
+				tipoFiltro="Estatus";
+			} else if (filtrosSet.getPuesto() != null && !filtrosSet.getPuesto().isEmpty()) {
+				PuestosEntity puesto = puestosJPA.findByPuesto(filtrosSet.getPuesto());
+				Collection<Empleados> collectionEmp = new ArrayList<Empleados>(puesto.getLEmpleados());
+				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collectionEmp);
+				fileString=fileString+filtrosSet.getPuesto();
+				tipoFiltro="Puesto";
+			} else if (filtrosSet.getServicio() != null && !filtrosSet.getServicio().isEmpty()) {
+				ServiciosEntity servicio = this.serviciosJPA.findByServicio(filtrosSet.getServicio());
+				Collection<Empleados> collectionEmp = new ArrayList<Empleados>(servicio.getLEmpleados());
+				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collectionEmp);
+				fileString=fileString+filtrosSet.getServicio();
+				tipoFiltro="Servicio";
+			} else if (filtrosSet.getTipoPago() != null && !filtrosSet.getTipoPago().isEmpty()) {
+				quincena = quincenaJPA.findByQuinCatAndTipoPago(quinShearch, filtrosSet.getTipoPago());
+				fileString=fileString+filtrosSet.getTipoPago();
+				tipoFiltro="TipoPago";
+			} else if (filtrosSet.isBloqueado()) {
+				quincena = quincenaJPA.findByBloqueoPago(true);
+				fileString=fileString+"Bloqueados";
+				tipoFiltro="Bloqueados";
+			} else if (filtrosSet.getIdPersepcion()!=null) {
+				PersepcionesEntity per = this.persepcionesJPA.findById(filtrosSet.getIdPersepcion());
+				quincena = quincenaJPA.findByQuincenasPorClavePersepcion(quinShearch.getIdQNA(), per.getClave());
+				fileString=fileString+per.getClave()+"-"+per.getDescripcion();
+				tipoFiltro="Persepciones";
+			} else if (filtrosSet.getIdDeduccion()!=null) {
+				DeduccionesEntity ded = this.deducionesJPA.findById(filtrosSet.getIdDeduccion());
+				quincena = quincenaJPA.findByQuincenasPorClaveDeduccion(quinShearch.getIdQNA(), ded.getClave());
+				fileString=fileString+ded.getClave()+"-"+ded.getDescripcion();
+				tipoFiltro="Deducciones";
+			} 
+//			else
+//				quincena = quincenaJPA.findByQuinCat(quinShearch);
+			filename=new File(fileString+".xlsx");
+			ExportExcelQuincenas excelQuincenas=new ExportExcelQuincenas(filtrosSet,quincena,quinShearch.getIdQNA(),filename.getAbsolutePath());
+			excelQuincenas.exportarExcel(tipoFiltro,detallePerJPA,detalleDeduJPA);
+			if (filename.exists() && filename.canWrite()) {
+				respons.setContentType("application/octet-stream");
+				String cabecera = "Content-Disposition";
+				String valor = "attachment; filename=" + filename.getName();
+				respons.setHeader(cabecera, valor);
+				try (InputStream inputStream = new FileInputStream(filename);
+						ServletOutputStream outputStream = respons.getOutputStream()) {
+					IOUtils.copy(inputStream, outputStream);
+					respons.flushBuffer();
+					inputStream.close();
+					filename.delete();
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new RuntimeException("Error writing file to response", e);
+
+				}
 			}
-			else if(filtrosSet.getTipoPago()!=null&&!filtrosSet.getTipoPago().isEmpty()) {
-				quincena = quincenaJPA.findByQuinCatAndTipoPago(quinShearch,filtrosSet.getTipoPago(),pageRequest);
-		}else if(filtrosSet.isBloqueado()) {
-			quincena = quincenaJPA.findByBloqueoPago(true, pageRequest);
-		}else if(filtrosSet.getIdPersepcion()>0) {
-			PersepcionesEntity per=this.persepcionesJPA.findById(filtrosSet.getIdPersepcion());
-			Direction directionp = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-			Order orderp = new Order(directionp, "e1_0.empleadoqn_id");
-			Pageable pageRequestp = PageRequest.of(page - 1, size, Sort.by(orderp));
-			quincena = quincenaJPA.findByQuincenasPorClavePersepcion(quinShearch.getIdQNA(),per.getClave(),pageRequestp);
-		}else if(filtrosSet.getIdDeduccion()>0) {
-			quincena = quincenaJPA.findByQuinCat(quinShearch,pageRequest);
-		}else
-			quincena = quincenaJPA.findByQuinCat(quinShearch,pageRequest);
-		PageRender<QuincenasEntity> pageRender = new PageRender<>("/quincenas/listarQuincena", quincena);
-		model.addAttribute("fileExDownload", fileExDownload);
-		model.addAttribute("lpuesto", lpuesto);
-		model.addAttribute("lservicio", lservicio);
-		model.addAttribute("titulo", "Listado QUINCENA "+filtrosSet.getQna());
-		model.addAttribute("LquincenasCat", LquincenasCat);
-		model.addAttribute("quincena", quincena);
-		model.addAttribute("page", pageRender);
-		model.addAttribute("filtros", filtrosSet);
-		model.addAttribute("page", pageRender);
-		model.addAttribute("pageSize", size);
-		model.addAttribute("sortField", sortField);
-		model.addAttribute("sortDirection", sortDirection);
-		model.addAttribute("currentPage", quincena.getNumber() + 1);
-		model.addAttribute("totalItems", quincena.getTotalElements());
-		model.addAttribute("totalPages", quincena.getTotalPages());
-		model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
-		model.addAttribute("funLista", "quincenas/listarQuincena");
-		model.addAttribute("funVer", "verXMLRec");
-		model.addAttribute("funStatus", "statusXMLRec");
-		model.addAttribute("registros",quincena.getTotalElements());
-		model.addAttribute("quinCatSelectGet", filtrosSet.getQna());
-		model.addAttribute("lPercepciones", lPercepciones);		
-		model.addAttribute("lDeducciones", lDeducciones);
-		return "quincenas/listarQuincena";
+			return null;
+		}
+		return "redirect:/listadoQuincenas/inicio";
 	}
+
 	@GetMapping("/quincenas/bloqueoQuincena/{id}")
 	public String bloquearPago(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 		if (id > 0) {
-			QuincenasEntity quin=this.quincenaJPA.findById(id);
+			QuincenasEntity quin = this.quincenaJPA.findById(id);
 			quin.setBloqueoPago(true);
 			this.quincenaJPA.save(quin);
 			flash.addFlashAttribute("error", "Pago Bloqueado");
 		}
 		return "redirect:/quincenas/listarQuincena";
 	}
+
 	@GetMapping("/quincenas/desbloqueoQuincena/{id}")
 	public String desbloqueoQuincena(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 		if (id > 0) {
-			QuincenasEntity quin=this.quincenaJPA.findById(id);
+			QuincenasEntity quin = this.quincenaJPA.findById(id);
 			quin.setBloqueoPago(false);
 			this.quincenaJPA.save(quin);
 			flash.addFlashAttribute("success", "Pago Activo");
 		}
 		return "redirect:/quincenas/listarQuincena";
 	}
+
 	@GetMapping("/quincenas/activaTESON/{id}")
 	public String activaTESON(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 		if (id > 0) {
-			QuincenasEntity quin=this.quincenaJPA.findById(id);
+			QuincenasEntity quin = this.quincenaJPA.findById(id);
 			quin.setTeson(true);
-			Empleados emp=this.empleadoRJPA.findById(quin.getEmpleadoQN().get(0).getId());
-			QuincenaCatEntity quinCat=this.quincenasCatJPA.findByIdQNA(quin.getQuinCat().iterator().next().getIdQNA());
-			MotivoTESONEntity motivo=this.motivoJPA.findByCodigo("0");
-			TipoNomTESONEntity tipoN=this.tipoNomJPA.getById(0);
-			TESONESEntity teson=TESONESEntity.builder().empleado(emp).quinCat(quinCat).quincena(quin)
+			Empleados emp = this.empleadoRJPA.findById(quin.getEmpleadoQN().get(0).getId());
+			QuincenaCatEntity quinCat = this.quincenasCatJPA
+					.findByIdQNA(quin.getQuinCat().iterator().next().getIdQNA());
+			MotivoTESONEntity motivo = this.motivoJPA.findByCodigo("0");
+			TipoNomTESONEntity tipoN = this.tipoNomJPA.getById(0);
+			TESONESEntity teson = TESONESEntity.builder().empleado(emp).quinCat(quinCat).quincena(quin)
 					.fechaRegistro(LocalDate.now()).motivoTESONEntity(motivo).tipoNomTESONEntity(tipoN)
 					.estatus("POR GENERAR").build();
 			this.tesonJPA.save(teson);
 			this.quincenaJPA.save(quin);
-			flash.addFlashAttribute("success", "Empleado:"+emp.getId()+" Marcado para TESON ");
+			flash.addFlashAttribute("success", "Empleado:" + emp.getId() + " Marcado para TESON ");
 		}
 		return "redirect:/quincenas/listarQuincena";
 	}

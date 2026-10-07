@@ -44,6 +44,7 @@
 										<tr>
 											<th class="col-lg-5 col-md-5 col-sm-6 col-xs-12">Alta</th>
 											<th class="col-lg-4 col-md-4 col-sm-6 col-xs-12">Fecha Alta</th>
+											<th class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Folio</th>
 											<th class="col-lg-3 col-md-3 col-sm-6 col-xs-12">Acciones</th>
 										</tr>
 									</thead>
@@ -52,14 +53,15 @@
 											<td class="col-lg-5 col-md-5 col-sm-5 col-xs-12" th:text="${file.alta}">
 											</td>
 											<td th:text="${file.fechaAlta}"></td>
+											<td th:text="${file.folio}"></td>
 											<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')"
 												class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
-												<!--												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OPERADORCUENTAS')"-->
-												<!--													class="btn btn-warning btn-sm link-EmpleadoEdit"-->
-												<!--													th:href="@{/cuentasBancarias/verFile/} + ${file.id}">Ver Archivo</a>-->
 												<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')"
 													class="btn btn-warning btn-sm"
 													th:href="@{/GestionSINAVID/download/} + ${file.id}">Descargar</a>
+													<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')"
+													class="btn btn-warning btn-sm link-EmpleadoEdit"
+													th:href="@{/GestionSINAVID/addFolio/} + ${file.id}">Agregar Folio</a>
 											</td>
 										</tr>
 									</tbody>
