@@ -15,8 +15,8 @@ public class filtrosConsultaDTO {
 	private String servicio;
 	private String tipoPago;
 	private String tipoContrato;
-	private String status;
-	private boolean bloqueado;
+	private Boolean quinquenios;
+	private Boolean bloqueado;
 	private Long idPersepcion;
 	private Long idDeduccion;
 }

@@ -88,7 +88,7 @@
 											<label>Quincena: </label>
 											<select class="form-control" id="quinCatSelectPost"
 												th:field="${filtros.qna}">
-												<option value="">select QNA</option>
+												<option value="">--seleccionar--</option>
 												<option th:each="qna : ${LquincenasCat}" th:value="${qna}"
 													th:text="${qna}"></option>
 											</select>
@@ -97,24 +97,24 @@
 											<label class="mr-sm-2" for="estatus">Tipo Contrato</label>
 											<select class="form-control form-control-sm"
 												th:field="${filtros.tipoContrato}">
-												<option value="">-- Seleccione --</option>
+												<option value="">--seleccionar--</option>
 												<option value="BASE">BASE</option>
 												<option value="EVENTUAL">EVENTUAL</option>
 												<option value="RESIDENTES">RESIDENTES</option>
 											</select>
 										</div>
 										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-											<label class="mr-sm-2" for="estatus">Estatus</label>
-											<select class="form-control form-control-sm" th:field="${filtros.status}">
-												<option value="">-- Seleccione --</option>
-												<option value="Activo">Activo</option>
-												<option value="Baja">Baja</option>
+											<label class="mr-sm-2" for="estatus">Quinquenios</label>
+											<select class="form-control form-control-sm" th:field="${filtros.quinquenios}">
+												<option th:value="null">--seleccionar--</option>
+												<option th:value="true">Aplica</option>
+												<option th:value="false">No Aplica</option>
 											</select>
 										</div>
 										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 											<label>Puesto: </label>
 											<select class="form-control" id="dropDownList" th:field="${filtros.puesto}">
-												<option value="">select</option>
+												<option value="">--seleccionar--</option>
 												<option th:each="puesto : ${lpuesto}" th:value="${puesto}"
 													th:text="${puesto}"></option>
 											</select>
@@ -123,7 +123,7 @@
 											<label>Servicio: </label>
 											<select class="form-control" id="dropDownList"
 												th:field="${filtros.servicio}">
-												<option value="">select</option>
+												<option value="">--seleccionar--</option>
 												<option th:each="servicio : ${lservicio}" th:value="${servicio}"
 													th:text="${servicio}"></option>
 											</select>
@@ -131,7 +131,7 @@
 										<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 											<label>Tipo Pago: </label>
 											<select class="form-control form-control-sm" th:field="${filtros.tipoPago}">
-												<option value="">-- Seleccione --</option>
+												<option value="">--seleccionar--</option>
 												<option value="Recibo">Recibo</option>
 												<option value="Cheque">Cheque</option>
 												<option value="TEMPORAL">TEMPORAL</option>
@@ -141,6 +141,7 @@
 											<label>Bloqueo: </label>
 											<select class="form-control form-control-sm"
 												th:field="${filtros.bloqueado}">
+												<option th:value="null">--seleccionar--</option>
 												<option th:value="true">Bloqueado</option>
 												<option th:value="false">No Bloqueado</option>
 											</select>
@@ -149,7 +150,7 @@
 											<label>Persepcion: </label>
 											<select class="form-control" id="persepcionSelect"
 												th:field="${filtros.idPersepcion}">
-												<option value="">select </option>
+												<option value="">--seleccionar--</option>
 												<option th:each="p : ${lPercepciones}" th:value="${p.id}"
 													th:text="${p.clave} + '|' +  ${p.descripcion}"></option>
 											</select>
@@ -158,7 +159,7 @@
 											<label>Deduccion: </label>
 											<select class="form-control" id="deduccionSelect"
 												th:field="${filtros.idDeduccion}">
-												<option value="">select QNA</option>
+												<option value="">--seleccionar--</option>
 												<option th:each="d : ${lDeducciones}" th:value="${d.id}"
 													th:text="${d.clave} + '|' +  ${d.descripcion}"></option>
 											</select>
@@ -194,7 +195,7 @@
 												</div>
 												<select class="form-control" id="quinCatSelectGet"
 													name="quinCatSelectGet">
-													<option value="">select QNA</option>
+													<option value="">--seleccionar--</option>
 													<option th:each="qna : ${LquincenasCat}" th:value="${qna}"
 														th:text="${qna}" th:selected="${qna == quinCatSelectGet}">
 													</option>
@@ -396,12 +397,12 @@
 	$(document).ready(function () {
 		$('#quinCatSelectPost').select2({
 			theme: 'bootstrap4',
-			placeholder: 'select QNA',
+			placeholder: '--seleccionar--',
 			allowClear: true
 		});
 		$('#quinCatSelectGet').select2({
 			theme: 'bootstrap4',
-			placeholder: 'select QNA',
+			placeholder: '--seleccionar--',
 			allowClear: true
 		});
 		$('#persepcionSelect').select2({
@@ -411,7 +412,7 @@
 		});
 		$('#deduccionSelect').select2({
 			theme: 'bootstrap4',
-			placeholder: 'select',
+			placeholder: '--seleccionar--',
 			allowClear: true
 		});
 	});

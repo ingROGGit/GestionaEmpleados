@@ -443,7 +443,6 @@ public class GestionSINAVIDController {
 					} catch (IOException e) {
 						e.printStackTrace();
 						throw new RuntimeException("Error writing file to response", e);
-
 					}
 				}
 				return null;
@@ -556,6 +555,7 @@ public class GestionSINAVIDController {
 		}
 		AltaSINAVIDFilesEntity fileDB=this.altaSINAVIDJPA.findById(file.getId());
 		fileDB.setFolio(file.getFolio());
+		fileDB.setFechaAlta(file.getFechaAlta());
 		this.altaSINAVIDJPA.save(fileDB);
 		String mensaje = "Folio Registrado con Exito";
 		status.setComplete();

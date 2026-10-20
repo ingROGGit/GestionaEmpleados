@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.math3.analysis.function.Add;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.CellType;
@@ -196,7 +197,8 @@ public class ProcesaFileXLSXThread {
 												.empleado(empleado).estatus("ERROR").error(valores[10]).build();
 									}
 								}
-								this.sinavidJPA.save(sinavid);
+								if(sinavid!=null)
+									this.sinavidJPA.save(sinavid);
 							}
 						}
 					} catch (Exception e) {
@@ -526,6 +528,7 @@ public class ProcesaFileXLSXThread {
 														detPer.setQuincenaCatDP(quinCat);
 														detPer.setEmpleadoPer(emp);
 														this.detallePerJPA.save(detPer);
+														quin.setQuinquenio(true);
 													}
 													if (valor.contains("P 07")) {
 														detPer = new DetallePersepcionesEntity();
@@ -625,6 +628,987 @@ public class ProcesaFileXLSXThread {
 														detPer.setEmpleadoPer(emp);
 														this.detallePerJPA.save(detPer);
 													}
+													if (valor.contains("P 03")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("03");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 03") + 4,
+																		valor.indexOf("P 03") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 09")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClaveAndDescripcion("09","Importe de Horas Extras Dobles");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 09") + 4,
+																		valor.indexOf("P 09") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 11")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("11");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 11") + 4,
+																		valor.indexOf("P 11") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 12")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("12");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 12") + 4,
+																		valor.indexOf("P 12") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 13")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("13");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 13") + 4,
+																		valor.indexOf("P 13") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 14")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClaveAndDescripcion("14","Domingo Trabajado Gravable");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 14") + 4,
+																		valor.indexOf("P 14") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 15")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("15");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 15") + 4,
+																		valor.indexOf("P 15") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 16")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("16");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 16") + 4,
+																		valor.indexOf("P 16") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 17")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("17");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 17") + 4,
+																		valor.indexOf("P 17") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 18")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClaveAndDescripcion("18","Prima Vacacional");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 18") + 4,
+																		valor.indexOf("P 18") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 19")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("19");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 19") + 4,
+																		valor.indexOf("P 19") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 20")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("20");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 20") + 4,
+																		valor.indexOf("P 20") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 21")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("21");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 21") + 4,
+																		valor.indexOf("P 21") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 22")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("22");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 22") + 4,
+																		valor.indexOf("P 22") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 23")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("23");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 23") + 4,
+																		valor.indexOf("P 23") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 24")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("24");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 24") + 4,
+																		valor.indexOf("P 24") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 25")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("25");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 25") + 4,
+																		valor.indexOf("P 25") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 26")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("26");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 26") + 4,
+																		valor.indexOf("P 26") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 27")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("27");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 27") + 4,
+																		valor.indexOf("P 27") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 28")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("28");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 28") + 4,
+																		valor.indexOf("P 28") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 29")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("29");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 29") + 4,
+																		valor.indexOf("P 29") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 30")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("30");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 30") + 4,
+																		valor.indexOf("P 30") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 31")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("31");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 31") + 4,
+																		valor.indexOf("P 31") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 32")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("32");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 32") + 4,
+																		valor.indexOf("P 32") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 34")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("34");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 34") + 4,
+																		valor.indexOf("P 34") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 36")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("36");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 36") + 4,
+																		valor.indexOf("P 36") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 37")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("37");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 37") + 4,
+																		valor.indexOf("P 37") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 38")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("38");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 38") + 4,
+																		valor.indexOf("P 38") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 39")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("39");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 39") + 4,
+																		valor.indexOf("P 39") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 40")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("40");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 40") + 4,
+																		valor.indexOf("P 40") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 41")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("41");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 41") + 4,
+																		valor.indexOf("P 41") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 42")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("42");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 42") + 4,
+																		valor.indexOf("P 42") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 43")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("43");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 43") + 4,
+																		valor.indexOf("P 43") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 44")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("44");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 44") + 4,
+																		valor.indexOf("P 44") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 45")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("45");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 45") + 4,
+																		valor.indexOf("P 45") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 46")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("46");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 46") + 4,
+																		valor.indexOf("P 46") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 47")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("47");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 47") + 4,
+																		valor.indexOf("P 47") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 49")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("49");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 49") + 4,
+																		valor.indexOf("P 49") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 99")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("99");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 99") + 4,
+																		valor.indexOf("P 9") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P AC")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("AC");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P AC") + 4,
+																		valor.indexOf("P AC") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P AD")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("AD");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P AD") + 4,
+																		valor.indexOf("P AD") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P AV")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("AV");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P AV") + 4,
+																		valor.indexOf("P AV") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P B3")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("B3");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P B3") + 4,
+																		valor.indexOf("P B3") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P B4")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("B4");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P B4") + 4,
+																		valor.indexOf("P B4") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P B5")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("B5");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P B5") + 4,
+																		valor.indexOf("P B5") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P B7")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("B7");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P B7") + 4,
+																		valor.indexOf("P B7") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P B8")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("B8");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P B8") + 4,
+																		valor.indexOf("P B8") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C2")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C2");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C2") + 4,
+																		valor.indexOf("P C2") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C3")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C3");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C3") + 4,
+																		valor.indexOf("P C3") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C4")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClaveAndDescripcion("C4","Cobro Puesto Anterior");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C4") + 4,
+																		valor.indexOf("P C4") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C5")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C5");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C5") + 4,
+																		valor.indexOf("P C5") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C6")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C6");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C6") + 4,
+																		valor.indexOf("P C6") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C7")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C7");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C7") + 4,
+																		valor.indexOf("P C7") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C8")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C8");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C8") + 4,
+																		valor.indexOf("P C8") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C9")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C9");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C9") + 4,
+																		valor.indexOf("P C9") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P CM")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("CM");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P CM") + 4,
+																		valor.indexOf("P CM") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P CV")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("CV");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P CV") + 4,
+																		valor.indexOf("P CV") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P E2")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("E2");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P E2") + 4,
+																		valor.indexOf("P E2") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P F1")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("F1");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P F1") + 4,
+																		valor.indexOf("P F1") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P F2")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("F2");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P F2") + 4,
+																		valor.indexOf("P F2") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P F3")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("F3");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P F3") + 4,
+																		valor.indexOf("P F3") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P F4")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("F4");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P F4") + 4,
+																		valor.indexOf("P F4") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P F5")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("F5");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P F5") + 4,
+																		valor.indexOf("P F5") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P F6")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("F6");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P F6") + 4,
+																		valor.indexOf("P F6") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P JM")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("JM");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P JM") + 4,
+																		valor.indexOf("P JM") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P PI")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("PI");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P PI") + 4,
+																		valor.indexOf("P PI") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P PV")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("PV");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P PV") + 4,
+																		valor.indexOf("P PV") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P RE")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("RE");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P RE") + 4,
+																		valor.indexOf("P RE") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P RQ")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("RQ");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P RQ") + 4,
+																		valor.indexOf("P RQ") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P SS")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("SS");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P SS") + 4,
+																		valor.indexOf("P SS") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+												
 												}
 												if (Row.getCell(0).getStringCellValue().contains("Fecha de Revisión")
 														&& Row.getCell(7) != null) {
@@ -720,6 +1704,21 @@ public class ProcesaFileXLSXThread {
 														new BigDecimal(valor
 																.substring(valor.indexOf("D 53") + 4,
 																		valor.indexOf("D 53") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 50")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("50");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 50") + 4,
+																		valor.indexOf("D 50") + 16)
 																.trim().replace(",", ""))
 																.setScale(2, RoundingMode.HALF_UP));
 												detded.setDeducciones(ded);
@@ -907,6 +1906,3167 @@ public class ProcesaFileXLSXThread {
 												detded.setQuincenaCatDD(quinCat);
 												this.detalleDedJPA.save(detded);
 											}
+											if (valor.contains("D 51")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("51");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 51") + 4,
+																		valor.indexOf("D 51") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 52")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("52");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 52") + 4,
+																		valor.indexOf("D 52") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 54")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("54");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 54") + 4,
+																		valor.indexOf("D 54") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 55")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("55");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 55") + 4,
+																		valor.indexOf("D 55") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 56")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("56");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 56") + 4,
+																		valor.indexOf("D 56") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 57")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("57");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 57") + 4,
+																		valor.indexOf("D 57") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 58")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("58");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 58") + 4,
+																		valor.indexOf("D 58") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 59")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("59");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 59") + 4,
+																		valor.indexOf("D 59") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 61")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("61");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 61") + 4,
+																		valor.indexOf("D 61") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 63")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("63");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 63") + 4,
+																		valor.indexOf("D 63") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 64")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("64");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 64") + 4,
+																		valor.indexOf("D 64") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 67")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("67");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 67") + 4,
+																		valor.indexOf("D 67") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 69")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("69");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 69") + 4,
+																		valor.indexOf("D 69") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 70")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("70");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 70") + 4,
+																		valor.indexOf("D 70") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 71")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("71");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 71") + 4,
+																		valor.indexOf("D 71") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 72")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("72");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 72") + 4,
+																		valor.indexOf("D 72") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 73")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("73");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 73") + 4,
+																		valor.indexOf("D 73") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 75")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("75");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 75") + 4,
+																		valor.indexOf("D 75") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 76")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("76");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 76") + 4,
+																		valor.indexOf("D 76") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 77")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("77");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 77") + 4,
+																		valor.indexOf("D 77") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 78")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("78");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 78") + 4,
+																		valor.indexOf("D 78") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 79")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("79");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 79") + 4,
+																		valor.indexOf("D 79") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 7S")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("7S");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 7S") + 4,
+																		valor.indexOf("D 7S") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 81")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("81");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 81") + 4,
+																		valor.indexOf("D 81") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 83")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("83");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 83") + 4,
+																		valor.indexOf("D 83") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 85")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("85");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 85") + 4,
+																		valor.indexOf("D 85") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 87")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("87");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 87") + 4,
+																		valor.indexOf("D 87") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 88")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("88");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 88") + 4,
+																		valor.indexOf("D 88") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 89")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("89");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 89") + 4,
+																		valor.indexOf("D 89") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 90")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("90");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 90") + 4,
+																		valor.indexOf("D 90") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 92")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("92");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 92") + 4,
+																		valor.indexOf("D 92") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 93")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("93");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 93") + 4,
+																		valor.indexOf("D 93") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 94")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("94");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 94") + 4,
+																		valor.indexOf("D 94") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 95")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("95");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 95") + 4,
+																		valor.indexOf("D 95") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 96")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("96");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 96") + 4,
+																		valor.indexOf("D 96") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 97")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("97");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 97") + 4,
+																		valor.indexOf("D 97") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 98")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("98");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 98") + 4,
+																		valor.indexOf("D 98") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D AE")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("AE");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D AE") + 4,
+																		valor.indexOf("D AE") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D AI")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("AI");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D AI") + 4,
+																		valor.indexOf("D AI") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D AN")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("AN");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D AN") + 4,
+																		valor.indexOf("D AN") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D AR")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("AR");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D AR") + 4,
+																		valor.indexOf("D AR") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D CP")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("CP");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D CP") + 4,
+																		valor.indexOf("D CP") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D CS")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("CS");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D CS") + 4,
+																		valor.indexOf("D CS") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D D1")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("D1");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D D1") + 4,
+																		valor.indexOf("D D1") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D D3")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("D3");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D D3") + 4,
+																		valor.indexOf("D D3") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D D5")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("D5");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D D5") + 4,
+																		valor.indexOf("D D5") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D ET")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("ET");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D ET") + 4,
+																		valor.indexOf("D ET") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D FB")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("FB");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D FB") + 4,
+																		valor.indexOf("D FB") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D GM")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("GM");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D GM") + 4,
+																		valor.indexOf("D GM") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D ID")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("ID");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D ID") + 4,
+																		valor.indexOf("D ID") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D IS")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("IS");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D IS") + 4,
+																		valor.indexOf("D IS") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D MT")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("MT");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D MT") + 4,
+																		valor.indexOf("D MT") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D NF")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("NF");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D NF") + 4,
+																		valor.indexOf("D NF") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D PF")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("PF");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D PF") + 4,
+																		valor.indexOf("D PF") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D PP")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("PP");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D PP") + 4,
+																		valor.indexOf("D PP") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D PS")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("PS");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D PS") + 4,
+																		valor.indexOf("D PS") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D PU")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("PU");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D PU") + 4,
+																		valor.indexOf("D PU") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D QA")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("QA");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D QA") + 4,
+																		valor.indexOf("D QA") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D RF")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("RF");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D RF") + 4,
+																		valor.indexOf("D RF") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D RM")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("RM");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D RM") + 4,
+																		valor.indexOf("D RM") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SA")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SA");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SA") + 4,
+																		valor.indexOf("D SA") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SB")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SB");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SB") + 4,
+																		valor.indexOf("D SB") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SD")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SD");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SD") + 4,
+																		valor.indexOf("D SD") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SH")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SH");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SH") + 4,
+																		valor.indexOf("D SH") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SI")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SI");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SI") + 4,
+																		valor.indexOf("D SI") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SN")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SN");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SN") + 4,
+																		valor.indexOf("D SN") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SR")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SR");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SR") + 4,
+																		valor.indexOf("D SR") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D ST")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("ST");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D ST") + 4,
+																		valor.indexOf("D ST") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SU")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SU");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SU") + 4,
+																		valor.indexOf("D SU") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D VM")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("VM");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D VM") + 4,
+																		valor.indexOf("D VM") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+										}
+									}
+								}
+							}
+						}
+						if (tipoCarga.equals("CFALTANTES")) {
+							Empleados emp = new Empleados();
+							PersepcionesEntity per = null;
+							DeduccionesEntity ded = null;
+							DetallePersepcionesEntity detPer = null;
+							DetalleDeduccionesEntiy detded = null;
+							QuincenasEntity quin = null;
+							QuincenaCatEntity quinCat = this.quincenasCatJPA.findByIdQNA(quinString);
+							for (int r = 0; r <= rows; r++) {
+								Row = Sheet.getRow(r);
+								if (Row != null) {
+									if (Row.getCell(0) != null) {
+										System.out.println(Row.getCell(0).getStringCellValue());
+										if (Row.getCell(0).getCellType() != CellType.BLANK) {
+											if (Row.getCell(0).getCellType() == CellType.STRING) {
+												try {
+													Long IDEMPLEADO = Long
+															.parseLong(Row.getCell(0).getStringCellValue());
+													emp = this.empleadosJPA.findById(IDEMPLEADO);
+													if (emp == null) {
+														emp = new Empleados();
+														emp.setId(IDEMPLEADO);
+														emp.setNombreCompleto(Row.getCell(1).getStringCellValue());
+														String[] valores = emp.getNombreCompleto().split(" ");
+														emp.setApellidop(valores[0]);
+														emp.setApellidom(valores[1]);
+														emp.setNombre(String.join(" ",
+																Arrays.copyOfRange(valores, 2, valores.length)));
+														emp.setActivo(true);
+														emp.setPuestosEntity(this.puestosJPA.findById(0).get());
+														emp.setServicioEntity(this.serviciosJPA.findById(0).get());
+														emp.isNew();
+//												this.empleadosJPA.save(emp);
+//												saveTransactional(emp);
+														try {
+															procesTransactional.saveEmpleado(emp);
+														} catch (Exception err) {
+															err.printStackTrace();
+														}
+													}
+													quin = new QuincenasEntity();
+												} catch (Throwable e) {
+												}
+												if (Row.getCell(0).getStringCellValue().contains("P")) {
+													String valor = Row.getCell(0).getStringCellValue();
+													if (valor.contains("P 03")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("03");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 03") + 4,
+																		valor.indexOf("P 03") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 09")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClaveAndDescripcion("09","Importe de Horas Extras Dobles");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 09") + 4,
+																		valor.indexOf("P 09") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 11")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("11");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 11") + 4,
+																		valor.indexOf("P 11") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 12")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("12");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 12") + 4,
+																		valor.indexOf("P 12") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 13")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("13");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 13") + 4,
+																		valor.indexOf("P 13") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 14")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClaveAndDescripcion("14","Domingo Trabajado Gravable");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 14") + 4,
+																		valor.indexOf("P 14") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 15")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("15");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 15") + 4,
+																		valor.indexOf("P 15") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 16")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("16");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 16") + 4,
+																		valor.indexOf("P 16") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 17")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("17");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 17") + 4,
+																		valor.indexOf("P 17") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 18")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClaveAndDescripcion("18","Prima Vacacional");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 18") + 4,
+																		valor.indexOf("P 18") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 19")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("19");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 19") + 4,
+																		valor.indexOf("P 19") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 20")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("20");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 20") + 4,
+																		valor.indexOf("P 20") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 21")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("21");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 21") + 4,
+																		valor.indexOf("P 21") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 22")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("22");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 22") + 4,
+																		valor.indexOf("P 22") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 23")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("23");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 23") + 4,
+																		valor.indexOf("P 23") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 24")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("24");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 24") + 4,
+																		valor.indexOf("P 24") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 25")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("25");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 25") + 4,
+																		valor.indexOf("P 25") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 26")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("26");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 26") + 4,
+																		valor.indexOf("P 26") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 27")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("27");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 27") + 4,
+																		valor.indexOf("P 27") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 28")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("28");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 28") + 4,
+																		valor.indexOf("P 28") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 29")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("29");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 29") + 4,
+																		valor.indexOf("P 29") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 30")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("30");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 30") + 4,
+																		valor.indexOf("P 30") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 31")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("31");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 31") + 4,
+																		valor.indexOf("P 31") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 32")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("32");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 32") + 4,
+																		valor.indexOf("P 32") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 34")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("34");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 34") + 4,
+																		valor.indexOf("P 34") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 36")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("36");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 36") + 4,
+																		valor.indexOf("P 36") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 37")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("37");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 37") + 4,
+																		valor.indexOf("P 37") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 38")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("38");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 38") + 4,
+																		valor.indexOf("P 38") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 39")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("39");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 39") + 4,
+																		valor.indexOf("P 39") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 40")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("40");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 40") + 4,
+																		valor.indexOf("P 40") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 41")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("41");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 41") + 4,
+																		valor.indexOf("P 41") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 42")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("42");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 42") + 4,
+																		valor.indexOf("P 42") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 43")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("43");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 43") + 4,
+																		valor.indexOf("P 43") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 44")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("44");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 44") + 4,
+																		valor.indexOf("P 44") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 45")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("45");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 45") + 4,
+																		valor.indexOf("P 45") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 46")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("46");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 46") + 4,
+																		valor.indexOf("P 46") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 47")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("47");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 47") + 4,
+																		valor.indexOf("P 47") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 49")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("49");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 49") + 4,
+																		valor.indexOf("P 49") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P 99")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("99");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P 99") + 4,
+																		valor.indexOf("P 9") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P AC")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("AC");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P AC") + 4,
+																		valor.indexOf("P AC") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P AD")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("AD");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P AD") + 4,
+																		valor.indexOf("P AD") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P AV")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("AV");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P AV") + 4,
+																		valor.indexOf("P AV") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P B3")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("B3");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P B3") + 4,
+																		valor.indexOf("P B3") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P B4")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("B4");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P B4") + 4,
+																		valor.indexOf("P B4") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P B5")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("B5");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P B5") + 4,
+																		valor.indexOf("P B5") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P B7")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("B7");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P B7") + 4,
+																		valor.indexOf("P B7") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P B8")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("B8");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P B8") + 4,
+																		valor.indexOf("P B8") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C2")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C2");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C2") + 4,
+																		valor.indexOf("P C2") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C3")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C3");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C3") + 4,
+																		valor.indexOf("P C3") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C4")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClaveAndDescripcion("C4","Cobro Puesto Anterior");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C4") + 4,
+																		valor.indexOf("P C4") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C5")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C5");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C5") + 4,
+																		valor.indexOf("P C5") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C6")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C6");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C6") + 4,
+																		valor.indexOf("P C6") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C7")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C7");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C7") + 4,
+																		valor.indexOf("P C7") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C8")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C8");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C8") + 4,
+																		valor.indexOf("P C8") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P C9")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("C9");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P C9") + 4,
+																		valor.indexOf("P C9") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P CM")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("CM");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P CM") + 4,
+																		valor.indexOf("P CM") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P CV")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("CV");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P CV") + 4,
+																		valor.indexOf("P CV") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P E2")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("E2");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P E2") + 4,
+																		valor.indexOf("P E2") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P F1")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("F1");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P F1") + 4,
+																		valor.indexOf("P F1") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P F2")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("F2");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P F2") + 4,
+																		valor.indexOf("P F2") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P F3")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("F3");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P F3") + 4,
+																		valor.indexOf("P F3") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P F4")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("F4");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P F4") + 4,
+																		valor.indexOf("P F4") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P F5")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("F5");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P F5") + 4,
+																		valor.indexOf("P F5") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P F6")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("F6");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P F6") + 4,
+																		valor.indexOf("P F6") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P JM")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("JM");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P JM") + 4,
+																		valor.indexOf("P JM") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P PI")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("PI");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P PI") + 4,
+																		valor.indexOf("P PI") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P PV")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("PV");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P PV") + 4,
+																		valor.indexOf("P PV") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P RE")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("RE");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P RE") + 4,
+																		valor.indexOf("P RE") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P RQ")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("RQ");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P RQ") + 4,
+																		valor.indexOf("P RQ") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+													if (valor.contains("P SS")) {
+														detPer = new DetallePersepcionesEntity();
+														per = new PersepcionesEntity();
+														per = this.persepcionesJPA.findByClave("SS");
+														detPer.setPersepciones(per);
+														detPer.setImporte(new BigDecimal(valor
+																.substring(valor.indexOf("P SS") + 4,
+																		valor.indexOf("P SS") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+														detPer.setQuincenaCatDP(quinCat);
+														detPer.setEmpleadoPer(emp);
+														this.detallePerJPA.save(detPer);
+													}
+												}
+												
+
+												if (Row.getCell(0).getStringCellValue().contains("Total")) {
+													quin.setSueldoPre(
+															BigDecimal.valueOf(Row.getCell(5).getNumericCellValue())
+																	.setScale(2, RoundingMode.HALF_UP));
+													quin.setFolioPre(Row.getCell(7).getStringCellValue());
+												}
+											}
+											if (quin != null && quin.getSueldoPre() != null) {
+												QuincenasEntity quincenaDB=this.quincenaJPA.findByQuinCatAndEmpleadoQN_Id(quinCat,emp.getId());
+												if(quincenaDB!=null) {
+													quincenaDB.setQuinquenio(quin.isQuinquenio());
+													this.quincenaJPA.save(quincenaDB);
+												}
+//												List<Empleados> lempleados = new ArrayList<>();
+//												lempleados.add(emp);
+//												quin.setEmpleadoQN(lempleados);
+//												Set<QuincenaCatEntity> lquiCat = new HashSet<>();
+//												lquiCat.add(quinCat);
+//												quin.setQuinCat(lquiCat);
+//												quincenaJPA.save(quin);
+												quin = null;
+											}
+										}
+									}
+									if (Row.getCell(5) != null && Row.getCell(5).getCellType() == CellType.STRING) {
+										if (Row.getCell(5).getStringCellValue().contains("D")) {
+											String valor = Row.getCell(5).getStringCellValue();
+											System.out.println(valor);
+											if (valor.contains("D 51")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("51");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 51") + 4,
+																		valor.indexOf("D 51") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 52")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("52");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 52") + 4,
+																		valor.indexOf("D 52") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 54")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("54");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 54") + 4,
+																		valor.indexOf("D 54") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 55")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("55");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 55") + 4,
+																		valor.indexOf("D 55") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 56")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("56");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 56") + 4,
+																		valor.indexOf("D 56") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 57")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("57");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 57") + 4,
+																		valor.indexOf("D 57") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 58")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("58");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 58") + 4,
+																		valor.indexOf("D 58") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 59")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("59");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 59") + 4,
+																		valor.indexOf("D 59") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 61")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("61");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 61") + 4,
+																		valor.indexOf("D 61") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 63")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("63");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 63") + 4,
+																		valor.indexOf("D 63") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 64")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("64");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 64") + 4,
+																		valor.indexOf("D 64") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 67")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("67");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 67") + 4,
+																		valor.indexOf("D 67") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 69")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("69");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 69") + 4,
+																		valor.indexOf("D 69") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 70")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("70");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 70") + 4,
+																		valor.indexOf("D 70") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 71")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("71");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 71") + 4,
+																		valor.indexOf("D 71") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 72")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("72");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 72") + 4,
+																		valor.indexOf("D 72") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 73")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("73");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 73") + 4,
+																		valor.indexOf("D 73") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 75")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("75");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 75") + 4,
+																		valor.indexOf("D 75") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 76")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("76");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 76") + 4,
+																		valor.indexOf("D 76") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 77")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("77");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 77") + 4,
+																		valor.indexOf("D 77") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 78")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("78");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 78") + 4,
+																		valor.indexOf("D 78") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 79")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("79");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 79") + 4,
+																		valor.indexOf("D 79") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 7S")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("7S");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 7S") + 4,
+																		valor.indexOf("D 7S") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 81")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("81");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 81") + 4,
+																		valor.indexOf("D 81") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 83")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("83");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 83") + 4,
+																		valor.indexOf("D 83") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 85")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("85");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 85") + 4,
+																		valor.indexOf("D 85") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 87")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("87");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 87") + 4,
+																		valor.indexOf("D 87") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 88")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("88");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 88") + 4,
+																		valor.indexOf("D 88") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 89")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("89");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 89") + 4,
+																		valor.indexOf("D 89") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 90")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("90");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 90") + 4,
+																		valor.indexOf("D 90") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 92")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("92");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 92") + 4,
+																		valor.indexOf("D 92") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 93")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("93");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 93") + 4,
+																		valor.indexOf("D 93") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 94")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("94");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 94") + 4,
+																		valor.indexOf("D 94") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 95")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("95");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 95") + 4,
+																		valor.indexOf("D 95") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 96")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("96");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 96") + 4,
+																		valor.indexOf("D 96") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 97")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("97");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 97") + 4,
+																		valor.indexOf("D 97") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D 98")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("98");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D 98") + 4,
+																		valor.indexOf("D 98") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D AE")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("AE");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D AE") + 4,
+																		valor.indexOf("D AE") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D AI")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("AI");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D AI") + 4,
+																		valor.indexOf("D AI") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D AN")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("AN");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D AN") + 4,
+																		valor.indexOf("D AN") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D AR")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("AR");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D AR") + 4,
+																		valor.indexOf("D AR") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D CP")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("CP");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D CP") + 4,
+																		valor.indexOf("D CP") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D CS")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("CS");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D CS") + 4,
+																		valor.indexOf("D CS") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D D1")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("D1");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D D1") + 4,
+																		valor.indexOf("D D1") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D D3")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("D3");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D D3") + 4,
+																		valor.indexOf("D D3") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D D5")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("D5");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D D5") + 4,
+																		valor.indexOf("D D5") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D ET")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("ET");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D ET") + 4,
+																		valor.indexOf("D ET") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D FB")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("FB");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D FB") + 4,
+																		valor.indexOf("D FB") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D GM")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("GM");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D GM") + 4,
+																		valor.indexOf("D GM") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D ID")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("ID");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D ID") + 4,
+																		valor.indexOf("D ID") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D IS")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("IS");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D IS") + 4,
+																		valor.indexOf("D IS") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D MT")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("MT");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D MT") + 4,
+																		valor.indexOf("D MT") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D NF")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("NF");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D NF") + 4,
+																		valor.indexOf("D NF") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D PF")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("PF");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D PF") + 4,
+																		valor.indexOf("D PF") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D PP")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("PP");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D PP") + 4,
+																		valor.indexOf("D PP") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D PS")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("PS");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D PS") + 4,
+																		valor.indexOf("D PS") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D PU")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("PU");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D PU") + 4,
+																		valor.indexOf("D PU") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D QA")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("QA");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D QA") + 4,
+																		valor.indexOf("D QA") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D RF")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("RF");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D RF") + 4,
+																		valor.indexOf("D RF") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D RM")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("RM");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D RM") + 4,
+																		valor.indexOf("D RM") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SA")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SA");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SA") + 4,
+																		valor.indexOf("D SA") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SB")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SB");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SB") + 4,
+																		valor.indexOf("D SB") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SD")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SD");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SD") + 4,
+																		valor.indexOf("D SD") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SH")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SH");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SH") + 4,
+																		valor.indexOf("D SH") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SI")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SI");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SI") + 4,
+																		valor.indexOf("D SI") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SN")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SN");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SN") + 4,
+																		valor.indexOf("D SN") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SR")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SR");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SR") + 4,
+																		valor.indexOf("D SR") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D ST")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("ST");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D ST") + 4,
+																		valor.indexOf("D ST") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D SU")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("SU");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D SU") + 4,
+																		valor.indexOf("D SU") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
+											if (valor.contains("D VM")) {
+												detded = new DetalleDeduccionesEntiy();
+												ded = new DeduccionesEntity();
+												ded = this.deduccionesJPA.findByClave("VM");
+												detded.setImporte(
+														new BigDecimal(valor
+																.substring(valor.indexOf("D VM") + 4,
+																		valor.indexOf("D VM") + 16)
+																.trim().replace(",", ""))
+																.setScale(2, RoundingMode.HALF_UP));
+												detded.setDeducciones(ded);
+												detded.setEmpleadoDD(emp);
+												detded.setQuincenaCatDD(quinCat);
+												this.detalleDedJPA.save(detded);
+											}
 										}
 									}
 								}
@@ -927,6 +5087,7 @@ public class ProcesaFileXLSXThread {
 												if (emp != null) {
 													QuincenasEntity quin = this.quincenaJPA
 															.findByQuinCatAndEmpleadoQN_Id(quinCat, emp.getId());
+													if(quin!=null) {
 													quin.setSueldoNeto(Row.getCell(4).getCellType() == CellType.NUMERIC
 															? new BigDecimal(Row.getCell(4).getNumericCellValue())
 																	.setScale(2, RoundingMode.HALF_UP)
@@ -934,6 +5095,23 @@ public class ProcesaFileXLSXThread {
 																	.setScale(2, RoundingMode.HALF_UP));
 													quin.setTipoPago(Row.getCell(5).getStringCellValue());
 													quin.setFolioQuin(Row.getCell(6).getStringCellValue());
+													}
+													else {
+														Set<QuincenaCatEntity> lQuinCat= new HashSet<>(); 
+														lQuinCat.add(quinCat);
+														List<Empleados> lEmpleados=new ArrayList<Empleados>();
+														lEmpleados.add(emp);
+														quin=QuincenasEntity.builder().quinCat(lQuinCat)
+																.empleadoQN(lEmpleados)
+																.sueldoNeto(Row.getCell(4).getCellType() == CellType.NUMERIC
+															? new BigDecimal(Row.getCell(4).getNumericCellValue())
+																	.setScale(2, RoundingMode.HALF_UP)
+															: new BigDecimal(Row.getCell(4).getStringCellValue())
+																	.setScale(2, RoundingMode.HALF_UP))
+														.tipoPago(Row.getCell(5).getStringCellValue())
+														.folioQuin(Row.getCell(6).getStringCellValue())
+																.build();
+													}
 													this.quincenaJPA.save(quin);
 												}
 //											if(emp==null)

@@ -158,6 +158,14 @@ public class ExportCuentasBanco{
 	            Cell cellBancoHeader = row13.createCell(22);
 	            cellBancoHeader.setCellValue("BANCO");
 	            cellBancoHeader.setCellStyle(headerStyle);
+	            
+	            Cell cellCuenaFull = row13.createCell(23);
+	            cellCuenaFull.setCellValue("NO.CUENTA");
+	            cellCuenaFull.setCellStyle(headerStyle);
+	            
+	            Cell cellTIPO = row13.createCell(24);
+	            cellTIPO.setCellValue("TIPO");
+	            cellTIPO.setCellStyle(headerStyle);
 
 	            // Fila 14: Instrucciones de captura (debajo de número de cuenta)
 	            Row row14 = sheet.createRow(14);
@@ -191,6 +199,8 @@ public class ExportCuentasBanco{
 
 	                // Columna del Banco (Columna 22)
 	                row.createCell(22).setCellValue(emp.getLisCuentas().get(0).getBancoE().getBanco());
+	                row.createCell(23).setCellValue(emp.getLisCuentas().get(0).getCuenta());
+	                row.createCell(24).setCellValue(emp.getLisCuentas().get(0).getTipo());
 	            }
 
 

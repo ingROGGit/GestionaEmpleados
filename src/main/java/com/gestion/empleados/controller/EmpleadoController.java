@@ -5,6 +5,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -40,6 +45,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.gestion.empleados.entity.AddBajaEntity;
 import com.gestion.empleados.entity.AsignacionTurnoEntity;
@@ -150,19 +156,30 @@ public class EmpleadoController {
 		Pageable pageRequest = PageRequest.of(page, 5000);
 		Page<Empleados> empleados = this.empleadosJPA.findAll(pageRequest);
 		PageRender<Empleados> pageRender = new PageRender<>("/empleados/listarEmpleados", empleados);
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String fa = df.format(new Date());
 		File dirUsu = new File(SecurityContextHolder.getContext().getAuthentication().getName());
-		File file = new File(dirUsu.getAbsolutePath()+ "\\Empleados_" + fa + ".xlsx");
-		System.out.println(file.getAbsolutePath());
+		if(!dirUsu.exists())
+			dirUsu.mkdirs();
+		String extension = ".xlsx"; // extencion
+		List<Path> resultado = null;
+		try (Stream<Path> walk = Files.walk(Paths.get(dirUsu.getAbsolutePath()))) {
+			resultado = walk.filter(p -> !Files.isDirectory(p)) // Ignorar directorios
+					.filter(p -> p.toString().toLowerCase().endsWith(extension.toLowerCase())) // Filtrar extensión
+					.collect(Collectors.toList());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		boolean fileExDownload = false, filefull = false;
-		if (file.exists()) {
-			if (file.canWrite()) {
-				fileExDownload = true;
-				filefull = true;
-			} else
-				filefull = false;
+		for (Path path : resultado) {
+			File file = path.toFile();
+			System.out.println(file.getAbsolutePath());
+			if (file.exists()) {
+				if (file.canWrite()) {
+					fileExDownload = true;
+					filefull = true;
+				} else
+					filefull = false;
 
+			}
 		}
 		java.sql.Date fechaSqlHoy = java.sql.Date.valueOf(java.time.LocalDate.now());
 		String quincenasCat = this.quincenasCatJPA.findQNAACT(fechaSqlHoy);
@@ -189,7 +206,7 @@ public class EmpleadoController {
 				.findByEmpleadoPerAndQuincenaCatDP_IdQNA(empleado, idQNA);
 		List<DetalleDeduccionesEntiy> detalleded = this.detalleDedJPA.findByEmpleadoDDAndQuincenaCatDD_IdQNA(empleado,
 				idQNA);
-		List<AsignacionTurnoEntity> asignacionTH=this.asignaTurJPA.findByEmpleado_Id(id);
+		List<AsignacionTurnoEntity> asignacionTH = this.asignaTurJPA.findByEmpleado_Id(id);
 		LocalDate hoy = LocalDate.now();
 		LocalDate fechaIngreso = new java.sql.Date(empleado.getFechaIngreso().getTime()).toLocalDate();
 		Period periodo = Period.between(fechaIngreso, hoy);
@@ -202,7 +219,7 @@ public class EmpleadoController {
 		modelo.put("quincena", quincena);
 		modelo.put("detalleper", detalleper);
 		modelo.put("detalleded", detalleded);
-		modelo.put("asignacionTH",asignacionTH);
+		modelo.put("asignacionTH", asignacionTH);
 		modelo.put("titulo", "Detalles del Empleado " + empleado.getNombre());
 		return "empleados/verEmpleadoModal";
 	}
@@ -218,7 +235,7 @@ public class EmpleadoController {
 			flash.addFlashAttribute("error", "El empleado no Existe");
 			return "redirect:/empleados/listarEmpleados";
 		}
-		AddBajaEntity bajaEm=this.addBajaRepoJPA.findByEmpleado_Id(empleado.getId());
+		AddBajaEntity bajaEm = this.addBajaRepoJPA.findByEmpleado_Id(empleado.getId());
 		modelo.put("periodo", periodo);
 		modelo.put("empleado", empleado);
 		modelo.put("bajaEm", bajaEm);
@@ -267,7 +284,8 @@ public class EmpleadoController {
 			getEmpleado.setNombre(empleado.getNombre());
 			getEmpleado.setApellidop(empleado.getApellidop());
 			getEmpleado.setApellidom(empleado.getApellidom());
-			getEmpleado.setNombreCompleto(empleado.getApellidop()+" "+empleado.getApellidom()+" "+empleado.getNombre());
+			getEmpleado.setNombreCompleto(
+					empleado.getApellidop() + " " + empleado.getApellidom() + " " + empleado.getNombre());
 			SINAVIDEntity sinavid = getEmpleado.getSinavid();
 			if (sinavid != null) {
 				sinavid.setEstatus("CORREGIDO");
@@ -283,10 +301,10 @@ public class EmpleadoController {
 		flash.addFlashAttribute("success", mensaje);
 		return "redirect:/empleados/listarEmpleados";
 	}
-	
+
 	@PostMapping("empleados/formEmpleadoBajaSave")
 	public String addBajaEmpleado(@Valid AddBajaEntity addBaja, BindingResult result, Model modelo,
-			RedirectAttributes flash, SessionStatus status) throws Exception{
+			RedirectAttributes flash, SessionStatus status) throws Exception {
 		if (result.hasErrors()) {
 			throw new Exception(result.toString());
 		}
@@ -294,12 +312,13 @@ public class EmpleadoController {
 		getEmpleado.setActivo(false);
 		this.empleadosJPA.save(getEmpleado);
 		this.addBajaRepoJPA.save(addBaja);
-		String mensaje = "Baja de Empleado "+getEmpleado.getId()+" "+getEmpleado.getNombre()+" Aplicada";
+		String mensaje = "Baja de Empleado " + getEmpleado.getId() + " " + getEmpleado.getNombre() + " Aplicada";
 		this.empleadosJPA.save(getEmpleado);
 		status.setComplete();
 		flash.addFlashAttribute("error", mensaje);
 		return "redirect:/empleados/listarEmpleados";
 	}
+
 	@GetMapping("/empleados/formEmpleadoEdit/{id}")
 	public String editarEmpleado(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
 			RedirectAttributes flash) {
@@ -320,15 +339,16 @@ public class EmpleadoController {
 	}
 
 	@GetMapping("/empleados/baja/{id}")
-	public String BajaEmpleado(@PathVariable(value = "id") Long id,Map<String, Object> modelo, RedirectAttributes flash) {
+	public String BajaEmpleado(@PathVariable(value = "id") Long id, Map<String, Object> modelo,
+			RedirectAttributes flash) {
 		if (id > 0) {
-			Empleados emp=this.empleadosJPA.findById(id);
-			List<CatBajasEntity> lcatBajas=this.bajasRepoJPA.findAll();
-			AddBajaEntity addBaja=new AddBajaEntity();
+			Empleados emp = this.empleadosJPA.findById(id);
+			List<CatBajasEntity> lcatBajas = this.bajasRepoJPA.findAll();
+			AddBajaEntity addBaja = new AddBajaEntity();
 			addBaja.setEmpleado(emp);
 			modelo.put("lcatBajas", lcatBajas);
 			modelo.put("addBaja", addBaja);
-			modelo.put("titulo", "Baja de "+emp.getId()+" "+emp.getNombre());
+			modelo.put("titulo", "Baja de " + emp.getId() + " " + emp.getNombre());
 		}
 		return "empleados/formEmpleadoBajaModal";
 	}
@@ -369,19 +389,20 @@ public class EmpleadoController {
 		File dirUsu = new File(SecurityContextHolder.getContext().getAuthentication().getName());
 		if (!dirUsu.exists())
 			dirUsu.mkdirs();
-		File file = new File(dirUsu.getAbsolutePath() + "\\Empleados_" + fa + ".xlsx");
+		File file = new File(dirUsu.getAbsolutePath() + "\\" + quinCatSelectGet + "-Empleados_" + fa + ".xlsx");
 		List<Empleados> lempeados = this.empleadosJPA.findByEMpleadosXQuincena(quinCatSelectGet);
 		for (Empleados e : lempeados) {
 			if (e.getPuestosEntity() != null)
 				e.getPuestosEntity().getPuesto();
 			if (e.getServicioEntity() != null)
 				e.getServicioEntity().getServicio();
-			if(e.getDetallePercepcione()!=null)
+			if (e.getDetallePercepcione() != null)
 				e.getDetallePercepcione().get(0);
-			if(e.getDetalleDeducciones()!=null)
+			if (e.getDetalleDeducciones() != null)
 				e.getDetalleDeducciones().get(0);
 		}
-		ExportExcelThread exexcel = new ExportExcelThread(file.getAbsolutePath(), "Empleados", null, null, lempeados,quinCatSelectGet);
+		ExportExcelThread exexcel = new ExportExcelThread(file.getAbsolutePath(), "Empleados", null, null, lempeados,
+				quinCatSelectGet);
 		exexcel.setName("Export-Empleados");
 		exexcel.setPriority(Thread.MAX_PRIORITY);
 		exexcel.start();
@@ -389,29 +410,37 @@ public class EmpleadoController {
 
 	@GetMapping("/empleados/FileExcel")
 	public String FileExcel(HttpServletResponse respons) throws DocumentException, IOException {
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String fa = df.format(new Date());
 		File dirUsu = new File(SecurityContextHolder.getContext().getAuthentication().getName());
-		File file = new File(dirUsu + "\\Empleados_" + fa + ".xlsx");
-		if (file.exists() && file.canWrite()) {
-			respons.setContentType("application/octet-stream");
-			String cabecera = "Content-Disposition";
-			String valor = "attachment; filename=Empleados_" + fa + ".xlsx";
-			respons.setHeader(cabecera, valor);
-			try (InputStream inputStream = new FileInputStream(file);
-					ServletOutputStream outputStream = respons.getOutputStream()) {
-				IOUtils.copy(inputStream, outputStream);
-				respons.flushBuffer();
-				inputStream.close();
-				file.delete();
-				return "redirect:/empleados/listarEmpleados";
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw new RuntimeException("Error writing file to response", e);
-			}
-		} else {
-			return "redirect:/empleados/listarEmpleados";
+		String extension = ".xlsx"; // extencion
+		List<Path> resultado = null;
+		try (Stream<Path> walk = Files.walk(Paths.get(dirUsu.getAbsolutePath()))) {
+			resultado = walk.filter(p -> !Files.isDirectory(p)) // Ignorar directorios
+					.filter(p -> p.toString().toLowerCase().endsWith(extension.toLowerCase())) // Filtrar extensión
+					.collect(Collectors.toList());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+			File file = resultado.get(0).toFile();
+			if (file.exists() && file.canWrite()) {
+				respons.setContentType("application/octet-stream");
+				String cabecera = "Content-Disposition";
+				String valor = "attachment; filename="+file.getName();
+				respons.setHeader(cabecera, valor);
+				try (InputStream inputStream = new FileInputStream(file);
+						ServletOutputStream outputStream = respons.getOutputStream()) {
+					IOUtils.copy(inputStream, outputStream);
+					respons.flushBuffer();
+					inputStream.close();
+					file.delete();
+//					return "redirect:/empleados/listarEmpleados";
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new RuntimeException("Error writing file to response", e);
+				}
+			} else {
+				return "redirect:/empleados/listarEmpleados";
+			}
+		return "redirect:/empleados/listarEmpleados";
 	}
 
 	@GetMapping("empleados/AddEXLSX")
@@ -442,6 +471,7 @@ public class EmpleadoController {
 		CatalogoCarga.put("CHOR", "Carga Horarios");
 		CatalogoCarga.put("CMTESON", "Carga Motivos TESON");
 		CatalogoCarga.put("CTESON", "Carga TESON");
+		CatalogoCarga.put("CFALTANTES", "Carga Detalles faltantes de PER y DED");
 		model.addAttribute("titulo", "EXCEL " + CatalogoCarga.get(TIPOCARGA));
 		model.addAttribute("TIPOCARGA", TIPOCARGA);
 		model.addAttribute("quin", "");

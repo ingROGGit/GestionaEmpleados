@@ -179,6 +179,11 @@ public class CuentasBancariasController {
 			modelo.addAttribute("titulo", "Registro de Cuenta");
 			return "cuentasBancarias/formCuenta";
 		}
+		List<CuentasEntity> validaOld=this.cuentasJPA.findByEmpleadoC(cuenta.getEmpleadoC());
+		if(validaOld==null||validaOld.isEmpty())
+			cuenta.setTipo("A");
+		else
+			cuenta.setTipo("M");
 		cuenta.setFechaAlta(new Date());
 		String mensaje = "Cuenta Registrada con Exito";
 		this.cuentasJPA.save(cuenta);

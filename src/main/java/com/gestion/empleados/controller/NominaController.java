@@ -197,11 +197,11 @@ public class NominaController {
 				Collection<Empleados> collEmpleados = new HashSet<>();
 				collEmpleados = empleadoRJPA.findByTipoContrato(filtrosSet.getTipoContrato());
 				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collEmpleados, pageRequest);
-			} else if (filtrosSet.getStatus() != null && !filtrosSet.getStatus().isEmpty()) {
-				boolean bajaStatus = false;
-				if (filtrosSet.getStatus().equals("Baja"))
-					bajaStatus = true;
-				quincena = quincenaJPA.findByQuinCatAndBaja(quinShearch, bajaStatus, pageRequest);
+			} else if (filtrosSet.getQuinquenios()!=null) {
+//				boolean bajaStatus = false;
+//				if (filtrosSet.getStatus().equals("Baja"))
+//					bajaStatus = true;
+				quincena = quincenaJPA.findByQuinquenioAndQuinCat(filtrosSet.getQuinquenios(),quinShearch, pageRequest);
 			} else if (filtrosSet.getPuesto() != null && !filtrosSet.getPuesto().isEmpty()) {
 				PuestosEntity puesto = puestosJPA.findByPuesto(filtrosSet.getPuesto());
 				Collection<Empleados> collectionEmp = new ArrayList<Empleados>(puesto.getLEmpleados());
@@ -212,8 +212,8 @@ public class NominaController {
 				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collectionEmp, pageRequest);
 			} else if (filtrosSet.getTipoPago() != null && !filtrosSet.getTipoPago().isEmpty()) {
 				quincena = quincenaJPA.findByQuinCatAndTipoPago(quinShearch, filtrosSet.getTipoPago(), pageRequest);
-			} else if (filtrosSet.isBloqueado()) {
-				quincena = quincenaJPA.findByBloqueoPago(true, pageRequest);
+			} else if (filtrosSet.getBloqueado()!=null) {
+				quincena = quincenaJPA.findByQuinCatAndBloqueoPago(quinShearch,filtrosSet.getBloqueado(), pageRequest);
 			} else if (filtrosSet.getIdPersepcion()!=null) {
 				PersepcionesEntity per = this.persepcionesJPA.findById(filtrosSet.getIdPersepcion());
 				Direction directionp = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
@@ -271,13 +271,12 @@ public class NominaController {
 				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collEmpleados);
 				fileString = fileString + filtrosSet.getTipoContrato();
 				tipoFiltro="TipoContrato";
-			} else if (filtrosSet.getStatus() != null && !filtrosSet.getStatus().isEmpty()) {
-				boolean bajaStatus = false;
-				if (filtrosSet.getStatus().equals("Baja"))
-					bajaStatus = true;
-				quincena = quincenaJPA.findByQuinCatAndBaja(quinShearch, bajaStatus);
-				fileString=fileString+filtrosSet.getStatus();
-				tipoFiltro="Estatus";
+			} else if (filtrosSet.getQuinquenios()!=null) {
+//				boolean bajaStatus = false;
+//				if (filtrosSet.getStatus().equals("Baja"))
+//					bajaStatus = true;
+				quincena = quincenaJPA.findByQuinquenioAndQuinCat(filtrosSet.getQuinquenios(),quinShearch);
+				tipoFiltro="Quinquenio";
 			} else if (filtrosSet.getPuesto() != null && !filtrosSet.getPuesto().isEmpty()) {
 				PuestosEntity puesto = puestosJPA.findByPuesto(filtrosSet.getPuesto());
 				Collection<Empleados> collectionEmp = new ArrayList<Empleados>(puesto.getLEmpleados());
@@ -294,8 +293,8 @@ public class NominaController {
 				quincena = quincenaJPA.findByQuinCatAndTipoPago(quinShearch, filtrosSet.getTipoPago());
 				fileString=fileString+filtrosSet.getTipoPago();
 				tipoFiltro="TipoPago";
-			} else if (filtrosSet.isBloqueado()) {
-				quincena = quincenaJPA.findByBloqueoPago(true);
+			} else if (filtrosSet.getBloqueado()!=null) {
+				quincena = quincenaJPA.findByQuinCatAndBloqueoPago(quinShearch,filtrosSet.getBloqueado());
 				fileString=fileString+"Bloqueados";
 				tipoFiltro="Bloqueados";
 			} else if (filtrosSet.getIdPersepcion()!=null) {

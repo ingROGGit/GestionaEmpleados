@@ -25,8 +25,8 @@ public interface QuincenaRepositoryJPA extends JpaRepository<QuincenasEntity, Se
 	public List<QuincenasEntity> findByQuinCatAndTipoPago(QuincenaCatEntity quinCat,String tipoPago);
 	public Page<QuincenasEntity> findByQuinCatAndBaja(QuincenaCatEntity quinCat,boolean baja, Pageable pageable);
 	public List<QuincenasEntity> findByQuinCatAndBaja(QuincenaCatEntity quinCat,boolean baja);
-	public Page<QuincenasEntity> findByBloqueoPago(boolean bloqueado , Pageable pageable);
-	public List<QuincenasEntity> findByBloqueoPago(boolean bloqueado);
+	public Page<QuincenasEntity> findByQuinCatAndBloqueoPago(QuincenaCatEntity quinCat,boolean bloqueado , Pageable pageable);
+	public List<QuincenasEntity> findByQuinCatAndBloqueoPago(QuincenaCatEntity quinCat,boolean bloqueado);
 	public QuincenasEntity findByQuinCatAndEmpleadoQN_Id(QuincenaCatEntity quinCat, Long idEMpleado);
 	public Long countByTipoPagoAndQuinCat_IdQNA(String tipo,String idQNA);
 	public Long countByQuinCat_IdQNAAndSueldoNetoIsNotNull(String idQNA);
@@ -86,4 +86,6 @@ public interface QuincenaRepositoryJPA extends JpaRepository<QuincenasEntity, Se
 			"where q2_0.qna_cat_id=:idQNA and p1_0.clave=:claveDed "
 			,nativeQuery = true)
 	public List<QuincenasEntity> findByQuincenasPorClaveDeduccion(@Param("idQNA") String idQNA,@Param("claveDed") String claveDed);
+	public Page<QuincenasEntity> findByQuinquenioAndQuinCat(boolean quin, QuincenaCatEntity quinCat, Pageable pageable);
+	public List<QuincenasEntity> findByQuinquenioAndQuinCat(boolean quin,QuincenaCatEntity quinCat);
 }

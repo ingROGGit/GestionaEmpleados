@@ -50,6 +50,8 @@ public class CuentasEntity extends AuditableDateEntity implements Serializable {
 	private String estatus;
 	@Column(name = "cuenta")
 	private String cuenta;
+	@Column(name = "tipo", length = 1, columnDefinition = "char(1)")
+	private String tipo;
 	@Basic(optional = true)
 	@Column(name = "fechaAlta")
 	@Temporal(TemporalType.DATE)
