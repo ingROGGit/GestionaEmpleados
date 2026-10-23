@@ -61,7 +61,9 @@ import com.gestion.empleados.entity.QuincenasEntity;
 import com.gestion.empleados.entity.ReglasDiasEntity;
 import com.gestion.empleados.entity.SINAVIDEntity;
 import com.gestion.empleados.entity.ServiciosEntity;
+import com.gestion.empleados.entity.TESONESEntity;
 import com.gestion.empleados.entity.TESONFilesEntity;
+import com.gestion.empleados.entity.TipoNomTESONEntity;
 import com.gestion.empleados.entity.TurnosEntity;
 import com.gestion.empleados.entity.VacacionesEntity;
 import com.gestion.empleados.repository.AltaCuentasFileRepository;
@@ -88,6 +90,8 @@ import com.gestion.empleados.repository.ReglasDiasRepository;
 import com.gestion.empleados.repository.SINAVIDRepositoryJPA;
 import com.gestion.empleados.repository.ServiciosRepositoryJPA;
 import com.gestion.empleados.repository.TESONFileRepository;
+import com.gestion.empleados.repository.TESONRepository;
+import com.gestion.empleados.repository.TipoNomTESONRepository;
 import com.gestion.empleados.repository.TurnosRepositoryJPA;
 import com.gestion.empleados.repository.VacacionesRepository;
 import com.gestion.empleados.service.EmpleadoService;
@@ -151,6 +155,12 @@ public class ProcesaFileXLSXThread {
 	private MotivoTESONRepository motivoTesonJPA;
 	@Autowired
 	private TESONFileRepository tesonFileJPA;
+	@Autowired
+	private MotivoTESONRepository motivoJPA;
+	@Autowired
+	private TipoNomTESONRepository tipoNomJPA;
+	@Autowired
+	private TESONRepository tesonJPA;
 
 	@Async
 	public void run(File fileProces, String tipoCarga, String quinString, Date fechaCarga) {
@@ -173,6 +183,51 @@ public class ProcesaFileXLSXThread {
 					TESONFilesEntity tfile = TESONFilesEntity.builder().alta(fileProces.getName()).fechaAlta(new Date())
 							.fileAlta(Files.readAllBytes(fileProces.toPath())).build();
 					this.tesonFileJPA.save(tfile);
+					Workbook = WorkbookFactory.create(fileProces);
+					for (int h = 0; h < Workbook.getNumberOfSheets(); h++) {
+						Sheet = Workbook.getSheetAt(h);
+						Row Row;
+						int rows = Sheet.getLastRowNum();
+						Row = Sheet.getRow(5);
+						String[] tipo = Row.getCell(0).getStringCellValue().split(":");
+						System.out.println(tipo[1].trim());
+						TipoNomTESONEntity tipoN = this.tipoNomJPA.findByTipoEndingWith(tipo[1].trim());
+						for (int r = 12; r <= rows; r++) {
+							Row = Sheet.getRow(r);
+							if (Row == null) {
+								break;
+							} else {
+								if (Row.getCell(0) != null) {
+									if (Row.getCell(0).getCellType() == CellType.NUMERIC) {
+										Empleados empleado = this.empleadosJPA
+												.findById(Row.getCell(0).getCellType() == CellType.NUMERIC
+														? (long) Row.getCell(0).getNumericCellValue()
+														: Long.valueOf(Row.getCell(0).getStringCellValue()));
+										if (empleado != null) {
+											Long folioCheque = Row.getCell(4).getCellType() == CellType.NUMERIC
+													? (int) Row.getCell(4).getNumericCellValue()
+													: Long.valueOf(Row.getCell(4).getStringCellValue());
+											QuincenasEntity quin = this.quincenaJPA.findByEmpleadoQN_IdAndFolioQuinLike(
+													empleado.getId(), String.valueOf(folioCheque));
+											quin.setTeson(true);
+											QuincenaCatEntity quinCat = this.quincenasCatJPA.findByIdQNA(quinString);
+											MotivoTESONEntity motivo = this.motivoJPA.findByCodigo(
+													String.valueOf(Row.getCell(6).getCellType() == CellType.NUMERIC
+															? (int) Row.getCell(6).getNumericCellValue()
+															: Integer.valueOf(Row.getCell(6).getStringCellValue())));
+											TESONESEntity teson = TESONESEntity.builder().empleado(empleado)
+													.quinCat(quinCat).quincena(quin).fechaRegistro(LocalDate.now())
+													.motivoTESONEntity(motivo).tipoNomTESONEntity(tipoN)
+													.estatus("GENERADO").file(tfile).build();
+											this.tesonJPA.save(teson);
+											this.quincenaJPA.save(quin);
+										}
+									} else if (Row.getCell(0).getStringCellValue().contains("OBSERVACIÓNES"))
+										break;
+								}
+							}
+						}
+					}
 				} else if (tipoCarga.equals("CERRSINAVID")) {
 					try (BufferedReader br = new BufferedReader(new FileReader(fileProces))) {
 						String linea;
@@ -183,10 +238,11 @@ public class ProcesaFileXLSXThread {
 								SINAVIDEntity sinavid = this.sinavidJPA.findByEmpleado_Curp(valores[3]);
 								if (sinavid != null) {
 									sinavid.setFechaRespuesta(df.parse(valores[8]));
-									if (sinavid.getPagaduria() == null&&!valores[10].contains("VIGENTE EN LA MISMA")) {
+									if (sinavid.getPagaduria() == null
+											&& !valores[10].contains("VIGENTE EN LA MISMA")) {
 										sinavid.setEstatus("ERROR");
 										sinavid.setError(valores[10]);
-									}else {
+									} else {
 										sinavid.setError(valores[10]);
 										sinavid.setEstatus("ALTA");
 									}
@@ -197,7 +253,7 @@ public class ProcesaFileXLSXThread {
 												.empleado(empleado).estatus("ERROR").error(valores[10]).build();
 									}
 								}
-								if(sinavid!=null)
+								if (sinavid != null)
 									this.sinavidJPA.save(sinavid);
 							}
 						}
@@ -645,7 +701,8 @@ public class ProcesaFileXLSXThread {
 													if (valor.contains("P 09")) {
 														detPer = new DetallePersepcionesEntity();
 														per = new PersepcionesEntity();
-														per = this.persepcionesJPA.findByClaveAndDescripcion("09","Importe de Horas Extras Dobles");
+														per = this.persepcionesJPA.findByClaveAndDescripcion("09",
+																"Importe de Horas Extras Dobles");
 														detPer.setPersepciones(per);
 														detPer.setImporte(new BigDecimal(valor
 																.substring(valor.indexOf("P 09") + 4,
@@ -701,7 +758,8 @@ public class ProcesaFileXLSXThread {
 													if (valor.contains("P 14")) {
 														detPer = new DetallePersepcionesEntity();
 														per = new PersepcionesEntity();
-														per = this.persepcionesJPA.findByClaveAndDescripcion("14","Domingo Trabajado Gravable");
+														per = this.persepcionesJPA.findByClaveAndDescripcion("14",
+																"Domingo Trabajado Gravable");
 														detPer.setPersepciones(per);
 														detPer.setImporte(new BigDecimal(valor
 																.substring(valor.indexOf("P 14") + 4,
@@ -757,7 +815,8 @@ public class ProcesaFileXLSXThread {
 													if (valor.contains("P 18")) {
 														detPer = new DetallePersepcionesEntity();
 														per = new PersepcionesEntity();
-														per = this.persepcionesJPA.findByClaveAndDescripcion("18","Prima Vacacional");
+														per = this.persepcionesJPA.findByClaveAndDescripcion("18",
+																"Prima Vacacional");
 														detPer.setPersepciones(per);
 														detPer.setImporte(new BigDecimal(valor
 																.substring(valor.indexOf("P 18") + 4,
@@ -1317,7 +1376,8 @@ public class ProcesaFileXLSXThread {
 													if (valor.contains("P C4")) {
 														detPer = new DetallePersepcionesEntity();
 														per = new PersepcionesEntity();
-														per = this.persepcionesJPA.findByClaveAndDescripcion("C4","Cobro Puesto Anterior");
+														per = this.persepcionesJPA.findByClaveAndDescripcion("C4",
+																"Cobro Puesto Anterior");
 														detPer.setPersepciones(per);
 														detPer.setImporte(new BigDecimal(valor
 																.substring(valor.indexOf("P C4") + 4,
@@ -1608,7 +1668,7 @@ public class ProcesaFileXLSXThread {
 														detPer.setEmpleadoPer(emp);
 														this.detallePerJPA.save(detPer);
 													}
-												
+
 												}
 												if (Row.getCell(0).getStringCellValue().contains("Fecha de Revisión")
 														&& Row.getCell(7) != null) {
@@ -3023,7 +3083,8 @@ public class ProcesaFileXLSXThread {
 													if (valor.contains("P 09")) {
 														detPer = new DetallePersepcionesEntity();
 														per = new PersepcionesEntity();
-														per = this.persepcionesJPA.findByClaveAndDescripcion("09","Importe de Horas Extras Dobles");
+														per = this.persepcionesJPA.findByClaveAndDescripcion("09",
+																"Importe de Horas Extras Dobles");
 														detPer.setPersepciones(per);
 														detPer.setImporte(new BigDecimal(valor
 																.substring(valor.indexOf("P 09") + 4,
@@ -3079,7 +3140,8 @@ public class ProcesaFileXLSXThread {
 													if (valor.contains("P 14")) {
 														detPer = new DetallePersepcionesEntity();
 														per = new PersepcionesEntity();
-														per = this.persepcionesJPA.findByClaveAndDescripcion("14","Domingo Trabajado Gravable");
+														per = this.persepcionesJPA.findByClaveAndDescripcion("14",
+																"Domingo Trabajado Gravable");
 														detPer.setPersepciones(per);
 														detPer.setImporte(new BigDecimal(valor
 																.substring(valor.indexOf("P 14") + 4,
@@ -3135,7 +3197,8 @@ public class ProcesaFileXLSXThread {
 													if (valor.contains("P 18")) {
 														detPer = new DetallePersepcionesEntity();
 														per = new PersepcionesEntity();
-														per = this.persepcionesJPA.findByClaveAndDescripcion("18","Prima Vacacional");
+														per = this.persepcionesJPA.findByClaveAndDescripcion("18",
+																"Prima Vacacional");
 														detPer.setPersepciones(per);
 														detPer.setImporte(new BigDecimal(valor
 																.substring(valor.indexOf("P 18") + 4,
@@ -3695,7 +3758,8 @@ public class ProcesaFileXLSXThread {
 													if (valor.contains("P C4")) {
 														detPer = new DetallePersepcionesEntity();
 														per = new PersepcionesEntity();
-														per = this.persepcionesJPA.findByClaveAndDescripcion("C4","Cobro Puesto Anterior");
+														per = this.persepcionesJPA.findByClaveAndDescripcion("C4",
+																"Cobro Puesto Anterior");
 														detPer.setPersepciones(per);
 														detPer.setImporte(new BigDecimal(valor
 																.substring(valor.indexOf("P C4") + 4,
@@ -3987,7 +4051,6 @@ public class ProcesaFileXLSXThread {
 														this.detallePerJPA.save(detPer);
 													}
 												}
-												
 
 												if (Row.getCell(0).getStringCellValue().contains("Total")) {
 													quin.setSueldoPre(
@@ -3997,8 +4060,9 @@ public class ProcesaFileXLSXThread {
 												}
 											}
 											if (quin != null && quin.getSueldoPre() != null) {
-												QuincenasEntity quincenaDB=this.quincenaJPA.findByQuinCatAndEmpleadoQN_Id(quinCat,emp.getId());
-												if(quincenaDB!=null) {
+												QuincenasEntity quincenaDB = this.quincenaJPA
+														.findByQuinCatAndEmpleadoQN_Id(quinCat, emp.getId());
+												if (quincenaDB != null) {
 													quincenaDB.setQuinquenio(quin.isQuinquenio());
 													this.quincenaJPA.save(quincenaDB);
 												}
@@ -5087,30 +5151,36 @@ public class ProcesaFileXLSXThread {
 												if (emp != null) {
 													QuincenasEntity quin = this.quincenaJPA
 															.findByQuinCatAndEmpleadoQN_Id(quinCat, emp.getId());
-													if(quin!=null) {
-													quin.setSueldoNeto(Row.getCell(4).getCellType() == CellType.NUMERIC
-															? new BigDecimal(Row.getCell(4).getNumericCellValue())
-																	.setScale(2, RoundingMode.HALF_UP)
-															: new BigDecimal(Row.getCell(4).getStringCellValue())
-																	.setScale(2, RoundingMode.HALF_UP));
-													quin.setTipoPago(Row.getCell(5).getStringCellValue());
-													quin.setFolioQuin(Row.getCell(6).getStringCellValue());
-													}
-													else {
-														Set<QuincenaCatEntity> lQuinCat= new HashSet<>(); 
+													if (quin != null) {
+														quin.setSueldoNeto(
+																Row.getCell(4).getCellType() == CellType.NUMERIC
+																		? new BigDecimal(
+																				Row.getCell(4).getNumericCellValue())
+																				.setScale(2, RoundingMode.HALF_UP)
+																		: new BigDecimal(
+																				Row.getCell(4).getStringCellValue())
+																				.setScale(2, RoundingMode.HALF_UP));
+														quin.setTipoPago(Row.getCell(5).getStringCellValue());
+														quin.setFolioQuin(Row.getCell(6).getStringCellValue());
+													} else {
+														Set<QuincenaCatEntity> lQuinCat = new HashSet<>();
 														lQuinCat.add(quinCat);
-														List<Empleados> lEmpleados=new ArrayList<Empleados>();
+														List<Empleados> lEmpleados = new ArrayList<Empleados>();
 														lEmpleados.add(emp);
-														quin=QuincenasEntity.builder().quinCat(lQuinCat)
+														quin = QuincenasEntity.builder().quinCat(lQuinCat)
 																.empleadoQN(lEmpleados)
-																.sueldoNeto(Row.getCell(4).getCellType() == CellType.NUMERIC
-															? new BigDecimal(Row.getCell(4).getNumericCellValue())
-																	.setScale(2, RoundingMode.HALF_UP)
-															: new BigDecimal(Row.getCell(4).getStringCellValue())
-																	.setScale(2, RoundingMode.HALF_UP))
-														.tipoPago(Row.getCell(5).getStringCellValue())
-														.folioQuin(Row.getCell(6).getStringCellValue())
-																.build();
+																.sueldoNeto(
+																		Row.getCell(4).getCellType() == CellType.NUMERIC
+																				? new BigDecimal(Row.getCell(4)
+																						.getNumericCellValue())
+																						.setScale(2,
+																								RoundingMode.HALF_UP)
+																				: new BigDecimal(Row.getCell(4)
+																						.getStringCellValue())
+																						.setScale(2,
+																								RoundingMode.HALF_UP))
+																.tipoPago(Row.getCell(5).getStringCellValue())
+																.folioQuin(Row.getCell(6).getStringCellValue()).build();
 													}
 													this.quincenaJPA.save(quin);
 												}
@@ -5561,7 +5631,8 @@ public class ProcesaFileXLSXThread {
 										}
 										sinavid.setPagaduria(
 												String.valueOf((int) Row.getCell(2).getNumericCellValue()));
-										sinavid.setEstatus(sinavid.getEstatus()==null?"YA ALTA":sinavid.getEstatus());
+										sinavid.setEstatus(
+												sinavid.getEstatus() == null ? "YA ALTA" : sinavid.getEstatus());
 										sinavid.setAlta(sinavid.getAlta() == null ? "YA ALTA" : sinavid.getAlta());
 										sinavid.setFechaRegistro(sinavid.getFechaRegistro() == null ? new Date()
 												: sinavid.getFechaRegistro());
@@ -5584,8 +5655,9 @@ public class ProcesaFileXLSXThread {
 												.setScale(2, RoundingMode.HALF_UP));
 										sinavid.setEmpleado(emp);
 										if (emp.getSinavid() != null) {
-											sinavid.setFechaAlta(emp.getSinavid().getFechaAlta()!=null?emp.getSinavid().getFechaAlta():
-												DateUtil.getJavaDate(Row.getCell(12).getNumericCellValue()));
+											sinavid.setFechaAlta(emp.getSinavid().getFechaAlta() != null
+													? emp.getSinavid().getFechaAlta()
+													: DateUtil.getJavaDate(Row.getCell(12).getNumericCellValue()));
 										} else {
 											sinavid.setFechaAlta(
 													DateUtil.getJavaDate(Row.getCell(12).getNumericCellValue()));

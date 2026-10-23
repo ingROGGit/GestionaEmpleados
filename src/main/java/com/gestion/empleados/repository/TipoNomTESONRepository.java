@@ -8,5 +8,5 @@ import com.gestion.empleados.entity.TipoNomTESONEntity;
 
 
 public interface TipoNomTESONRepository extends JpaRepository<TipoNomTESONEntity, Serializable>{
-	
+	public TipoNomTESONEntity findByTipoEndingWith(String tipo);
 }

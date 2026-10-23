@@ -163,6 +163,7 @@ public class TesonesController {
 						this.tesonFileJPA.save(acfile);
 						for(TESONESEntity teson:ltesones) {
 							teson.setEstatus("GENERADO");
+							teson.setFile(acfile);
 							this.tesonJPA.save(teson);
 						}
 						file.delete();
@@ -276,5 +277,15 @@ public class TesonesController {
 		status.setComplete();
 		flash.addFlashAttribute("success", mensaje);
 		return "redirect:/tesones/ListaTesones";
+	}
+	@GetMapping("/tesones/formDetalles/{id}")
+	public String tesonDetalles(@PathVariable(value = "id") Long id,@RequestParam(required = false) String addNew, Map<String, Object> modelo,
+			RedirectAttributes flash) {
+		TESONFilesEntity tesonFile=this.tesonFileJPA.findById(id);
+		List<TESONESEntity> ltesones=this.tesonJPA.findByFile_Id(id);
+		modelo.put("tesonFile", tesonFile);
+		modelo.put("ltesones", ltesones);
+		modelo.put("titulo", "Detalles TESON");
+		return "tesones/formDetallesModal";
 	}
 }

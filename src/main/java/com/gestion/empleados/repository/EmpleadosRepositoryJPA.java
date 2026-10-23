@@ -55,7 +55,7 @@ public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Seriali
    public Page<Empleados> findBySinavid_Estatus(Pageable page,String estatus);
    public Page<Empleados> findBySinavid_EstatusOrSinavid_ErrorIsNotNull(Pageable page,String estatus);
    public List<Empleados> findBySinavid_EstatusOrSinavid_ErrorIsNotNull(String estatus);
-   public List<Empleados> findBySinavid_EstatusAndSinavid_FechaBajaIsNotNull(String estatus);
+   public List<Empleados> findBySinavid_Estatus(String estatus);
    public Long countBySinavidIsNull();
    @Query("SELECT e FROM Empleados e " +
 	       "JOIN FETCH e.quincenas q " +

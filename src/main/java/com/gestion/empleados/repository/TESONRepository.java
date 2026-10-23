@@ -17,4 +17,5 @@ public interface TESONRepository  extends JpaRepository<TESONESEntity, Serializa
 	public List<TESONESEntity> findByEstatus(String estatus);
 	public TESONESEntity findByEmpleado_IdAndQuincena_IdAndQuinCat_IdQNA(Long idEmp,Long idQuin,String idQNACat);
 	public List<TESONESEntity> findByEstatusAndTipoNomTESONEntity_Id(String estatus,Long tipo);
+	public List<TESONESEntity> findByFile_Id(Long idFile);
 }

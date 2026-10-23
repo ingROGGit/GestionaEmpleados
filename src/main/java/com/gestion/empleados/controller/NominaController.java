@@ -8,11 +8,11 @@ import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +26,15 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.gestion.empleados.entity.AltaSINAVIDFilesEntity;
 import com.gestion.empleados.entity.DeduccionesEntity;
 import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.ModSalSINAVIDFilesEntity;
@@ -66,6 +69,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 @Controller
 public class NominaController {
@@ -93,6 +97,8 @@ public class NominaController {
 	private DetalleDeduccionesRepositoryJPA detalleDeduJPA;
 	@Autowired
 	private DetallePersepcionesRepositoryJPA detallePerJPA;
+	@Autowired
+	private MotivoTESONRepository motivoTJPA;
 	@GetMapping("quincenas/listarQuincena")
 	public String listarQNA(Model model, @RequestParam(required = false) String keyword,
 			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "7000") int size,
@@ -204,11 +210,11 @@ public class NominaController {
 				quincena = quincenaJPA.findByQuinquenioAndQuinCat(filtrosSet.getQuinquenios(),quinShearch, pageRequest);
 			} else if (filtrosSet.getPuesto() != null && !filtrosSet.getPuesto().isEmpty()) {
 				PuestosEntity puesto = puestosJPA.findByPuesto(filtrosSet.getPuesto());
-				Collection<Empleados> collectionEmp = new ArrayList<Empleados>(puesto.getLEmpleados());
+				Collection<Empleados> collectionEmp =puesto.getLEmpleados();
 				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collectionEmp, pageRequest);
 			} else if (filtrosSet.getServicio() != null && !filtrosSet.getServicio().isEmpty()) {
 				ServiciosEntity servicio = this.serviciosJPA.findByServicio(filtrosSet.getServicio());
-				Collection<Empleados> collectionEmp = new ArrayList<Empleados>(servicio.getLEmpleados());
+				Collection<Empleados> collectionEmp = servicio.getLEmpleados();
 				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collectionEmp, pageRequest);
 			} else if (filtrosSet.getTipoPago() != null && !filtrosSet.getTipoPago().isEmpty()) {
 				quincena = quincenaJPA.findByQuinCatAndTipoPago(quinShearch, filtrosSet.getTipoPago(), pageRequest);
@@ -279,13 +285,13 @@ public class NominaController {
 				tipoFiltro="Quinquenio";
 			} else if (filtrosSet.getPuesto() != null && !filtrosSet.getPuesto().isEmpty()) {
 				PuestosEntity puesto = puestosJPA.findByPuesto(filtrosSet.getPuesto());
-				Collection<Empleados> collectionEmp = new ArrayList<Empleados>(puesto.getLEmpleados());
+				Collection<Empleados> collectionEmp = puesto.getLEmpleados();
 				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collectionEmp);
 				fileString=fileString+filtrosSet.getPuesto();
 				tipoFiltro="Puesto";
 			} else if (filtrosSet.getServicio() != null && !filtrosSet.getServicio().isEmpty()) {
 				ServiciosEntity servicio = this.serviciosJPA.findByServicio(filtrosSet.getServicio());
-				Collection<Empleados> collectionEmp = new ArrayList<Empleados>(servicio.getLEmpleados());
+				Collection<Empleados> collectionEmp = servicio.getLEmpleados();
 				quincena = quincenaJPA.findByQuinCatAndEmpleadoQNIn(quinShearch, collectionEmp);
 				fileString=fileString+filtrosSet.getServicio();
 				tipoFiltro="Servicio";
@@ -336,16 +342,38 @@ public class NominaController {
 	}
 
 	@GetMapping("/quincenas/bloqueoQuincena/{id}")
-	public String bloquearPago(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+	public String bloquearPago(@PathVariable(value = "id") Long id,Map<String, Object> modelo, RedirectAttributes flash) {
 		if (id > 0) {
 			QuincenasEntity quin = this.quincenaJPA.findById(id);
 			quin.setBloqueoPago(true);
 			this.quincenaJPA.save(quin);
+			List<MotivoTESONEntity> lmotivos=this.motivoTJPA.findAll();
+			
 			flash.addFlashAttribute("error", "Pago Bloqueado");
+			modelo.put("quin", quin);
+			modelo.put("emp", quin.getEmpleadoQN().get(0));
+			modelo.put("lmotivos", lmotivos);
+			modelo.put("titulo", "Bloqueo Quincena");
 		}
+		return "quincenas/formModalBloqueo";
+	}
+	@PostMapping("quincenas/bloqueoQuincena")
+	public String teSONUPDAtos(@Valid QuincenasEntity quin, BindingResult result, Model modelo,
+			RedirectAttributes flash, SessionStatus status) {
+		QuincenasEntity quinDB = this.quincenaJPA.findById(quin.getId());
+		if (result.hasErrors()) {
+			modelo.addAttribute("error", "Bloqueo");
+			return "redirect:/quincenas/listarQuincena";
+		}
+		String mensaje ="Se Bloqueo Pago Empleado "+quinDB.getEmpleadoQN().get(0).getId()+" "+quinDB.getEmpleadoQN().get(0).getNombre();
+		quinDB.setMotivoTESONEntity(quin.getMotivoTESONEntity());
+		quinDB.setFechaBloqueo(quin.getFechaBloqueo());
+		quinDB.setBloqueoTipo(quin.getBloqueoTipo());
+		this.quincenaJPA.save(quinDB);
+		status.setComplete();
+		flash.addFlashAttribute("error", mensaje);
 		return "redirect:/quincenas/listarQuincena";
 	}
-
 	@GetMapping("/quincenas/desbloqueoQuincena/{id}")
 	public String desbloqueoQuincena(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 		if (id > 0) {

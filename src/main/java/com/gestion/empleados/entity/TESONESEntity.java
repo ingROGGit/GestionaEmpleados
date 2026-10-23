@@ -70,6 +70,10 @@ public class TESONESEntity extends AuditableDateEntity implements Serializable {
     @JoinColumn(name = "id_QNACat", nullable = false)
     private QuincenaCatEntity quinCat;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_File", nullable = true)
+    private TESONFilesEntity file;
+    
     private LocalDate fechaRegistro;
 	@Override
 	public String toString() {

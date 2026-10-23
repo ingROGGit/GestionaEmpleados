@@ -67,6 +67,9 @@
 													<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
 													class="btn btn-warning btn-sm link-EmpleadoEdit"
 													th:href="@{/tesones/formFilePDF/} + ${file.id}">Carga PDF</a>
+													<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
+													class="btn btn-info btn-sm link-EmpleadoEdit"
+													th:href="@{/tesones/formDetalles/} + ${file.id}">Detalles</a>
 											</td>
 										</tr>
 									</tbody>

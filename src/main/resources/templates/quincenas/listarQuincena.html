@@ -166,7 +166,7 @@
 										</div>
 									</div>
 									<div class="row" style="float: right;">
-										<button type="submit" name="accion" class="btn btn-primary pull-right" value="excel">Exportar Excel</button>
+										<button sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS','ROLE_OPERADORSINAVID')" type="submit" name="accion" class="btn btn-primary pull-right" value="excel">Exportar Excel</button>
 										<br>
 										<button type="submit" name="accion" class="btn btn-primary pull-right" value="search">Buscar</button>
 									</div>
@@ -268,7 +268,7 @@
 											<td>
 												<a class="btn btn-info btn-sm link-detail"
 													th:href="@{/empleados/verEmpleado/{id}(id=${emp.id}, quincena=${quinCatSelectGet})}">Detalles</a>
-												<a th:if="${quin.bloqueoPago == false}" class="btn btn-danger btn-sm"
+												<a th:if="${quin.bloqueoPago == false}" class="btn btn-danger btn-sm link-detail"
 													sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
 													th:href="@{/quincenas/bloqueoQuincena/} + ${quin.id}">Bloqueo
 													Pago</a>

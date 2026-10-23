@@ -140,6 +140,24 @@ public class ExportExcelQuincenas {
 			celda = row.createCell(15);
 			celda.setCellValue("Bloqueados");
 			celda.setCellStyle(estilo);
+			row = sheet.createRow(1);
+			estilo = libro.createCellStyle();
+			fuente = libro.createFont();
+			fuente.setBold(true);
+			fuente.setFontHeight(16);
+			estilo.setFont(fuente);
+			celda = row.createCell(16);
+			celda.setCellValue("Fecha");
+			celda.setCellStyle(estilo);
+			celda = row.createCell(17);
+			celda.setCellValue("Tipo");
+			celda.setCellStyle(estilo);
+			celda = row.createCell(18);
+			celda.setCellValue("Clave");
+			celda.setCellStyle(estilo);
+			celda = row.createCell(19);
+			celda.setCellValue("Motivo");
+			celda.setCellStyle(estilo);
 		}
 		if (tipoFiltro.equals("Persepciones")) {
 			celda = row.createCell(15);
@@ -324,6 +342,22 @@ public class ExportExcelQuincenas {
 				celda = row.createCell(15);
 				celda.setCellValue(quincena.isBloqueoPago()?"PAGO BLOQUEADO":"PAGO ACTIVO");
 				this.sheet.autoSizeColumn(15);
+				celda.setCellStyle(estilo);
+				celda = row.createCell(16);
+				celda.setCellValue(quincena.getFechaBloqueo());
+				this.sheet.autoSizeColumn(16);
+				celda.setCellStyle(estilo);
+				celda = row.createCell(17);
+				celda.setCellValue(quincena.getBloqueoTipo());
+				this.sheet.autoSizeColumn(17);
+				celda.setCellStyle(estilo);
+				celda = row.createCell(18);
+				celda.setCellValue(quincena.getMotivoTESONEntity()!=null?quincena.getMotivoTESONEntity().getCodigo():"");
+				this.sheet.autoSizeColumn(18);
+				celda.setCellStyle(estilo);
+				celda = row.createCell(19);
+				celda.setCellValue(quincena.getMotivoTESONEntity()!=null?quincena.getMotivoTESONEntity().getMotivo():"");
+				this.sheet.autoSizeColumn(19);
 				celda.setCellStyle(estilo);
 			}
 			if (tipoFiltro.equals("Persepciones")) {

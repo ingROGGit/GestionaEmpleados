@@ -342,7 +342,7 @@ public class GestionSINAVIDController {
 	public void WriteBajas(HttpServletResponse respons, @RequestParam("baja") String baja) throws Exception {
 		try {
 			File file = new File(baja + ".txt");
-			List<Empleados> lEmpleadosCuentas =this.empleadosJPA.findBySinavid_EstatusAndSinavid_FechaBajaIsNotNull("PARA BAJA");
+			List<Empleados> lEmpleadosCuentas =this.empleadosJPA.findBySinavid_Estatus("PARA BAJA");
 			ExporterTXTSINAVID altaSINAVID = new ExporterTXTSINAVID(file.getName(), lEmpleadosCuentas, "");
 			altaSINAVID.runBaja();
 			if (file.exists() && file.canWrite()) {
@@ -500,7 +500,11 @@ public class GestionSINAVIDController {
 		ModSalSINAVIDFilesEntity fileCuenta = this.modSalJPA.getById(id);
 		respons.setContentType("application/octet-stream");
 		String cabecera = "Content-Disposition";
-		String valor = "attachment; filename=" + fileCuenta.getAlta()+".txt";
+		String valor;
+		if(fileCuenta.getAlta().contains("."))
+			valor = "attachment; filename=" + fileCuenta.getAlta();
+		else
+			valor = "attachment; filename=" + fileCuenta.getAlta()+".txt";
 		respons.setHeader(cabecera, valor);
 		try (InputStream inputStream = new ByteArrayInputStream(fileCuenta.getFileAlta());
 				ServletOutputStream outputStream = respons.getOutputStream()) {

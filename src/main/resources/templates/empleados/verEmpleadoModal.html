@@ -29,6 +29,40 @@
 				Puesto:<li class="list-group-item" th:text="${empleado?.puestosEntity?.puesto}"></li>
 			</div>
 		</div>
+		<th:block th:if="${quincena!=null}">
+		<th:block th:if="${quincena.bloqueoPago==true}">
+			<div class="card card-default collapsed-card" th:style="'background-color: #ffcccc;'">
+				<div class="card-header">
+					<h3 class="card-title">BLOQUEO</h3>
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-minus"></i>
+						</button>
+					</div>
+				</div>
+					<div class="card-body" style="display: none; background-color: #ffcccc">
+						<div class="row">
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								TIPO: <li class="list-group-item" th:text="${quincena.bloqueoTipo}"></li>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Fecha BLoqueo: <li class="list-group-item" th:text="${quincena.fechaBloqueo}"></li>
+
+								</li>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Codigo:<li class="list-group-item" th:text="${quincena.motivoTESONEntity.codigo}"></li>
+							</div>
+							<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								Motivo:<li class="list-group-item" th:text="${quincena.motivoTESONEntity.motivo}"></li>
+							</div>
+						</div>
+					</div>
+			</div>
+		</th:block>
+		</th:block>
 		<th:block th:if="${empleado.activo==false}">
 			<div class="card card-default collapsed-card" th:style="'background-color: #ffcccc;'">
 				<div class="card-header">

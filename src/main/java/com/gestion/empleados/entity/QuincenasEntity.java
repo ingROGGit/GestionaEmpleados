@@ -24,6 +24,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -83,6 +84,12 @@ public class QuincenasEntity extends AuditableDateEntity implements Serializable
 	private BigDecimal salarioAn;
 	@Column(name = "bloqueoPago")
 	private boolean bloqueoPago;
+	@Column(name = "fechaBloqueo")
+	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fechaBloqueo;
+	@Column(name = "bloqueoTipo")
+	private String bloqueoTipo;
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "quincenas_empleadoqn", // Nombre de la tabla intermedia
 			joinColumns = @JoinColumn(name = "quincenas_id"), // Clave foránea de esta entidad
@@ -95,7 +102,10 @@ public class QuincenasEntity extends AuditableDateEntity implements Serializable
 			inverseJoinColumns = @JoinColumn(name = "qnaCat_id") // Clave foránea de la otra entidad
 	)
 	private Set<QuincenaCatEntity> quinCat = new HashSet<>();
-
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_motivo", nullable = true)
+    private MotivoTESONEntity motivoTESONEntity;
 	@Override
 	public String toString() {
 		return "QuincenasEntity [id=" + id + ", sueldoBase=" + sueldoBase + ", sueldoNeto=" + sueldoNeto
