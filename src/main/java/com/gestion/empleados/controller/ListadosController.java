@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.gestion.empleados.entity.CatCPJALEntity;
 import com.gestion.empleados.entity.DeduccionesEntity;
-import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.PersepcionesEntity;
 import com.gestion.empleados.entity.PuestosEntity;
 import com.gestion.empleados.entity.QuincenaCatEntity;
@@ -34,11 +33,7 @@ import com.gestion.empleados.repository.ServiciosRepositoryJPA;
 import com.gestion.empleados.service.DeduccionesService;
 import com.gestion.empleados.service.PersepcionesService;
 import com.gestion.empleados.service.PuestosService;
-import com.gestion.empleados.service.ServiciosService;
 import com.gestion.empleados.utils.PageRender;
-import com.gestion.empleados.utils.reports.ExportExcel;
-import com.gestion.empleados.utils.reports.ExportExcelThread;
-import com.gestion.empleados.utils.reports.ExporterPDF;
 import com.gestion.empleados.utils.reports.ExporterPDFCatalogos;
 import com.lowagie.text.DocumentException;
 

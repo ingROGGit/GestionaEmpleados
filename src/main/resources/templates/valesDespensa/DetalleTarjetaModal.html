@@ -1,0 +1,29 @@
+<form class="card bg-light">
+	<div class="col-lg-12 col-md-12 col-sm-12 container justify-content-center card text-center">
+		<a>
+			<h2><span th:text="${titulo}"></span></h2>
+		</a>
+	</div>
+	<div class="card-body">
+			<div class="row">
+				<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+					Numero Empleado: <li class="list-group-item" th:text="${valeDespensa.empleado.id}"></li>
+					</li>
+					Fecha de Entrega: <li class="list-group-item" th:text="${valeDespensa.fechaEntrega}"></li>
+					</li>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+					Nombre: <li class="list-group-item" th:text="${valeDespensa.empleado.nombreCompleto}"></li>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+					Tarjeta:<li class="list-group-item" th:text="${valeDespensa.folio}"></li>
+				</div>
+			</div>
+			<th:block th:if="${valeDespensa!=null}">
+
+			</th:block>
+	</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	</div>

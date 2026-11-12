@@ -99,7 +99,7 @@
 													class="btn btn-warning btn-sm link-EmpleadoEdit"
 													th:href="@{/cuentasBancarias/formCuenta/{id}(id=${empleado.id}, addNew=${addNew})}">Agregar
 													Cuenta</a>
-												<a th:if="${empleado.activo==true}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1')"
+												<a th:if="${empleado.activo==true}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')"
 													class="btn btn-danger btn-sm link-EmpleadoEdit"
 													th:href="@{/empleados/baja/} + ${empleado.id}"
 													onclick="return confirm('Esta seguro de Baja el Empleado');">Baja</a>

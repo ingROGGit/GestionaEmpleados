@@ -1,26 +1,23 @@
 package com.gestion.empleados.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.IOException;
 import java.nio.file.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +25,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,24 +38,23 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.UUID;
 
+import com.gestion.empleados.entity.AcuseFilesEntity;
 import com.gestion.empleados.entity.AddBajaEntity;
 import com.gestion.empleados.entity.AsignacionTurnoEntity;
 import com.gestion.empleados.entity.CatBajasEntity;
 import com.gestion.empleados.entity.DetalleDeduccionesEntiy;
 import com.gestion.empleados.entity.DetallePersepcionesEntity;
 import com.gestion.empleados.entity.Empleados;
-import com.gestion.empleados.entity.QuincenaCatEntity;
+import com.gestion.empleados.entity.ModSalSINAVIDFilesEntity;
 import com.gestion.empleados.entity.QuincenasEntity;
 import com.gestion.empleados.entity.SINAVIDEntity;
-import com.gestion.empleados.entity.VacacionesEntity;
+import com.gestion.empleados.entity.ValesDespensaEntity;
+import com.gestion.empleados.repository.AcuseFileRepository;
 import com.gestion.empleados.repository.AddBajasRepository;
 import com.gestion.empleados.repository.AsignacionTurnosRepositoryJPA;
-import com.gestion.empleados.repository.BajasSINAVIDFileRepository;
 import com.gestion.empleados.repository.BancosRepositoryJPA;
 import com.gestion.empleados.repository.CatBajasRepository;
 import com.gestion.empleados.repository.CatCPJALRepositoryJPA;
@@ -76,7 +71,6 @@ import com.gestion.empleados.repository.SINAVIDRepositoryJPA;
 import com.gestion.empleados.repository.ServiciosRepositoryJPA;
 import com.gestion.empleados.repository.TurnosRepositoryJPA;
 import com.gestion.empleados.repository.VacacionesRepository;
-import com.gestion.empleados.service.EmpleadoService;
 import com.gestion.empleados.utils.PageRender;
 import com.gestion.empleados.utils.ProcesaFileXLSXThread;
 import com.gestion.empleados.utils.reports.ExportExcel;
@@ -127,8 +121,9 @@ public class EmpleadoController {
 	private CatBajasRepository bajasRepoJPA;
 	@Autowired
 	private AddBajasRepository addBajaRepoJPA;
+	@Autowired
+	private AcuseFileRepository acuseFileJPA;
 	private final ProcesaFileXLSXThread thread;
-
 	public EmpleadoController(ProcesaFileXLSXThread procesaFileXLSXThread) {
 		this.thread = procesaFileXLSXThread;
 	}
@@ -157,7 +152,7 @@ public class EmpleadoController {
 		Page<Empleados> empleados = this.empleadosJPA.findAll(pageRequest);
 		PageRender<Empleados> pageRender = new PageRender<>("/empleados/listarEmpleados", empleados);
 		File dirUsu = new File(SecurityContextHolder.getContext().getAuthentication().getName());
-		if(!dirUsu.exists())
+		if (!dirUsu.exists())
 			dirUsu.mkdirs();
 		String extension = ".xlsx"; // extencion
 		List<Path> resultado = null;
@@ -188,7 +183,7 @@ public class EmpleadoController {
 		model.addAttribute("filefull", filefull);
 		model.addAttribute("titulo", "Listado Empleados");
 		model.addAttribute("empleados", empleados);
-		model.addAttribute("registros", empleados.getSize());
+		model.addAttribute("registros", this.empleadosJPA.count());
 		model.addAttribute("page", pageRender);
 		model.addAttribute("addNew", "SI");
 		model.addAttribute("quinCatSelectGet", quincenasCat);
@@ -214,6 +209,10 @@ public class EmpleadoController {
 			flash.addFlashAttribute("error", "El empleado no Existe");
 			return "redirect:/empleados/listarEmpleados";
 		}
+		AddBajaEntity bajaEm = this.addBajaRepoJPA.findByEmpleado_Id(empleado.getId());
+		List<AcuseFilesEntity> lasuses=this.acuseFileJPA.findByEmpleado_Id(empleado.getId());
+		modelo.put("bajaEm", bajaEm);
+		modelo.put("lasuses", lasuses);
 		modelo.put("periodo", periodo);
 		modelo.put("empleado", empleado);
 		modelo.put("quincena", quincena);
@@ -236,6 +235,8 @@ public class EmpleadoController {
 			return "redirect:/empleados/listarEmpleados";
 		}
 		AddBajaEntity bajaEm = this.addBajaRepoJPA.findByEmpleado_Id(empleado.getId());
+		List<AcuseFilesEntity> lasuses=this.acuseFileJPA.findByEmpleado_Id(empleado.getId());
+		modelo.put("lasuses", lasuses);
 		modelo.put("periodo", periodo);
 		modelo.put("empleado", empleado);
 		modelo.put("bajaEm", bajaEm);
@@ -420,26 +421,26 @@ public class EmpleadoController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-			File file = resultado.get(0).toFile();
-			if (file.exists() && file.canWrite()) {
-				respons.setContentType("application/octet-stream");
-				String cabecera = "Content-Disposition";
-				String valor = "attachment; filename="+file.getName();
-				respons.setHeader(cabecera, valor);
-				try (InputStream inputStream = new FileInputStream(file);
-						ServletOutputStream outputStream = respons.getOutputStream()) {
-					IOUtils.copy(inputStream, outputStream);
-					respons.flushBuffer();
-					inputStream.close();
-					file.delete();
+		File file = resultado.get(0).toFile();
+		if (file.exists() && file.canWrite()) {
+			respons.setContentType("application/octet-stream");
+			String cabecera = "Content-Disposition";
+			String valor = "attachment; filename=" + file.getName();
+			respons.setHeader(cabecera, valor);
+			try (InputStream inputStream = new FileInputStream(file);
+					ServletOutputStream outputStream = respons.getOutputStream()) {
+				IOUtils.copy(inputStream, outputStream);
+				respons.flushBuffer();
+				inputStream.close();
+				file.delete();
 //					return "redirect:/empleados/listarEmpleados";
-				} catch (IOException e) {
-					e.printStackTrace();
-					throw new RuntimeException("Error writing file to response", e);
-				}
-			} else {
-				return "redirect:/empleados/listarEmpleados";
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new RuntimeException("Error writing file to response", e);
 			}
+		} else {
+			return "redirect:/empleados/listarEmpleados";
+		}
 		return "redirect:/empleados/listarEmpleados";
 	}
 
@@ -472,6 +473,8 @@ public class EmpleadoController {
 		CatalogoCarga.put("CMTESON", "Carga Motivos TESON");
 		CatalogoCarga.put("CTESON", "Carga TESON");
 		CatalogoCarga.put("CFALTANTES", "Carga Detalles faltantes de PER y DED");
+		CatalogoCarga.put("CVAL", "Carga Vales de Despensa");
+		CatalogoCarga.put("CACUSINAVID", "Carga Acuses SINAVID");
 		model.addAttribute("titulo", "EXCEL " + CatalogoCarga.get(TIPOCARGA));
 		model.addAttribute("TIPOCARGA", TIPOCARGA);
 		model.addAttribute("quin", "");
@@ -484,27 +487,31 @@ public class EmpleadoController {
 
 	@PostMapping("empleados/addXLSX")
 	public String addEmpleadosXLSX(Model modelo, RedirectAttributes flash, SessionStatus status,
-			@RequestParam("fileXLS") MultipartFile fileXLS, @RequestParam("TIPOCARGA") String TIPOCARGA,
+			@RequestParam("fileXLS") MultipartFile[] lfileXLS, @RequestParam("TIPOCARGA") String TIPOCARGA,
 			@RequestParam("CatalogoCarga") String CatalogoCarga,
-			@RequestParam(required = false) String quinCatSelectPost,
+			@RequestParam(required = false) String quinCatSelectPost, @RequestParam(required = false) String tipoAcuse,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaExt) {
 		try {
 			if (TIPOCARGA.equals("CPRE") || TIPOCARGA.equals("CNOM")) {
 				if (this.quincenaJPA.countByQuinCat_IdQNAAndSueldoNetoIsNotNull(quinCatSelectPost) > 0)
 					throw new Exception("Quincena " + quinCatSelectPost + " ya cargada");
 			}
-			File filewrite = new File(fileXLS.getOriginalFilename());
-			try (FileOutputStream fos = new FileOutputStream(filewrite)) {
-				fos.write(fileXLS.getBytes());
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw new Exception(e);
+			for (MultipartFile fileXLS : lfileXLS) {
+				File filewrite = new File(fileXLS.getOriginalFilename());
+				try (FileOutputStream fos = new FileOutputStream(filewrite)) {
+					fos.write(fileXLS.getBytes());
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new Exception(e);
+				}
+				if (TIPOCARGA.equals("CACUSINAVID"))
+					this.thread.run(filewrite, TIPOCARGA, tipoAcuse, fechaExt);
+				else
+					this.thread.run(filewrite, TIPOCARGA, quinCatSelectPost, fechaExt);
+				modelo.addAttribute("success", "Archivo cargado Satisfactoriamente se prosesaran en segundo plano");
+				status.setComplete();
+				flash.addFlashAttribute("success", "Archivo procesado con éxito.");
 			}
-			this.thread.run(filewrite, TIPOCARGA, quinCatSelectPost, fechaExt);
-			modelo.addAttribute("success", "Archivo cargado Satisfactoriamente se prosesaran en segundo plano");
-			status.setComplete();
-			flash.addFlashAttribute("success", "Archivo procesado con éxito.");
-
 		} catch (Exception err) {
 			err.printStackTrace();
 			modelo.addAttribute("error",
@@ -515,5 +522,22 @@ public class EmpleadoController {
 		modelo.addAttribute("lquincenas", lquincenas);
 		modelo.addAttribute("quinCatSelectPost", quinCatSelectPost);
 		return "empleados/AddEmpleados";
+	}
+	@GetMapping("empleados/verAcuseSINAVID/{id}")
+	public void verAcuseSINAVID(HttpServletResponse respons,@PathVariable(value = "id") UUID id) {
+		AcuseFilesEntity acuseFile=this.acuseFileJPA.findById(id);
+		respons.setContentType("application/pdf");
+		String cabecera = "Content-Disposition";
+		String valor= "inline; filename=" + acuseFile.getFileName();
+		respons.setHeader(cabecera, valor);
+		try (InputStream inputStream = new ByteArrayInputStream(acuseFile.getFileAcuse());
+				ServletOutputStream outputStream = respons.getOutputStream()) {
+			IOUtils.copy(inputStream, outputStream);
+			respons.flushBuffer();
+			inputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Error writing file to response", e);
+		}
 	}
 }

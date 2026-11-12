@@ -27,12 +27,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.gestion.empleados.entity.AltaCuentasFilesEntity;
 import com.gestion.empleados.entity.AltaSINAVIDFilesEntity;
 import com.gestion.empleados.entity.BajasSINAVIDFilesEntity;
-import com.gestion.empleados.entity.BancosEntity;
 import com.gestion.empleados.entity.CatCPJALEntity;
-import com.gestion.empleados.entity.CuentasEntity;
 import com.gestion.empleados.entity.DomiciliosEntity;
 import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.ExtractoSINAVIDFilesEntity;
@@ -49,7 +46,6 @@ import com.gestion.empleados.repository.ModSalSINAVIDFileRepository;
 import com.gestion.empleados.repository.QuincenasCatRepositoryJPA;
 import com.gestion.empleados.repository.SINAVIDRepositoryJPA;
 import com.gestion.empleados.utils.PageRender;
-import com.gestion.empleados.utils.reports.ExportCuentasBanco;
 import com.gestion.empleados.utils.reports.ExporterTXTSINAVID;
 import com.lowagie.text.DocumentException;
 
@@ -142,7 +138,6 @@ public class GestionSINAVIDController {
 		model.addAttribute("empleados", empleados);
 		model.addAttribute("page", pageRender);
 		model.addAttribute("titulo", "Altas SINAVID");
-		model.addAttribute("empleados", empleados);
 		model.addAttribute("alta", fa);
 		model.addAttribute("quinCatSelect", quincenasCat);
 		model.addAttribute("LquincenasCat", LquincenasCat);
@@ -546,7 +541,7 @@ public class GestionSINAVIDController {
 				Map<String, Object> modelo, RedirectAttributes flash) {
 			AltaSINAVIDFilesEntity file= this.altaSINAVIDJPA.findById(id);
 			modelo.put("file", file);
-			modelo.put("titulo", "Registrar Filio de SINAVID");
+			modelo.put("titulo", "Registrar Folio de SINAVID");
 			return "GestionSINAVID/formAddFolio";
 		}
 	
@@ -554,8 +549,8 @@ public class GestionSINAVIDController {
 	public String addFolioSINAVID(@Valid AltaSINAVIDFilesEntity file, BindingResult result, Model modelo,
 			RedirectAttributes flash, SessionStatus status) {
 		if (result.hasErrors()) {
-			modelo.addAttribute("titulo", "Registro de Cuenta");
-			return "GestionSINAVID/formAddFolio";
+			modelo.addAttribute("titulo", "Errro");
+			return "redirect:/GestionSINAVID/ListaAltas";
 		}
 		AltaSINAVIDFilesEntity fileDB=this.altaSINAVIDJPA.findById(file.getId());
 		fileDB.setFolio(file.getFolio());
@@ -565,5 +560,57 @@ public class GestionSINAVIDController {
 		status.setComplete();
 		flash.addFlashAttribute("success", mensaje);
 		return "redirect:/GestionSINAVID/ListaAltas";
+	}
+	
+	@GetMapping("/GestionSINAVID/bajasAddFolio/{id}")
+	public String bajasAddFolio(@PathVariable(value = "id") Long id, @RequestParam(required = false) String addNew,
+				Map<String, Object> modelo, RedirectAttributes flash) {
+			BajasSINAVIDFilesEntity file= this.bajasRepJPA.findById(id);
+			modelo.put("file", file);
+			modelo.put("titulo", "Registrar Folio de SINAVID");
+			return "GestionSINAVID/formBajaAddFolio";
+		}
+	
+	@PostMapping("GestionSINAVID/bajasAddFolio")
+	public String bajasAddFolio(@Valid BajasSINAVIDFilesEntity file, BindingResult result, Model modelo,
+			RedirectAttributes flash, SessionStatus status) {
+		if (result.hasErrors()) {
+			modelo.addAttribute("titulo", "Error");
+			return "redirect:/GestionSINAVID/ListaFilesBajas";
+		}
+		BajasSINAVIDFilesEntity fileDB=this.bajasRepJPA.findById(file.getId());
+		fileDB.setFolio(file.getFolio());
+		fileDB.setFechaAlta(file.getFechaAlta());
+		this.bajasRepJPA.save(fileDB);
+		String mensaje = "Folio Registrado con Exito";
+		status.setComplete();
+		flash.addFlashAttribute("success", mensaje);
+		return "redirect:/GestionSINAVID/ListaFilesBajas";
+	}
+	
+	@GetMapping("/GestionSINAVID/addFolioModSalario/{id}")
+	public String addFolioModSalario(@PathVariable(value = "id") Long id, @RequestParam(required = false) String addNew,
+				Map<String, Object> modelo, RedirectAttributes flash) {
+			ModSalSINAVIDFilesEntity file= this.modSalJPA.getById(id);
+			modelo.put("file", file);
+			modelo.put("titulo", "Registrar Folio de SINAVID");
+			return "GestionSINAVID/formAddFolioModSalario";
+		}
+	
+	@PostMapping("GestionSINAVID/addFolioModSalario")
+	public String addFolioModSalario(@Valid ModSalSINAVIDFilesEntity file, BindingResult result, Model modelo,
+			RedirectAttributes flash, SessionStatus status) {
+		if (result.hasErrors()) {
+			modelo.addAttribute("titulo", "Errro");
+			return "redirect:/GestionSINAVID/ListaFilesModSalarios";
+		}
+		ModSalSINAVIDFilesEntity fileDB=this.modSalJPA.getById(file.getId());
+		fileDB.setFolio(file.getFolio());
+		fileDB.setFechaAlta(file.getFechaAlta());
+		this.modSalJPA.save(fileDB);
+		String mensaje = "Folio Registrado con Exito";
+		status.setComplete();
+		flash.addFlashAttribute("success", mensaje);
+		return "redirect:/GestionSINAVID/ListaFilesModSalarios";
 	}
 }

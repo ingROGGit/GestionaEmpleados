@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.gestion.empleados.entity.AcuseFilesEntity;
 import com.gestion.empleados.entity.AltaCuentasFilesEntity;
 import com.gestion.empleados.entity.AltaSINAVIDFilesEntity;
 import com.gestion.empleados.entity.AsignacionTurnoEntity;
@@ -66,6 +67,8 @@ import com.gestion.empleados.entity.TESONFilesEntity;
 import com.gestion.empleados.entity.TipoNomTESONEntity;
 import com.gestion.empleados.entity.TurnosEntity;
 import com.gestion.empleados.entity.VacacionesEntity;
+import com.gestion.empleados.entity.ValesDespensaEntity;
+import com.gestion.empleados.repository.AcuseFileRepository;
 import com.gestion.empleados.repository.AltaCuentasFileRepository;
 import com.gestion.empleados.repository.AltaSINAVIDFileRepository;
 import com.gestion.empleados.repository.AsignacionTurnosRepositoryJPA;
@@ -94,6 +97,7 @@ import com.gestion.empleados.repository.TESONRepository;
 import com.gestion.empleados.repository.TipoNomTESONRepository;
 import com.gestion.empleados.repository.TurnosRepositoryJPA;
 import com.gestion.empleados.repository.VacacionesRepository;
+import com.gestion.empleados.repository.ValesDespensaRepositoryJPA;
 import com.gestion.empleados.service.EmpleadoService;
 
 import jakarta.transaction.Transactional;
@@ -111,10 +115,6 @@ public class ProcesaFileXLSXThread {
 	private PuestosRepositoryJPA puestosJPA;
 	@Autowired
 	private ServiciosRepositoryJPA serviciosJPA;
-	@Autowired
-	private VacacionesRepository vacacionesRJPA;
-	@Autowired
-	private ReglasDiasRepository reglasDiasRJPA;
 	@Autowired
 	private QuincenasCatRepositoryJPA quincenasCatJPA;
 	@Autowired
@@ -161,6 +161,10 @@ public class ProcesaFileXLSXThread {
 	private TipoNomTESONRepository tipoNomJPA;
 	@Autowired
 	private TESONRepository tesonJPA;
+	@Autowired
+	private ValesDespensaRepositoryJPA valesDespensaJPA;
+	@Autowired
+	private AcuseFileRepository acuseFileJPA;
 
 	@Async
 	public void run(File fileProces, String tipoCarga, String quinString, Date fechaCarga) {
@@ -179,6 +183,27 @@ public class ProcesaFileXLSXThread {
 					AltaSINAVIDFilesEntity alsinfile = AltaSINAVIDFilesEntity.builder().alta(fileProces.getName())
 							.fechaAlta(new Date()).fileAlta(Files.readAllBytes(fileProces.toPath())).build();
 					this.alsinfileJPA.save(alsinfile);
+				} else if (tipoCarga.equals("CACUSINAVID")) {
+					Empleados emp = null;
+					String namefilecorregido=fileProces.getName().trim();
+					if (fileProces.getName().contains(" ")) {
+						String[] getID = namefilecorregido.replace("-", " ").replace("_", " ").split(" ");
+						emp = this.empleadosJPA.findById(Long.valueOf(getID[0]));
+					} else if (fileProces.getName().contains("-")) {
+						String[] getCURP = namefilecorregido.replace(" ", "-").replace("_", "-").split("-");
+						emp = this.empleadosJPA.findByCurp(getCURP[1]);
+					} else if (fileProces.getName().contains("_")) {
+						String[] getCURP = namefilecorregido.replace(" ", "_").replace("-", "_").split("_");
+						emp = this.empleadosJPA.findByCurp(getCURP[4]);
+					}
+
+					AcuseFilesEntity fileAcuse = this.acuseFileJPA.findByFileName(fileProces.getName());
+					if (fileAcuse == null) {
+						fileAcuse = AcuseFilesEntity.builder().fileName(fileProces.getName())
+								.fileAcuse(Files.readAllBytes(fileProces.toPath())).fechaCarga(new Date())
+								.tipo(quinString.charAt(0)).empleado(emp).build();
+						this.acuseFileJPA.save(fileAcuse);
+					}
 				} else if (tipoCarga.equals("CTESON")) {
 					TESONFilesEntity tfile = TESONFilesEntity.builder().alta(fileProces.getName()).fechaAlta(new Date())
 							.fileAlta(Files.readAllBytes(fileProces.toPath())).build();
@@ -224,6 +249,36 @@ public class ProcesaFileXLSXThread {
 										}
 									} else if (Row.getCell(0).getStringCellValue().contains("OBSERVACIÓNES"))
 										break;
+								}
+							}
+						}
+					}
+				} else if (tipoCarga.equals("CVAL")) {
+					Workbook = WorkbookFactory.create(fileProces);
+					for (int h = 0; h < Workbook.getNumberOfSheets(); h++) {
+						Sheet = Workbook.getSheetAt(h);
+						Row Row;
+						int rows = Sheet.getLastRowNum();
+						for (int r = 1; r <= rows; r++) {
+							Row = Sheet.getRow(r);
+							if (Row == null) {
+								break;
+							} else {
+								if (Row.getCell(0) != null) {
+									if (Row.getCell(0).getCellType() == CellType.STRING) {
+										Empleados empleado = this.empleadosJPA
+												.findByNombreCompleto(Row.getCell(0).getStringCellValue().trim());
+										if (empleado != null) {
+											ValesDespensaEntity vales = ValesDespensaEntity.builder().empleado(empleado)
+													.folio(Row.getCell(2).getCellType() == CellType.NUMERIC
+															? Long.toString((long) Row.getCell(2).getNumericCellValue())
+															: Row.getCell(2).getStringCellValue())
+													.importe(BigDecimal.valueOf(Row.getCell(3).getNumericCellValue())
+															.setScale(2, RoundingMode.HALF_UP))
+													.entregado(false).build();
+											this.valesDespensaJPA.save(vales);
+										}
+									}
 								}
 							}
 						}
@@ -5162,7 +5217,9 @@ public class ProcesaFileXLSXThread {
 																				.setScale(2, RoundingMode.HALF_UP));
 														quin.setTipoPago(Row.getCell(5).getStringCellValue());
 														quin.setFolioQuin(Row.getCell(6).getStringCellValue());
-													} else {
+
+													} else if (quinCat.getIdQNA().contains("R")
+															|| quinCat.getIdQNA().contains("AGN")) {
 														Set<QuincenaCatEntity> lQuinCat = new HashSet<>();
 														lQuinCat.add(quinCat);
 														List<Empleados> lEmpleados = new ArrayList<Empleados>();

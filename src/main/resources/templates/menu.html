@@ -5,7 +5,7 @@
 <!--<body th:fragment="menuAll" class="hold-transition sidebar-mini layout-fixed"> MENU DESPLEGADO COMPLETAMENTE-->
 
 <body th:fragment="menuAll" class="sidebar-mini sidebar-light-danger"> <!-- MENU OCULTO SE MUETRAN LOS ICONOS-->
-	<div class="wrapper" >
+	<div class="wrapper">
 
 		<!-- Preloader -->
 		<div class="preloader flex-column justify-content-center align-items-center">
@@ -245,7 +245,7 @@
 												<path
 													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
 											</svg>
-											<p>Carga Persepciones</p>
+											<p>Carga Percepciones</p>
 										</div>
 									</a>
 								</li>
@@ -308,7 +308,7 @@
 										</div>
 									</a>
 								</li>
-								
+
 								<li class="nav-item">
 									<a href="/empleados/AddEXLSX?TIPOCARGA=CFALTANTES" class="nav-link">
 										<div class="d-flex">
@@ -763,6 +763,24 @@
 										<p>Lista Empleados Error SINAVID</p>
 									</a>
 								</li>
+								
+								<li class="nav-item"
+									sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID','ROLE_OPERADORSINAVID1')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CACUSINAVID" class="nav-link">
+										<div class="d-flex">
+											<svg xmlns="http://w3.org" width="24" height="24" fill="white"
+												class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
+												<path fill-rule="evenodd"
+													d="M8 5.5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z" />
+												<path fill-rule="evenodd"
+													d="M7.646 4.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8 5.707 6.354 7.354a.5.5 0 1 1-.708-.708l2-2z" />
+												<path
+													d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3z" />
+											</svg>
+											<p>Carga Acuse</p>
+										</div>
+									</a>
+								</li>
 							</ul>
 						</li>
 						<li class="nav-header">LISTADOS</li>
@@ -794,9 +812,9 @@
 									</a>
 								</li>
 								<li class="nav-item">
-									<a href="/catalogos/listarPersepciones" class="nav-link">
+									<a href="/catalogos/listarPercepciones" class="nav-link">
 										<i class="nav-icon fa fa-list-ul"></i>
-										<p>Persepciones</p>
+										<p>Percepciones</p>
 									</a>
 								</li>
 								<li class="nav-item">
@@ -817,10 +835,9 @@
 								</p>
 							</a>
 							<ul class="nav nav-treeview">
-						<li class="nav-item"
-									sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS')">
-<!--									<a href="/empleados/AddEXLSX?TIPOCARGA=CALCU" class="nav-link">-->
-										<a href="/WORK" class="nav-link">
+								<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1')">
+									<a href="/empleados/AddEXLSX?TIPOCARGA=CVAL" class="nav-link">
+<!--									<a href="/WORK" class="nav-link">-->
 										<svg xmlns="http://w3.org" width="24" height="24" fill="white"
 											class="bi bi-journal-arrow-up text-primary mr-2" viewBox="0 0 16 16">
 											<path fill-rule="evenodd"
@@ -834,9 +851,9 @@
 									</a>
 								</li>
 								<li class="nav-item"
-									sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORSINAVID')">
-<!--									<a href="/ValesDespensa/entregaValesDespensa" class="nav-link">-->
-										<a href="/WORK" class="nav-link">
+									sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADMIN1','ROLE_OPERADORCUENTAS','ROLE_OPERADORSINAVID')">
+									<a href="/ValesDespensa/entregaTarValesDespensa" class="nav-link">
+<!--									<a href="/WORK" class="nav-link">-->
 										<div class="d-flex">
 											<svg xmlns="http://w3.org" width="24" height="24" fill="currentColor"
 												class="bi bi-pencil-square text-primary mr-2" viewBox="0 0 16 16">
@@ -852,31 +869,31 @@
 							</ul>
 						</li>
 						<!--						REGLAS-->
-<!--						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN')">VACACIONES</li>-->
+						<!--						<li class="nav-header" sec:authorize="hasAnyRole('ROLE_ADMIN')">VACACIONES</li>-->
 
-<!--						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">-->
-<!--							<a href="#" class="nav-link">-->
-<!--								<i class="nav-icon fas fa-book"></i>-->
-<!--								<p>-->
-<!--									Gestion de Reglas-->
-<!--									<i class="fas fa-angle-left right"></i>-->
-<!--								</p>-->
-<!--							</a>-->
-<!--							<ul class="nav nav-treeview">-->
-<!--								<li class="nav-item">-->
-<!--									<a href="/reglas/formReglas" class="nav-link">-->
-<!--										<i class="nav-icon far fa-id-card"></i>-->
-<!--										<p>Registra Regla</p>-->
-<!--									</a>-->
-<!--								</li>-->
-<!--								<li class="nav-item">-->
-<!--									<a href="/reglas/listarReglas" class="nav-link">-->
-<!--										<i class="nav-icon fa fa-list-ul"></i>-->
-<!--										<p>Lista de Reglas</p>-->
-<!--									</a>-->
-<!--								</li>-->
-<!--							</ul>-->
-<!--						</li>-->
+						<!--						<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">-->
+						<!--							<a href="#" class="nav-link">-->
+						<!--								<i class="nav-icon fas fa-book"></i>-->
+						<!--								<p>-->
+						<!--									Gestion de Reglas-->
+						<!--									<i class="fas fa-angle-left right"></i>-->
+						<!--								</p>-->
+						<!--							</a>-->
+						<!--							<ul class="nav nav-treeview">-->
+						<!--								<li class="nav-item">-->
+						<!--									<a href="/reglas/formReglas" class="nav-link">-->
+						<!--										<i class="nav-icon far fa-id-card"></i>-->
+						<!--										<p>Registra Regla</p>-->
+						<!--									</a>-->
+						<!--								</li>-->
+						<!--								<li class="nav-item">-->
+						<!--									<a href="/reglas/listarReglas" class="nav-link">-->
+						<!--										<i class="nav-icon fa fa-list-ul"></i>-->
+						<!--										<p>Lista de Reglas</p>-->
+						<!--									</a>-->
+						<!--								</li>-->
+						<!--							</ul>-->
+						<!--						</li>-->
 
 						<li class="nav-item"><a style="padding-left: 25px" class="nav-link">
 								<i class="fa fa-power-off" aria-hidden="true"></i>

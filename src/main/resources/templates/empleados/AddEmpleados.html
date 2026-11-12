@@ -59,7 +59,7 @@
 								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">
 									<label for="formFileLg" class="form-label" th:text="${titulo}"></label>
 									<input class="form-control form-control-lg" id="fileXLS" type="file" name="fileXLS"
-										required autocomplete="off" accept=".xlsx,.xls">
+										required autocomplete="off" accept=".xlsx,.xls,.pdf" multiple>
 								</div>
 							</div>
 							<div class="row">
@@ -71,6 +71,18 @@
 										<option value="">select QNA</option>
 										<option th:each="qna : ${lquincenas}" th:value="${qna}" th:text="${qna}"
 											th:selected="${qna == quinCatSelectPost}"></option>
+									</select>
+								</div>
+								
+								<div th:if="${#lists.contains({'CACUSINAVID'}, TIPOCARGA)}"
+									class="col-lg-6 col-md-6 col-sm-6 col-xs-12" align="center">
+									<label>TIPO ACUSE: </label>
+									<select class="form-control" id="tipoAcuse" name="tipoAcuse"
+										required>
+										<option value="">select </option>
+										<option th:value='A'>ALTA</option>
+									<option th:value='B'>BAJA</option>
+									<option th:value='M'>MODIFICACION SALARIO</option>
 									</select>
 								</div>
 								<div th:if="${#lists.contains({'CEXTSINAVID'}, TIPOCARGA)}"

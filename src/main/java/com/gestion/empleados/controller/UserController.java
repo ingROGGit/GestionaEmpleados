@@ -1,7 +1,5 @@
 package com.gestion.empleados.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,12 +23,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gestion.empleados.DTO.CreateUserDTO;
 import com.gestion.empleados.entity.ERole;
-import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.RoleEntity;
 import com.gestion.empleados.entity.UsuariosEntity;
 import com.gestion.empleados.repository.RoleRepository;
@@ -39,10 +35,7 @@ import com.gestion.empleados.repository.UsuariosEntityRepositoryJPA;
 import com.gestion.empleados.service.UsuariosEntityService;
 import com.gestion.empleados.utils.PageRender;
 import com.gestion.empleados.utils.PasswordGenerator;
-import com.gestion.empleados.utils.ProcesaFileXLSXThread;
 import com.gestion.empleados.utils.reports.ExportExcel;
-import com.gestion.empleados.utils.reports.ExportExcelThread;
-import com.gestion.empleados.utils.reports.ExporterPDF;
 import com.lowagie.text.DocumentException;
 
 import jakarta.servlet.http.HttpServletResponse;

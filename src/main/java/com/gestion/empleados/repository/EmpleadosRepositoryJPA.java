@@ -14,10 +14,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.gestion.empleados.entity.CuentasEntity;
 import com.gestion.empleados.entity.Empleados;
 import com.gestion.empleados.entity.QuincenasEntity;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 /**
  *
@@ -26,6 +24,8 @@ import org.springframework.data.domain.Pageable;
 @Repository
 public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Serializable>{
     public Empleados findById(Long IDEmpleado);
+    public Empleados findByNombreCompleto(String nombre);
+    public Empleados findByRfc(String rfc);
     public List<Empleados> findByNombreCompletoContainingIgnoreCaseOrCurpContainingIgnoreCaseOrRfcContainingIgnoreCase(String nom,String curp,String rfc);
     public List<Empleados> findByTipoContrato(String tipoContrato);
     @Query("SELECT DISTINCT e FROM Empleados e " +
@@ -58,7 +58,7 @@ public interface EmpleadosRepositoryJPA extends JpaRepository<Empleados, Seriali
    public List<Empleados> findBySinavid_Estatus(String estatus);
    public Long countBySinavidIsNull();
    @Query("SELECT e FROM Empleados e " +
-	       "JOIN FETCH e.quincenas q " +
+	       "LEFT JOIN FETCH e.quincenas q " +
 	       "JOIN q.quinCat cat " +
 	       "JOIN e.sinavid s " +
 	       "WHERE cat.idQNA = :idQNA AND q.sueldoBase > s.sueldoSINAVID AND s.estatus<>:estatus")

@@ -13,7 +13,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.gestion.empleados.listener.AuditoryQNAsListener;
 
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;

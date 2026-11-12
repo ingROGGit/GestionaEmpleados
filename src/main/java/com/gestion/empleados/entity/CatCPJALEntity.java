@@ -1,7 +1,6 @@
 package com.gestion.empleados.entity;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

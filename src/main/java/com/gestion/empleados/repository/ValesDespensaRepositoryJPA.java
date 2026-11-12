@@ -9,4 +9,5 @@ import com.gestion.empleados.entity.ValesDespensaEntity;
 
 public interface ValesDespensaRepositoryJPA extends JpaRepository<ValesDespensaEntity, Serializable>{
 	public ValesDespensaEntity findByFolio(String folio);
+	public Long countByEntregadoIsTrue();
 }

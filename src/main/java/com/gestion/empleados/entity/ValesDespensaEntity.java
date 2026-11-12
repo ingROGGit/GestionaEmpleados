@@ -2,9 +2,8 @@ package com.gestion.empleados.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -20,10 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,11 +35,10 @@ import lombok.NoArgsConstructor;
 public class ValesDespensaEntity extends AuditableDateEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
 	@Basic(optional = false)
 	@Column(name = "id")
-	private Long id;
-	@NotNull
+	private UUID id;
 	@Column(name = "folio")
     protected String folio;
 	@Column(name = "scaner")
@@ -51,12 +46,16 @@ public class ValesDespensaEntity extends AuditableDateEntity implements Serializ
 	@Column(name= "importe")
 	private BigDecimal importe;
 	@Column(name = "entregado")
-	private Boolean nLote;
-	@Column(name = "nLote")
 	private Boolean entregado;
+	@Column(name = "nLote")
+	private int nLote;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_Empleado", nullable = false)
+    @JoinColumn(name = "id_Empleado", nullable = true)
     private Empleados empleado;
+    @Column(name="fechaEntrega")
+    private LocalDateTime fechaEntrega;
+    @Column(name="fechaRegistro")
+    private LocalDateTime fechaRegistro;
 	@Override
 	public String toString() {
 		return "BancosEntity [id=" + id + ", folio=" + folio + ", Empleado=" + empleado.getId()+" "+empleado.getNombre() + "]";
